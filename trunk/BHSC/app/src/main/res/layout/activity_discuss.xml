@@ -1,0 +1,287 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:id="@+id/activity_discuss_container"
+                android:background="#f7f7f7">
+
+    <RelativeLayout
+        android:id="@+id/activity_discuss_detail"
+        android:layout_width="match_parent"
+        android:layout_height="45dp"
+        android:background="@color/white"
+        >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:text="@string/detail"
+            android:textColor="@color/black"
+            android:textSize="20sp"
+            />
+
+        <RelativeLayout
+            android:id="@+id/activity_discuss_back"
+            android:layout_width="@dimen/title_btn_width"
+            android:layout_height="match_parent"
+            android:layout_alignParentLeft="true"
+            android:layout_marginLeft="16dp">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:background="@mipmap/btn_goback"
+                />
+        </RelativeLayout>
+        <!-- divider-->
+        <View android:layout_width="match_parent" android:layout_height="1dp"
+              android:layout_alignParentBottom="true" android:background="@color/divider"/>
+    </RelativeLayout>
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/activity_discuss_input"
+        android:layout_below="@+id/activity_discuss_detail">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:paddingLeft="@dimen/activity_horizontal_margin"
+            android:paddingRight="@dimen/activity_horizontal_margin"
+            >
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="55dp"
+                android:orientation="horizontal">
+
+                <com.bhsc.mobile.view.meg7.widget.CustomShapeImageView
+                    android:id="@+id/activity_discuss_photo"
+                    android:layout_width="28dp"
+                    android:layout_height="28dp"
+                    android:layout_gravity="center_vertical"
+                    android:scaleType="centerCrop"
+                    android:src="@mipmap/photo"
+                    app:shape="circle"
+                    />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginLeft="10dp"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/activity_discuss_nickname"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/nickname"/>
+
+                    <TextView
+                        android:id="@+id/activity_discuss_time"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/hello_world"/>
+                </LinearLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="38dp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/activity_discuss_content"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="评论内容"/>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="45dp"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:layout_width="45dp"
+                        android:layout_height="45dp"
+                        android:scaleType="centerCrop"
+                        android:src="@mipmap/photo"/>
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"/>
+                </LinearLayout>
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="53dp">
+                    <!--赞-->
+                    <RelativeLayout
+                        android:id="@+id/activity_discuss_btn_support"
+                        android:layout_width="77dp"
+                        android:layout_height="30dp"
+                        android:layout_centerVertical="true"
+                        android:background="@mipmap/btn_news_normal">
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerInParent="true"
+                            android:orientation="horizontal"
+                            >
+
+                            <ImageView
+                                android:layout_width="wrap_content"
+                                android:layout_height="10dp"
+                                android:layout_gravity="center_vertical"
+                                android:background="@mipmap/btn_support_press"
+                                android:scaleType="centerInside"/>
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="8dp"
+                                android:text="@string/support"
+                                android:textSize="10sp"
+                                />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="(0)"
+                                android:textSize="10sp"
+                                />
+                        </LinearLayout>
+                    </RelativeLayout>
+                    <!--评论-->
+                    <RelativeLayout
+                        android:id="@+id/activity_discuss_btn_discuss"
+                        android:layout_width="77dp"
+                        android:layout_height="30dp"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="15dp"
+                        android:layout_toRightOf="@+id/activity_discuss_btn_support"
+                        android:background="@mipmap/btn_news_normal">
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerInParent="true"
+                            android:orientation="horizontal"
+                            >
+
+                            <ImageView
+                                android:layout_width="wrap_content"
+                                android:layout_height="10dp"
+                                android:layout_gravity="center_vertical"
+                                android:background="@mipmap/btn_discuss_normal"
+                                android:scaleType="centerInside"/>
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="8dp"
+                                android:text="@string/discuss"
+                                android:textSize="10sp"
+                                />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="(0)"
+                                android:textSize="10sp"
+                                />
+                        </LinearLayout>
+                    </RelativeLayout>
+                    <!--分享-->
+                    <RelativeLayout
+                        android:id="@+id/activity_discuss_btn_share"
+                        android:layout_width="77dp"
+                        android:layout_height="30dp"
+                        android:layout_alignParentRight="true"
+                        android:layout_centerVertical="true"
+                        android:background="@mipmap/btn_news_normal">
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerInParent="true"
+                            android:orientation="horizontal"
+                            >
+
+                            <ImageView
+                                android:layout_width="wrap_content"
+                                android:layout_height="10dp"
+                                android:layout_gravity="center_vertical"
+                                android:background="@mipmap/btn_share_normal"
+                                android:scaleType="centerInside"/>
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="8dp"
+                                android:text="@string/share"
+                                android:textSize="10sp"
+                                />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="(0)"
+                                android:textSize="10sp"
+                                />
+                        </LinearLayout>
+                    </RelativeLayout>
+                </RelativeLayout>
+                <!--热门评论 -->
+                <LinearLayout
+                    android:id="@+id/activity_discuss_discuss"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:visibility="gone">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/hot_discuss"
+                        android:textColor="@color/news_content"
+                        android:textSize="12sp"/>
+                </LinearLayout>
+                <com.bhsc.mobile.disclose.views.MyListView
+                    android:id="@+id/activity_discuss_discuss_list"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"/>
+            </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
+
+    <RelativeLayout
+        android:id="@+id/activity_discuss_input"
+        android:layout_width="match_parent"
+        android:layout_height="45dp"
+        android:layout_alignParentBottom="true"
+        android:background="#e5e5e5"
+        >
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_alignParentTop="true"
+            android:background="@color/divider"/>
+        <TextView
+            android:paddingLeft="4dp"
+            android:layout_width="match_parent"
+            android:layout_height="28dp"
+            android:textColor="@color/input_text_color"
+            android:textSize="13sp"
+            android:text="@string/input_discuss"
+            android:gravity="center_vertical|left"
+            android:layout_marginLeft="@dimen/activity_horizontal_margin"
+            android:layout_marginRight="@dimen/activity_horizontal_margin"
+            android:background="@drawable/input_discuss_background"
+            android:layout_centerVertical="true"/>
+    </RelativeLayout>
+</RelativeLayout>

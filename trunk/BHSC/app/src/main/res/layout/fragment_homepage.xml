@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:orientation="vertical">
+
+    <RelativeLayout
+        android:id="@+id/fragment_home_title"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/title_height"
+        android:background="@color/white"
+        >
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_centerInParent="true"
+            android:src="@mipmap/logo"
+            />
+        <RelativeLayout
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="16dp"
+            android:id="@+id/fragment_home_search"
+            android:layout_width="@dimen/title_btn_width"
+            android:layout_height="match_parent">
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_alignParentRight="true"
+                android:background="@mipmap/btn_search_normal"
+                />
+        </RelativeLayout>
+    </RelativeLayout>
+
+    <com.bhsc.mobile.homepage.CategoryTabStrip
+        android:background="#db2959"
+        android:id="@+id/fragment_home_category"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/home_tab_height"/>
+
+    <android.support.v4.view.ViewPager
+        android:id="@+id/fragment_home_viewpager"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        />
+</LinearLayout>
