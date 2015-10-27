@@ -23,4 +23,7 @@
     <!--导航栏-->
     <dimen name="navigation_height">50dp</dimen>
     <dimen name="navigation_icon_size">19dp</dimen>
+
+    <!-- 对话框-->
+    <dimen name="dialog_width">220dp</dimen>
 </resources>

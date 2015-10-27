@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import com.bhsc.mobile.R;
 import com.bhsc.mobile.datalcass.Data_DB_Discuss;
+import com.bhsc.mobile.utils.Method;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -19,15 +20,6 @@ import java.util.List;
  * Created by lynn on 15-10-10.
  */
 public class HotDiscussAdapter extends BaseAdapter {
-    private static final long DAY = 24 * 60 * 60 * 1000;
-    private static final long HOUR = 60 * 60 * 1000;
-    private static final long MINUTE = 60 * 1000;
-
-    private String mHour;
-    private String mMinute;
-    private String mJust;
-
-    private SimpleDateFormat mSimpleDateFormat;
 
     private LayoutInflater mInflater;
     private List<Data_DB_Discuss> mDiscusses;
@@ -35,11 +27,6 @@ public class HotDiscussAdapter extends BaseAdapter {
     public HotDiscussAdapter(Context context, List<Data_DB_Discuss> discusses){
         mInflater = LayoutInflater.from(context);
         mDiscusses = discusses;
-
-        mHour = "小时前";
-        mMinute = "分钟前";
-        mJust = "刚刚";
-        mSimpleDateFormat = new SimpleDateFormat("MM-dd hh:mm");
     }
 
     @Override
@@ -69,27 +56,10 @@ public class HotDiscussAdapter extends BaseAdapter {
         }
         Data_DB_Discuss discuss = mDiscusses.get(position);
         holder.Tv_Content.setText(discuss.getContent());
-        holder.Tv_Time.setText(getTime(discuss.getCreateTime()));
+        holder.Tv_Time.setText(Method.getTime(discuss.getCreateTime()));
         return convertView;
     }
 
-    private String getTime(long ts){
-        String time;
-        long currentTime = System.currentTimeMillis();
-        long interval = currentTime - ts * 1000;
-        if(interval < DAY){
-            if(interval > HOUR){
-                time = Math.floor(interval / HOUR) + mHour;
-            } else if(interval > MINUTE){
-                time = Math.floor(interval / MINUTE) + mMinute;
-            } else {
-                time = mJust;
-            }
-        } else {
-            time = mSimpleDateFormat.format(new Date(ts * 1000));
-        }
-        return time;
-    }
 
     private class ViewHolder{
         private ImageView Iv_Photo;

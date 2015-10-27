@@ -22,6 +22,13 @@ import com.bhsc.mobile.homepage.adapter.PagerAdapter;
 
 
 public class CategoryTabStrip extends HorizontalScrollView {
+
+    public interface OnTabChangedListener{
+        void onTabChanged(int position);
+    }
+
+    private OnTabChangedListener mTabChangedListener;
+
     private LayoutInflater mLayoutInflater;
     private final PageListener pageListener = new PageListener();
     private ViewPager pager;
@@ -81,6 +88,10 @@ public class CategoryTabStrip extends HorizontalScrollView {
         // 左右边界阴影效果
         left_edge = getResources().getDrawable(R.drawable.ic_category_left_edge);
         right_edge = getResources().getDrawable(R.mipmap.ic_category_right_edge);
+    }
+
+    public void setOnTabChangedListener(OnTabChangedListener listener){
+        this.mTabChangedListener = listener;
     }
 
     // 绑定与CategoryTabStrip控件对应的ViewPager控件，实现联动
@@ -255,6 +266,9 @@ public class CategoryTabStrip extends HorizontalScrollView {
 
         @Override
         public void onPageSelected(int position) {
+            if(mTabChangedListener != null){
+                mTabChangedListener.onTabChanged(position);
+            }
         }
     }
 }

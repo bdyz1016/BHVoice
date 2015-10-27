@@ -9,13 +9,17 @@ android {
         minSdkVersion 14
         targetSdkVersion 23
         versionCode 1
-        versionName "1.0"
+        versionName "1.0.1"
     }
     buildTypes {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
+    }
+    compileOptions{
+        sourceCompatibility JavaVersion.VERSION_1_7
+        targetCompatibility JavaVersion.VERSION_1_7
     }
 }
 
@@ -26,4 +30,7 @@ dependencies {
     compile files('libs/LoonAndroid.jar')
     compile files('libs/nineoldandroids.jar')
     compile files('libs/androidexception.jar')
+    compile files('libs/libammsdk.jar')
+    compile files('libs/open_sdk_r5276_lite.jar')
+    compile files('libs/open_sdk_r5276.jar')
 }

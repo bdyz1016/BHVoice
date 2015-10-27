@@ -5,21 +5,21 @@ import java.util.List;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 
-public class SyncArrayList<T> {
+public class SyncArrayList<E> {
 
-    private final List<T> elements;
+    private final List<E> elements;
     
     /**
      * 读写锁
      */
     private ReentrantReadWriteLock mRwLock;
 
-    public SyncArrayList(List<T> lists){
+    public SyncArrayList(List<E> lists){
         elements = lists;
         this.mRwLock = new ReentrantReadWriteLock();
     }
     
-    public boolean addAll(Collection<? extends T> arg0){
+    public boolean addAll(Collection<? extends E> arg0){
         boolean result = false;
         mRwLock.writeLock().lock();
         elements.clear();
@@ -28,19 +28,26 @@ public class SyncArrayList<T> {
         return result;
     }
     
-    public T get(int location){
+    public E get(int location){
         mRwLock.readLock().lock();
-        T object = elements.get(location);
+        E object = elements.get(location);
         mRwLock.readLock().unlock();
         return object;
     }
     
-    public boolean add(T arg0){
+    public boolean add(E arg0){
         boolean result = false;
         mRwLock.writeLock().lock();
         result = elements.add(arg0);
         mRwLock.writeLock().unlock();
         return result;
+    }
+
+    public E remove(int position){
+        mRwLock.writeLock().lock();
+        E e = elements.remove(position);
+        mRwLock.writeLock().unlock();
+        return e;
     }
     
     public int size(){

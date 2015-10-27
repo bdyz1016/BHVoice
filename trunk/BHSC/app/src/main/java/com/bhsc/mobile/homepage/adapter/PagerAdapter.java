@@ -6,6 +6,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 
 import com.bhsc.mobile.R;
+import com.bhsc.mobile.datalcass.Data_DB_NewsType;
 import com.bhsc.mobile.homepage.NewsFragment;
 import com.bhsc.mobile.utils.L;
 
@@ -21,43 +22,36 @@ public class PagerAdapter extends FragmentPagerAdapter {
 
     private int mNewsTypeCount;
 
-    private final List<String> mCategorys = new ArrayList<String>();
-//    private NewsFragment[] mFragments;
+    private List<Data_DB_NewsType> mCategorys;
 
-    public PagerAdapter(Context context, FragmentManager fm) {
-        this(context, fm, null);
-        L.i(TAG, "PagerAdapter");
-    }
-
-    public PagerAdapter(Context context, FragmentManager fm, List<String> categorys){
+    public PagerAdapter(Context context, FragmentManager fm, List<Data_DB_NewsType> categorys){
         super(fm);
         L.i(TAG, "PagerAdapter");
-        mCategorys.addAll(Arrays.asList(context.getResources().getStringArray(R.array.news_category)));
-        if(categorys != null && categorys.size() > 0){
-            mCategorys.addAll(categorys);
-        }
+        mCategorys =categorys;
         mNewsTypeCount = mCategorys.size();
-//        mFragments = new NewsFragment[mNewsTypeCount];
-//        for(int i = 0;i < mNewsTypeCount; i++){
-//            mFragments[i] = new NewsFragment();
-//        }
     }
 
     @Override
     public CharSequence getPageTitle(int position) {
         L.i(TAG, "getPageTitle:" + position);
-        return mCategorys.get(position);
+        return mCategorys.get(position).getTypeName();
     }
 
     @Override
     public int getCount() {
-        L.i(TAG, "getCount:" + mCategorys.size());
         return mCategorys.size();
     }
 
     @Override
     public Fragment getItem(int position) {
         L.i(TAG, "getItem:" + position);
-        return new NewsFragment();
+        NewsFragment fragment = new NewsFragment();
+        fragment.setNewsType(mCategorys.get(position).getTypeId());
+        return fragment;
+    }
+
+    @Override
+    public long getItemId(int position) {
+        return mCategorys.get(position).getTypeId();
     }
 }

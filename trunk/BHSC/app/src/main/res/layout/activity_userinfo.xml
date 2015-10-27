@@ -103,7 +103,7 @@
                 android:layout_centerVertical="true"
                 android:layout_toLeftOf="@+id/activity_userinfo_next1"
                 android:scaleType="centerCrop"
-                android:src="@mipmap/photo"
+                android:src="@mipmap/icon_default_photo"
                 />
         </RelativeLayout>
 
@@ -183,6 +183,7 @@
             />
 
         <RelativeLayout
+            android:id="@+id/activty_userinfo_password_change"
             android:layout_width="wrap_content"
             android:layout_height="46dp">
 

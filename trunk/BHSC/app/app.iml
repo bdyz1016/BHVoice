@@ -93,8 +93,12 @@
     <orderEntry type="library" exported="" name="nineoldandroids" level="project" />
     <orderEntry type="library" exported="" name="androidexception" level="project" />
     <orderEntry type="library" exported="" name="appcompat-v7-23.0.1" level="project" />
+    <orderEntry type="library" exported="" name="libammsdk" level="project" />
+    <orderEntry type="library" exported="" name="mta-sdk-1.6.2" level="project" />
     <orderEntry type="library" exported="" name="LoonAndroid" level="project" />
+    <orderEntry type="library" exported="" name="open_sdk_r5276_lite" level="project" />
     <orderEntry type="library" exported="" name="support-v4-23.0.1" level="project" />
     <orderEntry type="library" exported="" name="support-annotations-23.0.1" level="project" />
+    <orderEntry type="library" exported="" name="open_sdk_r5276" level="project" />
   </component>
 </module>

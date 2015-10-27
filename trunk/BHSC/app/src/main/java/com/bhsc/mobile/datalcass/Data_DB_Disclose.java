@@ -4,10 +4,19 @@ package com.bhsc.mobile.datalcass;
  * Created by lynn on 15-9-30.
  */
 public class Data_DB_Disclose extends BaseClass{
+    /**
+     * 图片最大数量
+     */
+    public static final int IMAGE_MAX_COUNT = 5;
+
     private String Content;
     private String Title;
-    private String[] Images;
-    private String createTime;
+    /**
+     * 图片路径集合，图片路径之间用“,”分隔
+     */
+    private String ImagePaths;
+    private long createTime;
+    private String UserName;
 
     public String getContent() {
         return Content;
@@ -25,19 +34,27 @@ public class Data_DB_Disclose extends BaseClass{
         Title = title;
     }
 
-    public String[] getImages() {
-        return Images;
-    }
-
-    public void setImages(String[] images) {
-        Images = images;
-    }
-
-    public String getCreateTime() {
+    public long getCreateTime() {
         return createTime;
     }
 
-    public void setCreateTime(String createTime) {
+    public void setCreateTime(long createTime) {
         this.createTime = createTime;
+    }
+
+    public String getUserName() {
+        return UserName;
+    }
+
+    public void setUserName(String userName) {
+        UserName = userName;
+    }
+
+    public String getImagePaths() {
+        return ImagePaths;
+    }
+
+    public void setImagePaths(String imagePaths) {
+        ImagePaths = imagePaths;
     }
 }

@@ -25,7 +25,7 @@ import com.bhsc.mobile.R;
 import com.bhsc.mobile.datalcass.Data_DB_Discuss;
 import com.bhsc.mobile.disclose.views.MyListView;
 import com.bhsc.mobile.homepage.NewsPresenter;
-import com.bhsc.mobile.share.ShareActivity;
+import com.bhsc.mobile.ThirdParty.ShareActivity;
 import com.bhsc.mobile.utils.L;
 import com.bhsc.mobile.utils.Method;
 
@@ -73,6 +73,7 @@ public class DiscussDetailActivity extends Activity {
     protected void onDestroy() {
         super.onDestroy();
         EventBus.getDefault().unregister(this);
+        DiscussDetailPresenter.destroy();
     }
 
     @InjectInit

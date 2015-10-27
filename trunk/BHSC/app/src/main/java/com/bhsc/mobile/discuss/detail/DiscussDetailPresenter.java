@@ -24,7 +24,10 @@ public class DiscussDetailPresenter {
     }
 
     public static void destroy() {
-        sDiscussDetailPresenter = null;
+        if(sDiscussDetailPresenter != null) {
+            sDiscussDetailPresenter.clean();
+            sDiscussDetailPresenter = null;
+        }
     }
 
     private ExecutorService mExecutorService;
@@ -54,5 +57,9 @@ public class DiscussDetailPresenter {
                 EventBus.getDefault().post(event);
             }
         });
+    }
+
+    private void clean(){
+        mExecutorService.shutdownNow();
     }
 }

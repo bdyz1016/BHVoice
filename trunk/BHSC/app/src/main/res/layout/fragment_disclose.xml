@@ -39,6 +39,7 @@
         android:layout_marginTop="10dp">
 
         <LinearLayout
+            android:id="@+id/fragment_disclose_add"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
@@ -60,9 +61,11 @@
                     android:layout_alignParentLeft="true"
                     android:layout_centerVertical="true"
                     android:layout_marginLeft="12dp"
+                    android:background="@mipmap/icon_disclose"
                     />
 
                 <LinearLayout
+                    android:layout_marginLeft="5dp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"

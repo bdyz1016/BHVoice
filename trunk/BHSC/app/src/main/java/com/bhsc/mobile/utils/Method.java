@@ -11,6 +11,9 @@ import java.io.InputStream;
 import java.math.BigDecimal;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -415,5 +418,36 @@ public class Method {
             e.printStackTrace();
         }
     }
+
+	public static String createDataId(){
+		return UUID.randomUUID().toString();
+	}
+
+	private static final long DAY = 24 * 60 * 60 * 1000;
+	private static final long HOUR = 60 * 60 * 1000;
+	private static final long MINUTE = 60 * 1000;
+
+	private static final String HOUR_STRING = "小时前";
+	private static final String MINUTE_STRING = "分钟前";
+	private static final String JUST_STRING = "刚刚";
+
+	public static String getTime(long ts){
+		String time;
+		SimpleDateFormat mSimpleDateFormat = new SimpleDateFormat("MM-dd hh:mm");
+		long currentTime = System.currentTimeMillis();
+		long interval = currentTime - ts * 1000;
+		if(interval < DAY){
+			if(interval > HOUR){
+				time = Math.floor(interval / HOUR) + HOUR_STRING;
+			} else if(interval > MINUTE){
+				time = Math.floor(interval / MINUTE) + MINUTE_STRING;
+			} else {
+				time = JUST_STRING;
+			}
+		} else {
+			time = mSimpleDateFormat.format(new Date(ts * 1000));
+		}
+		return time;
+	}
 
 }

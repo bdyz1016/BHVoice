@@ -45,7 +45,7 @@
                     android:layout_height="229dp"
                     android:layout_marginBottom="27dp"
                     android:scaleType="centerCrop"
-                    android:src="@mipmap/user_background"/>
+                    android:src="@mipmap/background_user"/>
 
                 <ImageView
                     android:id="@+id/fragment_user_photo"

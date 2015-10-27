@@ -12,20 +12,31 @@ import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.PopupWindow;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.pc.ioc.event.EventBus;
 import com.android.pc.ioc.inject.InjectAll;
 import com.android.pc.ioc.inject.InjectBinder;
+import com.android.pc.ioc.inject.InjectInit;
 import com.android.pc.ioc.inject.InjectLayer;
 import com.android.pc.ioc.view.listener.OnClick;
 import com.bhsc.mobile.R;
+import com.bhsc.mobile.common.ImageBrowserActivity;
+import com.bhsc.mobile.datalcass.Data_DB_User;
 import com.bhsc.mobile.main.BHApplication;
+import com.bhsc.mobile.main.MainActivity;
+import com.bhsc.mobile.main.event.MainFrameEvent;
+import com.bhsc.mobile.manager.UserManager;
+import com.bhsc.mobile.media.ImageUtil;
 import com.bhsc.mobile.utils.L;
 import com.bhsc.mobile.utils.Method;
 import com.bhsc.mobile.view.meg7.widget.RectangleImageView;
@@ -50,7 +61,13 @@ public class UserInfoActivity extends Activity {
         View fragment_userinfo_complete;
         @InjectBinder(method = "showDialag", listeners = {OnClick.class})
         View activity_userinfo_take_photo;
-
+        @InjectBinder(method = "changePassword", listeners = {OnClick.class})
+        View activty_userinfo_password_change;
+        @InjectBinder(method = "logout" ,listeners = {OnClick.class})
+        Button activity_userinfo_logout;
+        TextView activity_userinfo_nickname;
+        TextView activity_userinfo_status;
+        @InjectBinder(method = "bigImage", listeners = {OnClick.class})
         RectangleImageView activity_userinfo_photo;
     }
 
@@ -58,6 +75,19 @@ public class UserInfoActivity extends Activity {
     private Views mViews;
 
     private PopupWindow mPopupWindow;
+
+    private Data_DB_User mCurrentUser;
+    @InjectInit
+    private void init(){
+        mCurrentUser = UserManager.getInstance().getCurrentUser();
+        if(!TextUtils.isEmpty(mCurrentUser.getNickName())) {
+            mViews.activity_userinfo_nickname.setText(mCurrentUser.getNickName());
+        }
+        if(!TextUtils.isEmpty(mCurrentUser.getStatus())) {
+            mViews.activity_userinfo_status.setText(mCurrentUser.getStatus());
+        }
+
+    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -165,10 +195,23 @@ public class UserInfoActivity extends Activity {
     }
 
     private void complete() {
+        finish();
     }
 
     private void goBack() {
         finish();
+    }
+
+    private void logout(){
+        UserManager.getInstance().setIsLogined(false);
+        EventBus.getDefault().post(new MainFrameEvent(MainFrameEvent.ACTION_LOGOUT));
+        finish();
+    }
+
+    private void changePassword(){
+        Intent intent = new Intent();
+        intent.setClass(UserInfoActivity.this, ResetPasswordActivity.class);
+        startActivity(intent);
     }
 
     private void showDialag() {
@@ -306,5 +349,21 @@ public class UserInfoActivity extends Activity {
         intent.putExtra("outputY", 256);
         intent.putExtra("return-data", true);
         startActivityForResult(intent, PHOTO_CUT);
+    }
+
+    private void setUserPhoto(String path){
+        if(!TextUtils.isEmpty(path)){
+            ImageUtil.getInstance().loadBitmap(path, mViews.activity_userinfo_photo, 100, 100);
+        }
+    }
+
+    private void bigImage(String path){
+        if(TextUtils.isEmpty(path)){
+            return;
+        }
+        Intent intent = new Intent();
+        intent.putExtra(ImageBrowserActivity.INTENT_PATH, path);
+        intent.setClass(UserInfoActivity.this, ImageBrowserActivity.class);
+        startActivity(intent);
     }
 }

@@ -31,4 +31,12 @@
 
     <color name="news_title_color">#000000</color>
     <color name="news_content">#575757</color>
+
+    <color name="background_color">#f7f7f7</color>
+    <!-- 用户-->
+    <color name="warning_text">#ff2425</color>
+    <color name="agreement_text">#0e8fcd</color>
+
+    <!-- dialog-->
+    <color name="dialog_btn_text">#007af5</color>
 </resources>

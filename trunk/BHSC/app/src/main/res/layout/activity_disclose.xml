@@ -3,6 +3,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:background="#f7f7f7"
+                android:id="@+id/activity_disclose_container"
+                android:focusableInTouchMode="true"
     >
 
     <RelativeLayout
@@ -83,6 +85,7 @@
             android:layout_marginTop="16dp"
             android:background="@color/white"
             android:gravity="left|top"
+            android:maxLength="200"
             android:hint="@string/disclose_hint"
             android:padding="2dp"
             android:singleLine="false"
@@ -90,14 +93,17 @@
             android:textColorHint="@color/hint_text_color"
             android:textSize="17sp"
             />
-        <LinearLayout
+        <GridView
             android:id="@+id/activity_disclose_edit_images"
             android:layout_width="match_parent"
-            android:layout_height="75dp"
+            android:layout_height="wrap_content"
             android:layout_below="@+id/activity_disclose_edit_content"
             android:layout_marginTop="9dp"
-            android:orientation="horizontal"
-            />
+            android:gravity="left|center_vertical"
+            android:verticalSpacing="10dp"
+            android:horizontalSpacing="5dp"
+            android:stretchMode="columnWidth"
+            android:numColumns="4"/>
 
         <View
             android:id="@+id/activity_disclose_edit_divider"

@@ -1,8 +1,13 @@
 package com.bhsc.mobile.homepage;
 
+import android.content.Context;
+
 import com.android.pc.ioc.event.EventBus;
+import com.bhsc.mobile.R;
 import com.bhsc.mobile.datalcass.Data_DB_Discuss;
 import com.bhsc.mobile.datalcass.Data_DB_News;
+import com.bhsc.mobile.datalcass.Data_DB_NewsType;
+import com.bhsc.mobile.homepage.event.NewsEvent;
 import com.bhsc.mobile.homepage.newsdetail.CollectEvent;
 import com.bhsc.mobile.homepage.newsdetail.HotDiscussEvent;
 import com.bhsc.mobile.homepage.newsdetail.OppEvent;
@@ -12,6 +17,7 @@ import com.bhsc.mobile.utils.L;
 import com.bhsc.mobile.utils.Method;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -22,13 +28,12 @@ import java.util.concurrent.Executors;
 public class NewsPresenter {
     private final String TAG = NewsPresenter.class.getSimpleName();
 
-    private static NewsPresenter sNewsPresenter;
+    private static class InstanceHolder{
+        public static NewsPresenter sNewsPresenter = new NewsPresenter();
+    }
 
     public static NewsPresenter getInstance(){
-        if(sNewsPresenter == null){
-            sNewsPresenter = new NewsPresenter();
-        }
-        return sNewsPresenter;
+        return InstanceHolder.sNewsPresenter;
     }
 
     private ExecutorService mExecutorService;
@@ -37,7 +42,29 @@ public class NewsPresenter {
         mExecutorService = Executors.newCachedThreadPool();
     }
 
-    public void getNews(){
+    /**
+     * 获取新闻类型
+     * @param context
+     * @return
+     */
+    public ArrayList<Data_DB_NewsType> getNewsTypes(Context context){
+        ArrayList<Data_DB_NewsType> types = new ArrayList<>();
+        String[] defaultTypes = context.getResources().getStringArray(R.array.news_category);
+        int length = defaultTypes.length;
+        for(int i = 0;i < length;i++){
+            Data_DB_NewsType type = new Data_DB_NewsType();
+            type.setTypeId(i);
+            type.setTypeName(defaultTypes[i]);
+            types.add(type);
+        }
+        return types;
+    }
+
+    /**
+     * 获取新闻列表
+     * @param newsType 新闻类型
+     */
+    public void getNews(final int newsType){
         L.i(TAG, "getNews");
         mExecutorService.submit(new Runnable() {
             @Override
@@ -59,6 +86,8 @@ public class NewsPresenter {
                     e.printStackTrace();
                 }
                 NewsEvent event = new NewsEvent();
+                event.setAction(NewsEvent.ACTION_REFRESH_COMPLETE);
+                event.setNewsType(newsType);
                 event.setNewsList(newsList);
                 EventBus.getDefault().post(event);
             }
