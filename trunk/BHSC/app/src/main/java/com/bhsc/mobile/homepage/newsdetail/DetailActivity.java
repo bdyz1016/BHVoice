@@ -92,8 +92,8 @@ public class DetailActivity extends Activity {
         mViews.activity_newsdetail_news_list.setFocusable(false);
         mViews.activity_newsdetail_discuss_list.setAdapter(mHotDiscussAdapter);
         mViews.activity_newsdetail_discuss_list.setFocusable(false);
-        NewsPresenter.getInstance().getRelatedNews();
-        NewsPresenter.getInstance().getHotDiscuss();
+        NewsPresenter.getInstance(this).getRelatedNews();
+        NewsPresenter.getInstance(this).getHotDiscuss();
     }
 
     private void goBack(){
@@ -101,15 +101,15 @@ public class DetailActivity extends Activity {
     }
 
     private void support(){
-        NewsPresenter.getInstance().newsSupport();
+        NewsPresenter.getInstance(this).newsSupport();
     }
 
     private void opposition(){
-        NewsPresenter.getInstance().newsOpp();
+        NewsPresenter.getInstance(this).newsOpp();
     }
 
     private void collect(){
-        NewsPresenter.getInstance().newsCollect();
+        NewsPresenter.getInstance(this).newsCollect();
     }
 
     private void discuss(){
@@ -233,7 +233,7 @@ public class DetailActivity extends Activity {
                     discuss.setToUserStatus(true);
                 }
                 discuss.setCreateTime(Method.getTS());
-                NewsPresenter.getInstance().discussPushlish(discuss);
+                NewsPresenter.getInstance(DetailActivity.this).discussPushlish(discuss);
                 mPopupWindow.dismiss();
             }
         });

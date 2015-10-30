@@ -13,8 +13,12 @@ import com.android.pc.ioc.view.listener.OnClick;
 import com.bhsc.mobile.R;
 import com.bhsc.mobile.ThirdParty.TencentQQ;
 import com.bhsc.mobile.ThirdParty.Util;
+import com.bhsc.mobile.ThirdParty.WeChatShare;
 import com.bhsc.mobile.utils.L;
 import com.tencent.connect.UserInfo;
+import com.tencent.mm.sdk.modelmsg.SendAuth;
+import com.tencent.mm.sdk.openapi.IWXAPI;
+import com.tencent.mm.sdk.openapi.WXAPIFactory;
 import com.tencent.tauth.IUiListener;
 import com.tencent.tauth.Tencent;
 import com.tencent.tauth.UiError;
@@ -36,18 +40,35 @@ public class LoginAndRegisterActivity extends Activity {
         Button activity_btn_register;
         @InjectBinder(method = "loginByQQ", listeners = {OnClick.class})
         ImageView login_by_qq;
+        @InjectBinder(method = "loginByWechat", listeners = {OnClick.class})
+        ImageView login_by_wechat;
     }
     @InjectAll
     private Views mVies;
 
     private Tencent mTencent;
+    private IWXAPI mIWXAPI;
 
     private void login(){
         startActivity(new Intent(this, LoginActivity.class));
+        finish();
     }
 
     private void register(){
         startActivity(new Intent(this, RegisterActivity.class));
+        finish();
+    }
+
+    private void loginByWechat(){
+        L.i(TAG, "loginByWechat");
+        if(mIWXAPI == null){
+            mIWXAPI =  WXAPIFactory.createWXAPI(this, WeChatShare.AppID, true);
+            mIWXAPI.registerApp(WeChatShare.AppID);
+        }
+        final SendAuth.Req req = new SendAuth.Req();
+        req.scope = "post_timeline";
+        req.state = "bhsc";
+        mIWXAPI.sendReq(req);
     }
 
     private void loginByQQ(){
@@ -59,6 +80,7 @@ public class LoginAndRegisterActivity extends Activity {
         } else {
             mTencent.logout(LoginAndRegisterActivity.this);
         }
+        finish();
     }
 
     IUiListener loginListener = new BaseUiListener() {

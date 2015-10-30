@@ -33,12 +33,13 @@ import com.bhsc.mobile.R;
 import com.bhsc.mobile.common.ImageBrowserActivity;
 import com.bhsc.mobile.datalcass.Data_DB_User;
 import com.bhsc.mobile.main.BHApplication;
-import com.bhsc.mobile.main.MainActivity;
-import com.bhsc.mobile.main.event.MainFrameEvent;
 import com.bhsc.mobile.manager.UserManager;
 import com.bhsc.mobile.media.ImageUtil;
+import com.bhsc.mobile.userpages.event.UserEvent;
 import com.bhsc.mobile.utils.L;
 import com.bhsc.mobile.utils.Method;
+import com.bhsc.mobile.view.dialog.EditNicknameDialog;
+import com.bhsc.mobile.view.dialog.EditStatusDialog;
 import com.bhsc.mobile.view.meg7.widget.RectangleImageView;
 
 import java.io.IOException;
@@ -65,6 +66,10 @@ public class UserInfoActivity extends Activity {
         View activty_userinfo_password_change;
         @InjectBinder(method = "logout" ,listeners = {OnClick.class})
         Button activity_userinfo_logout;
+        @InjectBinder(method = "editNickname", listeners = {OnClick.class})
+        View activity_userinfo_nickname_edit;
+        @InjectBinder(method = "editStatus", listeners = {OnClick.class})
+        View activity_userinfo_status_edit;
         TextView activity_userinfo_nickname;
         TextView activity_userinfo_status;
         @InjectBinder(method = "bigImage", listeners = {OnClick.class})
@@ -76,17 +81,20 @@ public class UserInfoActivity extends Activity {
 
     private PopupWindow mPopupWindow;
 
-    private Data_DB_User mCurrentUser;
+    private EditNicknameDialog mEditNicknameDialog;
+    private EditStatusDialog mEditStatusDialog;
+
+    private Data_DB_User mCurrentUser = new Data_DB_User();
     @InjectInit
     private void init(){
-        mCurrentUser = UserManager.getInstance().getCurrentUser();
-        if(!TextUtils.isEmpty(mCurrentUser.getNickName())) {
-            mViews.activity_userinfo_nickname.setText(mCurrentUser.getNickName());
-        }
-        if(!TextUtils.isEmpty(mCurrentUser.getStatus())) {
-            mViews.activity_userinfo_status.setText(mCurrentUser.getStatus());
-        }
+        UserPresenter.getInstance(this).initUserData();
+        EventBus.getDefault().register(this);
+    }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        EventBus.getDefault().unregister(this);
     }
 
     @Override
@@ -195,17 +203,45 @@ public class UserInfoActivity extends Activity {
     }
 
     private void complete() {
-        finish();
+        UserPresenter.getInstance(this).saveUserInfo(mCurrentUser);
     }
 
     private void goBack() {
         finish();
     }
 
+    private void editNickname(){
+        if(mEditNicknameDialog != null && mEditNicknameDialog.isShowing()){
+            mEditNicknameDialog.dismiss();
+        }
+        mEditNicknameDialog = new EditNicknameDialog(this);
+        mEditNicknameDialog.setOnPositiveButtonClickListener(new EditNicknameDialog.OnPositiveButtonClickListener() {
+            @Override
+            public void onConfirm(String nickname) {
+                mViews.activity_userinfo_nickname.setText(nickname);
+                mCurrentUser.setNickName(nickname);
+            }
+        });
+        mEditNicknameDialog.show();
+    }
+
+    private void editStatus(){
+        if(mEditStatusDialog != null && mEditStatusDialog.isShowing()){
+            mEditStatusDialog.dismiss();
+        }
+        mEditStatusDialog = new EditStatusDialog(this);
+        mEditStatusDialog.setOnPositiveButtonClickListener(new EditStatusDialog.OnPositiveButtonClickListener() {
+            @Override
+            public void onConfirm(String status) {
+                mViews.activity_userinfo_status.setText(status);
+                mCurrentUser.setStatus(status);
+            }
+        });
+        mEditStatusDialog.show();
+    }
+
     private void logout(){
-        UserManager.getInstance().setIsLogined(false);
-        EventBus.getDefault().post(new MainFrameEvent(MainFrameEvent.ACTION_LOGOUT));
-        finish();
+        UserPresenter.getInstance(this).deleteUserInfo();
     }
 
     private void changePassword(){
@@ -365,5 +401,18 @@ public class UserInfoActivity extends Activity {
         intent.putExtra(ImageBrowserActivity.INTENT_PATH, path);
         intent.setClass(UserInfoActivity.this, ImageBrowserActivity.class);
         startActivity(intent);
+    }
+
+    public void onEventMainThread(UserEvent event){
+        if(event.getAction() == UserEvent.ACTION_UPDATE_USERINFO_SUCCESS){
+            finish();
+        } else if(event.getAction() == UserEvent.ACTION_DELETE_USERINFO_COMPLETE){
+            finish();
+        } else if(event.getAction() == UserEvent.ACTION_GET_USERINFO){
+            mCurrentUser = (Data_DB_User) event.getExtra();
+            mViews.activity_userinfo_nickname.setText(mCurrentUser.getNickName());
+            mViews.activity_userinfo_status.setText(mCurrentUser.getStatus());
+//            ImageUtil.getInstance().loadBitmap(mCurrentUser.getPhotoPath(), mViews.activity_userinfo_photo, mViews.activity_userinfo_photo.getWidth(), mViews.activity_userinfo_photo.getHeight());
+        }
     }
 }

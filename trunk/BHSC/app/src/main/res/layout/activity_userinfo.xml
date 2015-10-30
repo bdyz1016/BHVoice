@@ -101,6 +101,7 @@
                 android:layout_width="66dp"
                 android:layout_height="66dp"
                 android:layout_centerVertical="true"
+                android:layout_marginRight="10dp"
                 android:layout_toLeftOf="@+id/activity_userinfo_next1"
                 android:scaleType="centerCrop"
                 android:src="@mipmap/icon_default_photo"
@@ -115,10 +116,12 @@
             />
 
         <RelativeLayout
+            android:id="@+id/activity_userinfo_nickname_edit"
             android:layout_width="wrap_content"
             android:layout_height="46dp">
 
             <TextView
+                android:id="@+id/activity_userinfo_nickname_label"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
@@ -132,13 +135,23 @@
                 android:layout_centerVertical="true"
                 android:src="@mipmap/icon_next"/>
 
-            <TextView
-                android:id="@+id/activity_userinfo_nickname"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="10dp"
                 android:layout_toLeftOf="@+id/activity_userinfo_next2"
-                android:gravity="center_vertical"
-                android:text="@string/nickname"/>
+                android:layout_toRightOf="@+id/activity_userinfo_nickname_label">
+
+                <TextView
+                    android:id="@+id/activity_userinfo_nickname"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:gravity="center_vertical|left"
+                    android:text="@string/nickname"/>
+            </RelativeLayout>
         </RelativeLayout>
 
         <!--分隔线-->
@@ -149,13 +162,16 @@
             />
 
         <RelativeLayout
+            android:id="@+id/activity_userinfo_status_edit"
             android:layout_width="wrap_content"
-            android:layout_height="46dp">
+            android:layout_height="wrap_content">
 
             <TextView
+                android:id="@+id/activity_userinfo_status_label"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="46dp"
                 android:layout_centerVertical="true"
+                android:gravity="center_vertical"
                 android:text="@string/status"/>
 
             <ImageView
@@ -166,13 +182,23 @@
                 android:layout_centerVertical="true"
                 android:src="@mipmap/icon_next"/>
 
-            <TextView
-                android:id="@+id/activity_userinfo_status"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="10dp"
                 android:layout_toLeftOf="@+id/activity_userinfo_next3"
-                android:gravity="center_vertical"
-                android:text="@string/status"/>
+                android:layout_toRightOf="@+id/activity_userinfo_status_label">
+
+                <TextView
+                    android:id="@+id/activity_userinfo_status"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:gravity="center_vertical|left"
+                    android:text="@string/status"/>
+            </RelativeLayout>
         </RelativeLayout>
 
         <!--分隔线-->
@@ -214,8 +240,8 @@
         android:id="@+id/activity_userinfo_logout"
         android:layout_width="330dp"
         android:layout_height="36dp"
-        android:layout_marginTop="15dp"
         android:layout_gravity="center_horizontal"
+        android:layout_marginTop="15dp"
         android:background="@drawable/btn_logout_normal"
         android:gravity="center"
         android:text="@string/logout"

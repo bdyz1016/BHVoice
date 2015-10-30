@@ -22,12 +22,16 @@ public class Data_DB_User extends BaseClass{
     private String Status;
     private String NickName;
     private String PhotoPath;
+    private long LastChangeTime;
     /**
      * 性别  0：不确定，1：男 ，2：女
      */
     private int Gender;
 
+    private String id = "";
+
     public Data_DB_User(){
+        super();
         this.UserName = "";
         this.Password = "";
         this.Status = "";
@@ -81,5 +85,21 @@ public class Data_DB_User extends BaseClass{
 
     public void setGender(int gender) {
         Gender = gender;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public long getLastChangeTime() {
+        return LastChangeTime;
+    }
+
+    public void setLastChangeTime(long lastChangeTime) {
+        LastChangeTime = lastChangeTime;
     }
 }

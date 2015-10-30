@@ -2,10 +2,15 @@ package com.bhsc.mobile.main;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
 
 import com.bhsc.mobile.R;
+import com.bhsc.mobile.database.Constants_DB;
+import com.bhsc.mobile.database.DataBaseTools;
+import com.bhsc.mobile.datalcass.Data_DB_User;
+import com.bhsc.mobile.manager.UserManager;
 
 /**
  * Created by lynn on 15-10-8.
@@ -32,6 +37,7 @@ public class WelcomeActivity extends Activity {
         this.getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
         BHApplication.screenWidth = displayMetrics.widthPixels;
         BHApplication.screenHeight = displayMetrics.heightPixels;
+        UserManager.getInstance(this).getCurrentUser();
     }
 
     private Runnable AsyncInitialization = new Runnable() {

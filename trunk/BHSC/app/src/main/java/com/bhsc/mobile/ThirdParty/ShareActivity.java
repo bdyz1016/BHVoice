@@ -67,7 +67,7 @@ public class ShareActivity extends Activity implements IUiListener {
 
     @InjectInit
     private void init() {
-        api = WXAPIFactory.createWXAPI(this, BHApplication.AppID, true);
+        api = WXAPIFactory.createWXAPI(this, WeChatShare.AppID, true);
         mTencentQQ = TencentQQ.getInstance(this);
     }
 

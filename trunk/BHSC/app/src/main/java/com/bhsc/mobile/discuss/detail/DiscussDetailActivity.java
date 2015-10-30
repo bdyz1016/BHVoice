@@ -178,7 +178,7 @@ public class DiscussDetailActivity extends Activity {
                     discuss.setToUserStatus(true);
                 }
                 discuss.setCreateTime(Method.getTS());
-                NewsPresenter.getInstance().discussPushlish(discuss);
+                NewsPresenter.getInstance(DiscussDetailActivity.this).discussPushlish(discuss);
                 mPopupWindow.dismiss();
             }
         });

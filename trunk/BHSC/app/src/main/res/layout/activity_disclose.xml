@@ -64,10 +64,14 @@
         <EditText
             android:id="@+id/activity_disclose_edit_title"
             android:layout_width="match_parent"
-            android:layout_height="45dp"
+            android:layout_height="wrap_content"
             android:background="#00000000"
             android:hint="标题（可选，20字以内）"
             android:maxLength="20"
+            android:singleLine="false"
+            android:minHeight="45dp"
+            android:inputType="text"
+            android:imeOptions="actionNext"
             android:textColorHint="@color/hint_text_color"
             />
         <!-- divider-->
@@ -80,12 +84,13 @@
         <EditText
             android:id="@+id/activity_disclose_edit_content"
             android:layout_width="match_parent"
-            android:layout_height="130dp"
+            android:layout_height="wrap_content"
             android:layout_below="@+id/activity_disclose_edit_title"
             android:layout_marginTop="16dp"
             android:background="@color/white"
             android:gravity="left|top"
             android:maxLength="200"
+            android:minHeight="130dp"
             android:hint="@string/disclose_hint"
             android:padding="2dp"
             android:singleLine="false"

@@ -107,13 +107,6 @@ public class DiscloseActivity extends Activity {
     private void init() {
         mDisclosePresenter = DisclosePresenter.getInstance(this);
 
-        views.activity_disclose_edit_title.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-            @Override
-            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                return event.getAction() == KeyEvent.KEYCODE_ENTER;
-            }
-        });
-
         mPictures = new ArrayList<>();
         mPictures.add(PictureAdapter.DEFAULT_IMAGE);
         mPictureAdapter = new PictureAdapter(this, R.layout.item_disclose_picture, mPictures);
@@ -139,8 +132,7 @@ public class DiscloseActivity extends Activity {
             disclose.setContent(content);
             disclose.setTitle(title);
             disclose.setCreateTime(Method.getTS());
-            disclose.setUserName(UserManager.getInstance().getCurrentUser().getUserName());
-            disclose.setDataId(Method.createDataId());
+            disclose.setUserName(UserManager.getInstance(this).getCurrentUser().getUserName());
             mDisclosePresenter.publish(disclose, mPictures);
         } else {
             if (mDialog != null && mDialog.isShowing()) {

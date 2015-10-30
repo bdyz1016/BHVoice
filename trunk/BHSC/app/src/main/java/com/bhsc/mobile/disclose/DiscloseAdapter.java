@@ -84,6 +84,8 @@ public class DiscloseAdapter extends BaseAdapter {
             String[] imageArray = disclose.getImagePaths().split(",");
             GridAdapter adapter = new GridAdapter(mContext, R.layout.item_disclose_picture, Arrays.asList(imageArray));
             holder.Gv_Pictures.setAdapter(adapter);
+        } else {
+            holder.Gv_Pictures.setAdapter(null);
         }
         holder.Delete.setOnClickListener(new View.OnClickListener() {
             @Override

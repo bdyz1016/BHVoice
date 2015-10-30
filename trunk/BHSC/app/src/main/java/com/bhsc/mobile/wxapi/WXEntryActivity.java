@@ -5,7 +5,9 @@ import android.os.Bundle;
 import android.widget.TextView;
 
 import com.bhsc.mobile.R;
+import com.bhsc.mobile.ThirdParty.WeChatShare;
 import com.bhsc.mobile.main.BHApplication;
+import com.bhsc.mobile.utils.L;
 import com.tencent.mm.sdk.constants.ConstantsAPI;
 import com.tencent.mm.sdk.modelbase.BaseReq;
 import com.tencent.mm.sdk.modelbase.BaseResp;
@@ -20,6 +22,7 @@ import com.tencent.mm.sdk.openapi.WXAPIFactory;
  * Created by lynn on 15-10-10.
  */
 public class WXEntryActivity extends Activity implements IWXAPIEventHandler {
+    private final String TAG = WXEntryActivity.class.toString();
 
     private IWXAPI api;
 
@@ -33,7 +36,7 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_entry);
         textview = (TextView) findViewById(R.id.activity_entry_text);
-        api = WXAPIFactory.createWXAPI(this, BHApplication.AppID, false);
+        api = WXAPIFactory.createWXAPI(this, WeChatShare.AppID, false);
         api.handleIntent(getIntent(), this);
     }
 
@@ -54,7 +57,7 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler {
 
     @Override
     public void onResp(BaseResp baseResp) {
-
+        L.i(TAG, baseResp.toString());
     }
 
     private void showMsg(ShowMessageFromWX.Req showReq) {

@@ -84,7 +84,7 @@ public class HomeFragment extends Fragment {
     @InjectInit
     private void initView(){
         L.i(TAG,"initView");
-        mNewsTypeList = NewsPresenter.getInstance().getNewsTypes(mContext);
+        mNewsTypeList = NewsPresenter.getInstance(mContext).getNewsTypes(mContext);
         mPagerAdapter = new PagerAdapter(mContext, getChildFragmentManager(), mNewsTypeList);
         views.fragment_home_viewpager.setAdapter(mPagerAdapter);
         views.fragment_home_category.setViewPager(views.fragment_home_viewpager);
@@ -93,7 +93,7 @@ public class HomeFragment extends Fragment {
             public void onTabChanged(int position) {
                 L.i(TAG, "onTabChanged:" + position);
                 mCurrentNewsType = mNewsTypeList.get(position).getTypeId();
-                NewsPresenter.getInstance().getNews(mCurrentNewsType);
+                NewsPresenter.getInstance(mContext).getNews(mCurrentNewsType);
             }
         });
         views.refresh_layout.setOnRefreshListener(mRefreshListener);
@@ -102,7 +102,7 @@ public class HomeFragment extends Fragment {
         /**
          * 加载新闻
          */
-        NewsPresenter.getInstance().getNews(mCurrentNewsType);
+        NewsPresenter.getInstance(mContext).getNews(mCurrentNewsType);
     }
 
     private void search(){
@@ -112,7 +112,7 @@ public class HomeFragment extends Fragment {
     private SwipeRefreshLayout.OnRefreshListener mRefreshListener = new SwipeRefreshLayout.OnRefreshListener(){
         @Override
         public void onRefresh() {
-            NewsPresenter.getInstance().getNews(mCurrentNewsType);
+            NewsPresenter.getInstance(mContext).getNews(mCurrentNewsType);
         }
     };
 

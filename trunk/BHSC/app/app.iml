@@ -94,6 +94,7 @@
     <orderEntry type="library" exported="" name="androidexception" level="project" />
     <orderEntry type="library" exported="" name="appcompat-v7-23.0.1" level="project" />
     <orderEntry type="library" exported="" name="libammsdk" level="project" />
+    <orderEntry type="library" exported="" name="gson-2.2.4" level="project" />
     <orderEntry type="library" exported="" name="mta-sdk-1.6.2" level="project" />
     <orderEntry type="library" exported="" name="LoonAndroid" level="project" />
     <orderEntry type="library" exported="" name="open_sdk_r5276_lite" level="project" />

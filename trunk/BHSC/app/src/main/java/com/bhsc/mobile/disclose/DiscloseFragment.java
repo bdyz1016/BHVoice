@@ -138,7 +138,7 @@ public class DiscloseFragment extends Fragment {
             L.i(TAG, "load disclose");
             mDataList.addAll(event.getDiscloseList());
             mAdapter.notifyDataSetChanged();
-        } else if (event.getAction() == ActionEvent.ACTION_DISCLOSE_REFRESH) {
+        } else if (event.getAction() == ActionEvent.ACTION_DISCLOSE_DELETE_SUCCESS) {
             mDataList.remove(mDeletedPosition);
             mAdapter.notifyDataSetChanged();
         } else if(event.getAction() == ActionEvent.ACTION_ADD_DISCLOSE_FINISH){

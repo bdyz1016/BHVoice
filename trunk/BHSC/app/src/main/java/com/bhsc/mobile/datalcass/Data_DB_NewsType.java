@@ -7,9 +7,12 @@ public class Data_DB_NewsType extends BaseClass {
     private String TypeName;
     private int TypeId;
     public Data_DB_NewsType(){
+        super();
         this.TypeName = "";
         this.TypeId = 0;
     }
+
+    private String id = "";
 
     public String getTypeName() {
         return TypeName;
@@ -25,5 +28,13 @@ public class Data_DB_NewsType extends BaseClass {
 
     public void setTypeId(int typeId) {
         TypeId = typeId;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 }

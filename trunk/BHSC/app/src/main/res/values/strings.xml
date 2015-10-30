@@ -133,4 +133,8 @@
     <string name="reset_password_title">重置密码</string>
     <string name="reset_password_label">新密码:</string>
     <string name="reset_password_repeat_label">确认新密码:</string>
+
+    <string name="edit_nick_name_title">请输入昵称</string>
+    <string name="edit_nick_name_hint">2-20个字，支持中文、英文、数字、"&#8211;"和减号</string>
+    <string name="edit_status_title">请输入个性签名</string>
 </resources>

@@ -54,7 +54,7 @@
                     android:layout_alignParentBottom="true"
                     android:layout_marginLeft="15dp"
                     android:scaleType="centerCrop"
-                    android:src="@mipmap/photo"/>
+                    android:src="@mipmap/icon_default_photo"/>
 
                 <TextView
                     android:id="@+id/fragment_user_name"

@@ -14,6 +14,7 @@ import com.android.pc.ioc.inject.InjectAll;
 import com.android.pc.ioc.inject.InjectInit;
 import com.android.pc.ioc.inject.InjectLayer;
 import com.bhsc.mobile.R;
+import com.bhsc.mobile.ThirdParty.WeChatShare;
 import com.bhsc.mobile.baseclass.BaseActivity;
 import com.bhsc.mobile.disclose.DiscloseFragment;
 import com.bhsc.mobile.homepage.HomeFragment;
@@ -101,11 +102,7 @@ public class MainActivity extends BaseActivity {
                     switchDisclose();
                     break;
                 case 2:
-                    if (UserManager.getInstance().isLogined()) {
-                        switchProfile();
-                    } else {
-                        switchLogin();
-                    }
+                    switchProfile();
                     break;
                 default:
                     break;
@@ -163,20 +160,20 @@ public class MainActivity extends BaseActivity {
         switchView(new UserFragment());
     }
 
-    private void switchLogin() {
-        if (!TextUtils.isEmpty(mCurrentTab) && mCurrentTab.equals(LoginAndRegisterFragment.class.getSimpleName())) {
-            return;
-        }
-        mCurrentTab = LoginAndRegisterFragment.class.getSimpleName();
-        views.Navigation_btn_1_icon.setBackgroundResource(R.mipmap.btn_home_normal);
-        views.Navigation_btn_2_icon.setBackgroundResource(R.mipmap.btn_disclose_normal);
-        views.Navigation_btn_3_icon.setBackgroundResource(R.mipmap.btn_profile_press);
-        switchView(new LoginAndRegisterFragment());
-    }
+//    private void switchLogin() {
+//        if (!TextUtils.isEmpty(mCurrentTab) && mCurrentTab.equals(LoginAndRegisterFragment.class.getSimpleName())) {
+//            return;
+//        }
+//        mCurrentTab = LoginAndRegisterFragment.class.getSimpleName();
+//        views.Navigation_btn_1_icon.setBackgroundResource(R.mipmap.btn_home_normal);
+//        views.Navigation_btn_2_icon.setBackgroundResource(R.mipmap.btn_disclose_normal);
+//        views.Navigation_btn_3_icon.setBackgroundResource(R.mipmap.btn_profile_press);
+//        switchView(new LoginAndRegisterFragment());
+//    }
 
     private void regToWX() {
-        api = WXAPIFactory.createWXAPI(this, BHApplication.AppID, true);
-        api.registerApp(BHApplication.AppID);
+        api = WXAPIFactory.createWXAPI(this, WeChatShare.AppID, true);
+        api.registerApp(WeChatShare.AppID);
     }
 
     public void onEventMainThread(MainFrameEvent event) {

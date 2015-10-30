@@ -28,6 +28,8 @@ import com.bhsc.mobile.R;
 import com.bhsc.mobile.datalcass.Data_DB_User;
 import com.bhsc.mobile.main.event.MainFrameEvent;
 import com.bhsc.mobile.manager.UserManager;
+import com.bhsc.mobile.media.ImageUtil;
+import com.bhsc.mobile.userpages.event.UserEvent;
 import com.bhsc.mobile.utils.L;
 
 import org.w3c.dom.Text;
@@ -38,7 +40,7 @@ import java.util.LinkedHashMap;
  * Created by lynn on 10/14/15.
  */
 @InjectLayer(R.layout.activity_login)
-public class LoginActivity extends Activity implements Validator.ValidationListener{
+public class LoginActivity extends Activity{
     private final String TAG = LoginActivity.class.getSimpleName();
 
     class Views{
@@ -46,9 +48,7 @@ public class LoginActivity extends Activity implements Validator.ValidationListe
         View activity_login_back;
         @InjectBinder(method = "register", listeners = {OnClick.class})
         View activity_login_register;
-        @Email(empty = false, message = "邮箱格式错误", order = 3)
         EditText activity_login_username;
-        @Password(message = "请输入密码", maxLength = 18, minLength = 6,order = 1)
         EditText activity_login_password;
         TextView activity_login_warning;
         @InjectBinder(method = "forgetPassword", listeners = {OnClick.class})
@@ -81,24 +81,7 @@ public class LoginActivity extends Activity implements Validator.ValidationListe
         mCurrentUser.setPassword(password);
         mCurrentUser.setUserName(userName);
 
-//        LinkedHashMap<String, String> params = new LinkedHashMap<>();
-//        params.put("loginId", userName);
-//        params.put("password", password);
-//        FastHttp.ajaxForm("http://120.24.51.153/news/user/login", params, new AjaxCallBack() {
-//            @Override
-//            public boolean stop() {
-//                return false;
-//            }
-//
-//            @Override
-//            public void callBack(ResponseEntity responseEntity) {
-//                L.i(TAG, responseEntity.toString());
-//            }
-//        });
-
-        validator = new Validator(this);
-        validator.setValidationListener(this);
-        validator.validate();
+        UserPresenter.getInstance(this).login(userName, password);
     }
 
     private void forgetPassword(){
@@ -123,18 +106,12 @@ public class LoginActivity extends Activity implements Validator.ValidationListe
         toast.show();
     }
 
-
-    @Override
-    public void onValidationSucceeded() {
-        UserManager.getInstance().setIsLogined(true);
-        EventBus.getDefault().post(new MainFrameEvent(MainFrameEvent.ACTION_LOGINED));
-        finish();
-    }
-
-    @Override
-    public void onValidationFailed(View failedView, Rule<?> failedRule) {
-        String message = failedRule.getFailureMessage();
-        mViews.login_error_1.setText(message);
-        displayLoginFailedDialog();
+    public void onEventMainThread(UserEvent event){
+        if(event.getAction() == UserEvent.ACTION_LOGIN_SUCCESS){
+            L.i(TAG,"login success!");
+            finish();
+        } else if(event.getAction() == UserEvent.ACTION_LOGIN_FAILED){
+            L.i(TAG,"login failed!");
+        }
     }
 }

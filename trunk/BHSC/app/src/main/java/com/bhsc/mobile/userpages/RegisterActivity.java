@@ -62,21 +62,10 @@ public class RegisterActivity extends Activity {
     }
 
     private void done(){
-        LinkedHashMap<String, String> params = new LinkedHashMap<>();
-        params.put("username", mViews.activity_register_email.getText().toString());
-        params.put("password", mViews.activity_register_password.getText().toString());
-        params.put("email", mViews.activity_register_email.getText().toString());
-        FastHttp.ajaxForm("http://120.24.51.153/news/user/register", params, new AjaxCallBack() {
-            @Override
-            public boolean stop() {
-                return false;
-            }
-
-            @Override
-            public void callBack(ResponseEntity responseEntity) {
-                L.i(TAG, responseEntity.toString());
-            }
-        });
+        String email = mViews.activity_register_email.getText().toString();
+        String nickname = mViews.activity_register_nickname.getText().toString();
+        String password = mViews.activity_register_password.getText().toString();
+        UserPresenter.getInstance(this).register(nickname, email, password);
     }
 
     private void goBack(){

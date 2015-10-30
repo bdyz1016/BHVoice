@@ -11,7 +11,8 @@ public class ActionEvent {
     public static final int ACTION_ADD_DISCLOSE_FINISH = 0x1;
     public static final int ACTION_LOAD_DISCLOSE = 0x2;
     public static final int ACTION_DISCLOSE_REFRESH = 0x3;
-    public static final int ACTION_DISCLOSE_DELETE = 0x4;
+    public static final int ACTION_DISCLOSE_DELETE_SUCCESS = 0x4;
+    public static final int ACTION_DISCLOSE_DELETE_FAILED = 0x5;
 
     private int Action;
     private List<Data_DB_Disclose> DiscloseList;

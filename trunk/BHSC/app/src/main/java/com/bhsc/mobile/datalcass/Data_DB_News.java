@@ -11,18 +11,39 @@ public class Data_DB_News extends BaseClass{
     /**
      * 0:新闻，1:广告
      */
-    private int Type;
+    private int isAdv;
     private String Content = "";
-    private String Title = "";
+    private String title = "";
     private String[] Images = null;
     private long PublishTime;
+    private long createUserId;
+    private String createTime;
+    /**
+     * 点赞数量
+     */
+    private int praiseCount;
 
-    public int getType() {
-        return Type;
+    private String id = "";
+
+    private String source = "";
+
+    private int type;
+
+    /**
+     * 评论数量
+     */
+    private int commentCount;
+
+    public Data_DB_News(){
+        super();
     }
 
-    public void setType(int type) {
-        Type = type;
+    public int getIsAdv() {
+        return isAdv;
+    }
+
+    public void setIsAdv(int type) {
+        isAdv = type;
     }
 
     public String getContent() {
@@ -30,7 +51,7 @@ public class Data_DB_News extends BaseClass{
     }
 
     public String getTitle() {
-        return Title;
+        return title;
     }
 
     public String[] getImages() {
@@ -46,7 +67,7 @@ public class Data_DB_News extends BaseClass{
     }
 
     public void setTitle(String title) {
-        Title = title;
+        title = title;
     }
 
     public void setImages(String[] images) {
@@ -55,5 +76,61 @@ public class Data_DB_News extends BaseClass{
 
     public void setPublishTime(long publishTime) {
         PublishTime = publishTime;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public int getCommentCount() {
+        return commentCount;
+    }
+
+    public void setCommentCount(int commentCount) {
+        this.commentCount = commentCount;
+    }
+
+    public int getType() {
+        return type;
+    }
+
+    public void setType(int type) {
+        this.type = type;
+    }
+
+    public String getSource() {
+        return source;
+    }
+
+    public void setSource(String source) {
+        this.source = source;
+    }
+
+    public int getPraiseCount() {
+        return praiseCount;
+    }
+
+    public void setPraiseCount(int praiseCount) {
+        this.praiseCount = praiseCount;
+    }
+
+    public String getCreateTime() {
+        return createTime;
+    }
+
+    public void setCreateTime(String createTime) {
+        this.createTime = createTime;
+    }
+
+    public long getCreateUserId() {
+        return createUserId;
+    }
+
+    public void setCreateUserId(long createUserId) {
+        this.createUserId = createUserId;
     }
 }

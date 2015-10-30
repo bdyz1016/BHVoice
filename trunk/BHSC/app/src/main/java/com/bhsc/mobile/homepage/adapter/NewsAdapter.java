@@ -53,20 +53,20 @@ public class NewsAdapter extends BaseAdapter {
         if(convertView == null){
             convertView = createView(news, parent);
             holder = new ViewHolder();
-            if(news.getType() == Data_DB_News.TYPE_NEWS) {
+            if(news.getIsAdv() == Data_DB_News.TYPE_NEWS) {
                 holder.Tv_NewsTitle = (TextView) convertView.findViewById(R.id.item_news_title);
                 holder.Iv_Image = (ImageView) convertView.findViewById(R.id.item_news_image);
-            } else if(news.getType() == Data_DB_News.TYPE_ADVERTISE){
+            } else if(news.getIsAdv() == Data_DB_News.TYPE_ADVERTISE){
                 holder.Iv_Image = (ImageView) convertView.findViewById(R.id.item_advertise_image);
             }
             convertView.setTag(holder);
         } else {
             holder = (ViewHolder) convertView.getTag();
         }
-        if(news.getType() == Data_DB_News.TYPE_NEWS) {
+        if(news.getIsAdv() == Data_DB_News.TYPE_NEWS) {
             holder.Tv_NewsTitle.setText(news.getTitle());
             getDrawable("", holder.Iv_Image);
-        } else if(news.getType() == Data_DB_News.TYPE_ADVERTISE){
+        } else if(news.getIsAdv() == Data_DB_News.TYPE_ADVERTISE){
             getDrawable("", holder.Iv_Image);
         }
         return convertView;
@@ -75,9 +75,9 @@ public class NewsAdapter extends BaseAdapter {
     @Override
     public int getItemViewType(int position) {
         Data_DB_News news = mNewsList.get(position);
-        if(news.getType() == Data_DB_News.TYPE_NEWS){
+        if(news.getIsAdv() == Data_DB_News.TYPE_NEWS){
             return ITEM_TYPE_NEWS;
-        } else if(news.getType() == Data_DB_News.TYPE_ADVERTISE){
+        } else if(news.getIsAdv() == Data_DB_News.TYPE_ADVERTISE){
             return ITEM_TYPE_ADVERTISE;
         }
         return -1;
@@ -90,9 +90,9 @@ public class NewsAdapter extends BaseAdapter {
 
     private View createView(Data_DB_News news, ViewGroup parent){
         View view = null;
-        if(news.getType() == Data_DB_News.TYPE_NEWS){
+        if(news.getIsAdv() == Data_DB_News.TYPE_NEWS){
             view = mInflater.inflate(R.layout.item_news, parent, false);
-        } else if(news.getType() == Data_DB_News.TYPE_ADVERTISE){
+        } else if(news.getIsAdv() == Data_DB_News.TYPE_ADVERTISE){
             view = mInflater.inflate(R.layout.item_advertise, parent, false);
         }
         return view;

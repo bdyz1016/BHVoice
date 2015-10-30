@@ -11,6 +11,12 @@ public class Data_DB_Discuss extends BaseClass{
      */
     private boolean ToUserStatus = false;
 
+    private String id = "";
+
+    public Data_DB_Discuss(){
+        super();
+    }
+
     public String getContent() {
         return Content;
     }
@@ -33,5 +39,13 @@ public class Data_DB_Discuss extends BaseClass{
 
     public void setToUserStatus(boolean toUserStatus) {
         ToUserStatus = toUserStatus;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 }

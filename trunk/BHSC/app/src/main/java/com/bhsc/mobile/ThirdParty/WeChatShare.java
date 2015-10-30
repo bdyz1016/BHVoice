@@ -4,6 +4,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 
 import com.bhsc.mobile.utils.Util;
+import com.tencent.mm.sdk.modelmsg.SendAuth;
 import com.tencent.mm.sdk.modelmsg.SendMessageToWX;
 import com.tencent.mm.sdk.modelmsg.WXImageObject;
 import com.tencent.mm.sdk.modelmsg.WXMediaMessage;
@@ -14,6 +15,9 @@ import com.tencent.mm.sdk.openapi.IWXAPI;
  * Created by lynn on 15-10-10.
  */
 public class WeChatShare {
+
+    public static final String AppID = "wx1ede16f1495fe99b";
+    public static final String AppSecret = "6b4538854f9dbe9921a68c2b59c474f9";
 
     public static final int THUMB_SIZE = 150;
 
@@ -162,4 +166,5 @@ public class WeChatShare {
     private static String buildTransaction(final String type) {
         return (type == null) ? String.valueOf(System.currentTimeMillis()) : type + System.currentTimeMillis();
     }
+
 }

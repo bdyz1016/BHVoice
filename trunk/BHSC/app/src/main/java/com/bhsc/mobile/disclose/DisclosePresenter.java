@@ -1,22 +1,21 @@
 package com.bhsc.mobile.disclose;
 
 import android.content.Context;
-import android.database.sqlite.SQLiteDatabase;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.net.Uri;
 
-import com.android.pc.ioc.db.sqlite.DbUtils;
-import com.android.pc.ioc.db.sqlite.Selector;
-import com.android.pc.ioc.db.sqlite.WhereBuilder;
 import com.android.pc.ioc.event.EventBus;
+import com.bhsc.mobile.database.Constants_DB;
+import com.bhsc.mobile.database.DataBaseTools;
 import com.bhsc.mobile.datalcass.Data_DB_Disclose;
 import com.bhsc.mobile.disclose.event.ActionEvent;
 import com.bhsc.mobile.media.FileUtil;
 import com.bhsc.mobile.media.ImageUtil;
-import com.bhsc.mobile.utils.Constants_DB;
 import com.bhsc.mobile.utils.Method;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -27,14 +26,8 @@ import java.util.concurrent.Executors;
 public class DisclosePresenter {
 
     private ExecutorService mExecutorService;
-    private DbUtils mDbUtils;
 
-    private DbUtils.DbUpgradeListener mDbUpgradeListener = new DbUtils.DbUpgradeListener() {
-        @Override
-        public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-
-        }
-    };
+    private DataBaseTools mDataBaseTools;
 
     private static DisclosePresenter sDisclosePresenter;
 
@@ -51,7 +44,7 @@ public class DisclosePresenter {
 
     private DisclosePresenter(Context context){
         mExecutorService = Executors.newCachedThreadPool();
-        mDbUtils = DbUtils.create(context, Constants_DB.DB_NAME, Constants_DB.DB_VERSION, mDbUpgradeListener);
+        mDataBaseTools = new DataBaseTools(context);
     }
 
     private final int DEFAULT_QUALITY = 50;
@@ -99,7 +92,7 @@ public class DisclosePresenter {
                     }
                 }
                 disclose.setImagePaths(pathBuilder.toString());
-                mDbUtils.save(disclose);
+                mDataBaseTools.addData(Constants_DB.TABLE_DISCLOSE, disclose);
                 EventBus.getDefault().post(new ActionEvent(ActionEvent.ACTION_ADD_DISCLOSE_FINISH));
             }
         });
@@ -110,8 +103,20 @@ public class DisclosePresenter {
             @Override
             public void run() {
                 ActionEvent event = new ActionEvent(ActionEvent.ACTION_LOAD_DISCLOSE);
-                List<Data_DB_Disclose> list = mDbUtils.findAll(Selector.from(Data_DB_Disclose.class));
-                event.setDiscloseList(list);
+                Cursor cursor = mDataBaseTools.selectData(Constants_DB.TABLE_DISCLOSE, null, null);
+                ArrayList<Data_DB_Disclose> discloses = new ArrayList<Data_DB_Disclose>();
+                if(cursor != null){
+                    for(cursor.moveToFirst();!cursor.isAfterLast();cursor.moveToNext()){
+                        Data_DB_Disclose disclose = new Data_DB_Disclose();
+                        disclose.setImagePaths(cursor.getString(cursor.getColumnIndex(Constants_DB.DISCLOSE_IMAGEPATHS)));
+                        disclose.setUserName(cursor.getString(cursor.getColumnIndex(Constants_DB.DISCLOSE_USERNAME)));
+                        disclose.setContent(cursor.getString(cursor.getColumnIndex(Constants_DB.DISCLOSE_CONTENT)));
+                        disclose.setCreateTime(cursor.getLong(cursor.getColumnIndex(Constants_DB.DISCLOSE_CREATETIME)));
+                        disclose.setTitle(cursor.getString(cursor.getColumnIndex(Constants_DB.DISCLOSE_TITLE)));
+                        discloses.add(disclose);
+                    }
+                }
+                event.setDiscloseList(discloses);
                 EventBus.getDefault().post(event);
             }
         });
@@ -121,12 +126,14 @@ public class DisclosePresenter {
         mExecutorService.submit(new Runnable() {
             @Override
             public void run() {
-                mDbUtils.delete(Data_DB_Disclose.class, WhereBuilder.b("DataId", " = " , disclose.getDataId()));
-                ActionEvent event = new ActionEvent(ActionEvent.ACTION_DISCLOSE_REFRESH);
-                List<Data_DB_Disclose> list = mDbUtils.findAll(Selector.from(Data_DB_Disclose.class));
-                event.setDiscloseList(list);
-                event.setExtra(disclose);
-                EventBus.getDefault().post(event);
+                String conditionStr = Constants_DB.DISCLOSE_DATAID + " = '" + disclose.getId() + "'";
+                if(mDataBaseTools.deleteData(Constants_DB.TABLE_DISCLOSE, conditionStr)){
+                    ActionEvent event = new ActionEvent(ActionEvent.ACTION_DISCLOSE_DELETE_SUCCESS);
+                    EventBus.getDefault().post(event);
+                } else {
+                    ActionEvent event = new ActionEvent(ActionEvent.ACTION_DISCLOSE_DELETE_FAILED);
+                    EventBus.getDefault().post(event);
+                }
             }
         });
     }
