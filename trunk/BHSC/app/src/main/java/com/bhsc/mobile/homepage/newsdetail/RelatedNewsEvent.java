@@ -1,6 +1,6 @@
 package com.bhsc.mobile.homepage.newsdetail;
 
-import com.bhsc.mobile.datalcass.Data_DB_News;
+import com.bhsc.mobile.dataclass.Data_DB_News;
 
 import java.util.List;
 

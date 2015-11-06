@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:radiobutton="http://schemas.android.com/apk/res-auto"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:background="@color/background_color">
@@ -49,8 +50,15 @@
         android:paddingLeft="@dimen/activity_horizontal_margin"
         android:paddingRight="@dimen/activity_horizontal_margin"
         >
+        <TextView
+            android:id="@+id/activity_register_warning"
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:gravity="center"
+            android:textSize="11sp"
+            android:textColor="@color/warning_text"
+            />
         <LinearLayout
-            android:layout_marginTop="40dp"
             android:layout_width="match_parent"
             android:layout_height="160dp"
             android:background="@drawable/background_input_user"
@@ -70,29 +78,6 @@
                     android:text="@string/register_email"/>
                 <EditText
                     android:id="@+id/activity_register_email"
-                    style="@style/login_edittext"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:background="@null"/>
-            </LinearLayout>
-            <!-- divider-->
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="@color/divider"/>
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:orientation="horizontal"
-                >
-                <TextView
-                    style="@style/register_label"
-                    android:layout_width="80dp"
-                    android:layout_height="match_parent"
-                    android:text="@string/register_nickname"/>
-                <EditText
-                    android:id="@+id/activity_register_nickname"
                     style="@style/login_edittext"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
@@ -149,11 +134,13 @@
             android:layout_width="wrap_content"
             android:layout_height="43dp"
             android:orientation="horizontal">
-            <ImageView
+            <com.bhsc.mobile.view.BHRatioButton
+                android:id="@+id/login_agreement"
                 android:layout_gravity="center_vertical"
                 android:layout_width="13dp"
                 android:layout_height="13dp"
-                android:background="@mipmap/radio_btn_nor"
+                radiobutton:normalDrawable="@mipmap/radio_btn_nor"
+                radiobutton:selectDrawable="@mipmap/radio_btn_sel"
                 />
             <TextView
                 android:id="@+id/activity_register_agreement"

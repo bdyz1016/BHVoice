@@ -8,6 +8,7 @@
     <style name="ApplicationTheme" parent="android:Theme.DeviceDefault.Light">
         <item name="android:windowNoTitle">true</item>
         <item name="android:configChanges">screenSize|orientation</item>
+        <item name="android:screenOrientation">portrait</item>
     </style>
 
     <style name="pop_anim_style">

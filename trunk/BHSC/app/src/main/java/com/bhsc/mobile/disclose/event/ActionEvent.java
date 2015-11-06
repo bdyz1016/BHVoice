@@ -1,6 +1,6 @@
 package com.bhsc.mobile.disclose.event;
 
-import com.bhsc.mobile.datalcass.Data_DB_Disclose;
+import com.bhsc.mobile.dataclass.Data_DB_Disclose;
 
 import java.util.List;
 
@@ -13,6 +13,8 @@ public class ActionEvent {
     public static final int ACTION_DISCLOSE_REFRESH = 0x3;
     public static final int ACTION_DISCLOSE_DELETE_SUCCESS = 0x4;
     public static final int ACTION_DISCLOSE_DELETE_FAILED = 0x5;
+    public static final int ACTION_PRAISE_SUCCESS = 0x6;
+    public static final int ACTION_PRAISE_FAILED = 0x7;
 
     private int Action;
     private List<Data_DB_Disclose> DiscloseList;

@@ -20,16 +20,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.GridView;
-import android.widget.LinearLayout;
-import android.widget.ListAdapter;
 import android.widget.PopupWindow;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import com.android.pc.ioc.event.EventBus;
 import com.android.pc.ioc.inject.InjectAll;
@@ -37,22 +34,17 @@ import com.android.pc.ioc.inject.InjectBinder;
 import com.android.pc.ioc.inject.InjectInit;
 import com.android.pc.ioc.inject.InjectLayer;
 import com.android.pc.ioc.view.listener.OnClick;
-import com.android.pc.ioc.view.listener.OnItemClick;
 import com.bhsc.mobile.R;
 import com.bhsc.mobile.common.ImageBrowserActivity;
-import com.bhsc.mobile.datalcass.Data_DB_Disclose;
+import com.bhsc.mobile.dataclass.Data_DB_Disclose;
 import com.bhsc.mobile.disclose.event.ActionEvent;
-import com.bhsc.mobile.main.BHApplication;
 import com.bhsc.mobile.manager.UserManager;
 import com.bhsc.mobile.media.ImageUtil;
 import com.bhsc.mobile.utils.L;
 import com.bhsc.mobile.utils.Method;
 import com.bhsc.mobile.view.dialog.DefaultDialog;
 
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.LinkedList;
 import java.util.List;
 
 
@@ -61,6 +53,8 @@ import java.util.List;
  */
 @InjectLayer(R.layout.activity_disclose)
 public class DiscloseActivity extends Activity {
+    private final String TAG = DiscloseActivity.class.getSimpleName();
+
     public static final int PHOTO_CHOOSE_WITH_DATA = 0x10;
     public static final int PHOTO_MAKE_WITH_DATA = 0x11;
     public static final int PHOTO_CUT = 0x12;
@@ -90,6 +84,8 @@ public class DiscloseActivity extends Activity {
 
     private DefaultDialog mDialog;
 
+    private int mPictureCount;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -102,6 +98,17 @@ public class DiscloseActivity extends Activity {
         EventBus.getDefault().unregister(this);
     }
 
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if(keyCode == KeyEvent.KEYCODE_BACK){
+            if(mPictureAdapter.isEditable()){
+                L.i(TAG, "Picture is Editable");
+                mPictureAdapter.setEdit(PictureAdapter.UN_EDITABLE);
+                return true;
+            }
+        }
+        return super.onKeyDown(keyCode, event);
+    }
 
     @InjectInit
     private void init() {
@@ -114,6 +121,7 @@ public class DiscloseActivity extends Activity {
 
         views.activity_disclose_edit_images.setAdapter(mPictureAdapter);
         views.activity_disclose_edit_images.setOnItemClickListener(mItemClickListener);
+        views.activity_disclose_edit_images.setOnItemLongClickListener(mItemLongClickListener);
     }
 
     private void menu() {
@@ -126,13 +134,15 @@ public class DiscloseActivity extends Activity {
     private void confirm() {
         String title = views.activity_disclose_edit_title.getText().toString();
         String content = views.activity_disclose_edit_content.getText().toString();
-        mPictures.remove(mPictures.size() - 1);//删除添加图片按钮
+        if(mPictureCount < Data_DB_Disclose.IMAGE_MAX_COUNT) {
+            mPictures.remove(mPictures.size() - 1);//删除添加图片按钮
+        }
         if (!TextUtils.isEmpty(title) && !TextUtils.isEmpty(content)) {
             Data_DB_Disclose disclose = new Data_DB_Disclose();
             disclose.setContent(content);
             disclose.setTitle(title);
             disclose.setCreateTime(Method.getTS());
-            disclose.setUserName(UserManager.getInstance(this).getCurrentUser().getUserName());
+            disclose.setUserName(UserManager.getInstance(this).getCurrentUser().getUsername());
             mDisclosePresenter.publish(disclose, mPictures);
         } else {
             if (mDialog != null && mDialog.isShowing()) {
@@ -346,6 +356,7 @@ public class DiscloseActivity extends Activity {
         if (TextUtils.isEmpty(path)) {
             return;
         }
+        mPictureCount++;
         int length = mPictures.size();
         int position = length > 0 ? length - 1 : 0;
         mPictures.add(position, path);
@@ -367,6 +378,10 @@ public class DiscloseActivity extends Activity {
             String imagePath = mPictures.get(position);
             if (PictureAdapter.DEFAULT_IMAGE.equals(imagePath)) {
                 showDialag();
+            } else if(mPictureAdapter.getEditPostion() == position){
+                mPictures.remove(position);
+                mPictureAdapter.setEdit(PictureAdapter.UN_EDITABLE);
+                mPictureAdapter.notifyDataSetChanged();
             } else {
                 Intent intent = new Intent();
                 intent.putExtra(ImageBrowserActivity.INTENT_PATH, mPictures.get(position));
@@ -375,6 +390,26 @@ public class DiscloseActivity extends Activity {
             }
         }
     };
+
+    private AdapterView.OnItemLongClickListener mItemLongClickListener = new AdapterView.OnItemLongClickListener() {
+        @Override
+        public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+            L.i(TAG, "onItemLongClick");
+            String imagePath = mPictures.get(position);
+            if (!PictureAdapter.DEFAULT_IMAGE.equals(imagePath)) {
+                mPictureAdapter.setEdit(position);
+                shake(view);
+                return true;
+            }
+            return false;
+        }
+    };
+
+    private void shake(View v){
+        v.clearAnimation();
+        Animation shake = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.shake);
+        v.startAnimation(shake);
+    }
 
     public void onEventMainThread(ActionEvent event) {
         if (event.getAction() == ActionEvent.ACTION_ADD_DISCLOSE_FINISH) {

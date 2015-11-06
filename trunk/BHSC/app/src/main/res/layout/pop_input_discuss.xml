@@ -18,6 +18,7 @@
         android:paddingRight="3dp"
         android:paddingTop="1dp"
         android:textColor="@color/input_text_color"
+        android:imeOptions="actionDone"
         android:textSize="12sp"/>
     <RelativeLayout
         android:layout_width="match_parent"

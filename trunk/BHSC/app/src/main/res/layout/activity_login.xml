@@ -70,7 +70,6 @@
             android:id="@+id/activity_login_warning"
             android:layout_width="wrap_content"
             android:layout_height="40dp"
-            android:text="@string/login_error_1"
             android:gravity="center"
             android:textSize="11sp"
             android:textColor="@color/warning_text"
@@ -119,6 +118,7 @@
                 <EditText
                     android:id="@+id/activity_login_password"
                     style="@style/login_edittext"
+                    android:inputType="textPassword"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:background="@null"/>

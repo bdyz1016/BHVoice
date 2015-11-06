@@ -4,16 +4,9 @@ package com.bhsc.mobile.manager;
 import android.content.Context;
 import android.database.Cursor;
 
-import com.android.pc.ioc.internet.AjaxCallBack;
-import com.android.pc.ioc.internet.FastHttp;
-import com.android.pc.ioc.internet.ResponseEntity;
 import com.bhsc.mobile.database.Constants_DB;
 import com.bhsc.mobile.database.DataBaseTools;
-import com.bhsc.mobile.datalcass.Data_DB_User;
-import com.bhsc.mobile.main.BHApplication;
-import com.bhsc.mobile.utils.L;
-
-import java.util.LinkedHashMap;
+import com.bhsc.mobile.dataclass.Data_DB_User;
 
 /**
  * Created by lynn on 10/20/15.
@@ -60,11 +53,14 @@ public class UserManager {
                         mCurrentUser= new Data_DB_User();
                         mCurrentUser.setPassword(cursor.getString(cursor.getColumnIndex(Constants_DB.USER_PASSWORD)));
                         mCurrentUser.setNickName(cursor.getString(cursor.getColumnIndex(Constants_DB.USER_NICKNAME)));
-                        mCurrentUser.setUserName(cursor.getString(cursor.getColumnIndex(Constants_DB.USER_USERNAME)));
+                        mCurrentUser.setUsername(cursor.getString(cursor.getColumnIndex(Constants_DB.USER_USERNAME)));
                         mCurrentUser.setStatus(cursor.getString(cursor.getColumnIndex(Constants_DB.USER_STATUS)));
-                        mCurrentUser.setPhotoPath(cursor.getString(cursor.getColumnIndex(Constants_DB.USER_PHOTOPATH)));
+                        mCurrentUser.setHeadurl(cursor.getString(cursor.getColumnIndex(Constants_DB.USER_PHOTOPATH)));
                         mCurrentUser.setLastChangeTime(cursor.getLong(cursor.getColumnIndex(Constants_DB.USER_LASTCHANGETIME)));
+                        mCurrentUser.setEmail(cursor.getString(cursor.getColumnIndex(Constants_DB.USER_EMAIL)));
+                        mCurrentUser.setUserId(cursor.getString(cursor.getColumnIndex(Constants_DB.USER_USERID)));
                         this.isLogined = true;
+                        cursor.close();
                     }
                 }
             }
@@ -72,31 +68,29 @@ public class UserManager {
         return mCurrentUser;
     }
 
+    public synchronized boolean updateCurrentUser(Data_DB_User user){
+        boolean result = false;
+        String conditionStr = Constants_DB.USER_USERNAME + " = '" + user.getUsername() + "'";
+        String valueStr = Constants_DB.USER_NICKNAME + " = '" + user.getNickName() + "',"
+                + Constants_DB.USER_LASTCHANGETIME + " = " + user.getLastChangeTime() + ","
+                + Constants_DB.USER_STATUS + " = '" + user.getStatus() + "',"
+                + Constants_DB.USER_PHOTOPATH + " = '" + user.getHeadurl() + "'";
+        result = mDataBaseTools.updateData(Constants_DB.TABLE_USER, conditionStr, valueStr);
+        if(result){
+            getCurrentUser();
+        }
+        return result;
+    }
+
     public void setCurrentUser(Data_DB_User currentUser) {
         this.mCurrentUser = currentUser;
     }
 
-    public boolean login(String username, String password){
-        LinkedHashMap<String, String> params = new LinkedHashMap<>();
-        params.put("loginId", username);
-        params.put("password", password);
-        FastHttp.ajaxForm(BHApplication.Address + "/user/login", params, new AjaxCallBack() {
-            @Override
-            public boolean stop() {
-                return false;
-            }
-
-            @Override
-            public void callBack(ResponseEntity responseEntity) {
-                L.i(TAG, responseEntity.toString());
-            }
-        });
-        Data_DB_User user = new Data_DB_User();
-        user.setUserName(username);
-        user.setPassword(password);
+    public boolean login(Data_DB_User user){
         boolean result = false;
         result = mDataBaseTools.addData(Constants_DB.TABLE_USER, user);
         if(result){
+
             isLogined = true;
         }
         return result;

@@ -9,7 +9,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bhsc.mobile.R;
-import com.bhsc.mobile.datalcass.Data_DB_News;
+import com.bhsc.mobile.dataclass.Data_DB_News;
 import com.bhsc.mobile.homepage.NewsFragment;
 import com.bhsc.mobile.utils.SyncArrayList;
 
@@ -56,6 +56,9 @@ public class NewsAdapter extends BaseAdapter {
             if(news.getIsAdv() == Data_DB_News.TYPE_NEWS) {
                 holder.Tv_NewsTitle = (TextView) convertView.findViewById(R.id.item_news_title);
                 holder.Iv_Image = (ImageView) convertView.findViewById(R.id.item_news_image);
+                holder.Tv_Source = (TextView) convertView.findViewById(R.id.item_news_source);
+                holder.Tv_Discuss = (TextView) convertView.findViewById(R.id.item_news_discuss);
+                holder.Tv_Collect = (TextView) convertView.findViewById(R.id.item_news_collect);
             } else if(news.getIsAdv() == Data_DB_News.TYPE_ADVERTISE){
                 holder.Iv_Image = (ImageView) convertView.findViewById(R.id.item_advertise_image);
             }
@@ -69,6 +72,9 @@ public class NewsAdapter extends BaseAdapter {
         } else if(news.getIsAdv() == Data_DB_News.TYPE_ADVERTISE){
             getDrawable("", holder.Iv_Image);
         }
+        holder.Tv_Source.setText(news.getSource());
+        holder.Tv_Discuss.setText(news.getCommentCount() + "");
+        holder.Tv_Collect.setText(news.getPraiseCount() + "");
         return convertView;
     }
 
@@ -103,7 +109,7 @@ public class NewsAdapter extends BaseAdapter {
     }
 
     private class ViewHolder{
-        private TextView Tv_NewsTitle;
+        private TextView Tv_NewsTitle, Tv_Source, Tv_Discuss, Tv_Collect;
         private ImageView Iv_Image;
     }
 }

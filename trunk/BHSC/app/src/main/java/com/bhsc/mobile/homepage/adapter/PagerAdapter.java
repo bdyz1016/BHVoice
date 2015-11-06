@@ -5,13 +5,10 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 
-import com.bhsc.mobile.R;
-import com.bhsc.mobile.datalcass.Data_DB_NewsType;
+import com.bhsc.mobile.dataclass.Data_DB_NewsType;
 import com.bhsc.mobile.homepage.NewsFragment;
 import com.bhsc.mobile.utils.L;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 /**

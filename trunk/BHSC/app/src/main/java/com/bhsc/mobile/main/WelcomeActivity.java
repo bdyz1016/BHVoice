@@ -2,14 +2,10 @@ package com.bhsc.mobile.main;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.database.Cursor;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
 
 import com.bhsc.mobile.R;
-import com.bhsc.mobile.database.Constants_DB;
-import com.bhsc.mobile.database.DataBaseTools;
-import com.bhsc.mobile.datalcass.Data_DB_User;
 import com.bhsc.mobile.manager.UserManager;
 
 /**

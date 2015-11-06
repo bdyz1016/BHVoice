@@ -39,4 +39,6 @@
 
     <!-- dialog-->
     <color name="dialog_btn_text">#007af5</color>
+    
+    <color name="translucent">#80000000</color>
 </resources>

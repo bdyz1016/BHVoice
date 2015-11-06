@@ -8,7 +8,7 @@ import android.widget.BaseAdapter;
 import android.widget.TextView;
 
 import com.bhsc.mobile.R;
-import com.bhsc.mobile.datalcass.Data_DB_Discuss;
+import com.bhsc.mobile.dataclass.Data_DB_Discuss;
 import com.bhsc.mobile.view.meg7.widget.CustomShapeImageView;
 
 import java.text.SimpleDateFormat;

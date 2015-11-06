@@ -22,7 +22,6 @@ public class SyncArrayList<E> {
     public boolean addAll(Collection<? extends E> arg0){
         boolean result = false;
         mRwLock.writeLock().lock();
-        elements.clear();
         result = elements.addAll(arg0);
         mRwLock.writeLock().unlock();
         return result;
@@ -48,6 +47,12 @@ public class SyncArrayList<E> {
         E e = elements.remove(position);
         mRwLock.writeLock().unlock();
         return e;
+    }
+
+    public void clear(){
+        mRwLock.writeLock().lock();
+        elements.clear();
+        mRwLock.writeLock().unlock();
     }
     
     public int size(){

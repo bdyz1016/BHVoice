@@ -4,27 +4,28 @@ import android.content.Context;
 
 import com.android.pc.ioc.event.EventBus;
 import com.bhsc.mobile.R;
-import com.bhsc.mobile.datalcass.Data_DB_Discuss;
-import com.bhsc.mobile.datalcass.Data_DB_News;
-import com.bhsc.mobile.datalcass.Data_DB_NewsType;
+import com.bhsc.mobile.dataclass.Data_DB_Discuss;
+import com.bhsc.mobile.dataclass.Data_DB_News;
+import com.bhsc.mobile.dataclass.Data_DB_NewsType;
 import com.bhsc.mobile.homepage.event.NewsEvent;
 import com.bhsc.mobile.homepage.newsdetail.CollectEvent;
-import com.bhsc.mobile.homepage.newsdetail.HotDiscussEvent;
+import com.bhsc.mobile.homepage.newsdetail.DiscussEvent;
 import com.bhsc.mobile.homepage.newsdetail.OppEvent;
 import com.bhsc.mobile.homepage.newsdetail.RelatedNewsEvent;
 import com.bhsc.mobile.homepage.newsdetail.SupportEvent;
 import com.bhsc.mobile.main.BHApplication;
+import com.bhsc.mobile.net.DiscussResponse;
 import com.bhsc.mobile.net.NewsResponse;
+import com.bhsc.mobile.net.PraiseResponse;
+import com.bhsc.mobile.net.Response;
 import com.bhsc.mobile.net.httpPost;
 import com.bhsc.mobile.utils.L;
-import com.bhsc.mobile.utils.Method;
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -34,13 +35,15 @@ import java.util.concurrent.Executors;
 public class NewsPresenter {
     private final String TAG = NewsPresenter.class.getSimpleName();
 
+    public static final int LOAD_NEWS_PAGE_SIZE = 20;
+
     private static NewsPresenter sNewsPresenter;
 
     public static NewsPresenter getInstance(Context context) {
-        if(sNewsPresenter == null){
-            synchronized (NewsPresenter.class){
-                if(sNewsPresenter == null){
-                    sNewsPresenter  =new NewsPresenter(context);
+        if (sNewsPresenter == null) {
+            synchronized (NewsPresenter.class) {
+                if (sNewsPresenter == null) {
+                    sNewsPresenter = new NewsPresenter(context);
                 }
             }
         }
@@ -51,11 +54,13 @@ public class NewsPresenter {
     private Gson mGson;
 
     private DownloadControler mDownloadControler;
+    private NewsManager mNewsManager;
 
     private NewsPresenter(Context context) {
         mExecutorService = Executors.newCachedThreadPool();
         mGson = new Gson();
         mDownloadControler = new DownloadControler(context);
+        mNewsManager = new NewsManager(context);
     }
 
     /**
@@ -73,35 +78,34 @@ public class NewsPresenter {
      *
      * @param newsType 新闻类型
      */
-    public void getNews(final int newsType) {
+    public void getNews(final int newsType, final int page) {
         L.i(TAG, "getNews");
         mExecutorService.submit(new Runnable() {
             @Override
             public void run() {
                 LinkedHashMap<String, String> params = new LinkedHashMap<>();
-                int page = mDownloadControler.getPageNumber(newsType);
-                if(newsType == 0){
+                if (newsType == 0) {
                     params.put("isHot", "1");
                     params.put("page", page + "");
                 } else {
-                    params.put("isHot", "1");
-                    params.put("type", "1");
+                    params.put("isHot", "0");
+                    params.put("type", newsType + "");
                     params.put("page", page + "");
                 }
                 try {
                     httpPost httpPost = new httpPost();
                     String back = httpPost.requireClass(BHApplication.Address + "/news/getNews", params, "UTF-8");
-                    NewsResponse newsResponse = mGson.fromJson(back, NewsResponse.class);
-                    if (newsResponse.getCode() == 200) {
-                        if(newsResponse.getList().size() > 0) {
-                            NewsEvent event = new NewsEvent();
-                            event.setAction(NewsEvent.ACTION_REFRESH_COMPLETE);
-                            event.setNewsType(newsType);
-                            event.setNewsList(newsResponse.getList());
-                            EventBus.getDefault().post(event);
-                        } else {
-
-                        }
+                    L.i(TAG, back);
+                    NewsResponse newsResponse = mGson.fromJson(back, new TypeToken<NewsResponse>() {
+                    }.getType());
+                    if (newsResponse.getCode() == Response.SUCESS_CODE) {
+                        List<Data_DB_News> newsList = newsResponse.getList();
+                        mNewsManager.saveNews(newsList);
+                        NewsEvent event = new NewsEvent();
+                        event.setAction(NewsEvent.ACTION_REFRESH_COMPLETE);
+                        event.setNewsType(newsType);
+                        event.setNewsList(newsList);
+                        EventBus.getDefault().post(event);
                     } else { //请求失败
 
                     }
@@ -112,47 +116,6 @@ public class NewsPresenter {
         });
     }
 
-    /**
-     * 刷新新闻
-     * @param newsType
-     */
-    public void refreshNews(final int newsType){
-        L.i(TAG, "refreshNews");
-        mExecutorService.submit(new Runnable() {
-            @Override
-            public void run() {
-                LinkedHashMap<String, String> params = new LinkedHashMap<>();
-                if(newsType == 0){
-                    params.put("isHot", "1");
-                    params.put("page", "2");
-                } else {
-                    params.put("isHot", "1");
-                    params.put("type", "1");
-                    params.put("page", "1");
-                }
-                httpPost httpPost = new httpPost();
-                try {
-                    String back = httpPost.requireClass(BHApplication.Address + "/news/getNews", params, "UTF-8");
-                    NewsResponse newsResponse = mGson.fromJson(back, NewsResponse.class);
-                    if (newsResponse.getCode() == 200) {
-                        if(newsResponse.getList().size() > 0) {
-                            NewsEvent event = new NewsEvent();
-                            event.setAction(NewsEvent.ACTION_REFRESH_COMPLETE);
-                            event.setNewsType(newsType);
-                            event.setNewsList(newsResponse.getList());
-                            EventBus.getDefault().post(event);
-                        } else {
-
-                        }
-                    } else { //请求失败
-
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        });
-    }
 
     /**
      * 相关阅读
@@ -181,48 +144,37 @@ public class NewsPresenter {
         });
     }
 
-    /**
-     * 热门评论
-     */
-    public void getHotDiscuss() {
-        L.i(TAG, "getRelatedNews");
-        mExecutorService.submit(new Runnable() {
-            @Override
-            public void run() {
-                List<Data_DB_Discuss> discusses = new ArrayList<>();
-                for (int i = 0; i < 5; i++) {
-                    Data_DB_Discuss discuss = new Data_DB_Discuss();
-                    discuss.setCreateTime(Method.getTS());
-                    discuss.setContent("打你的年底啊阿森纳的骄傲是南京的哪家啊那经济法");
-                    discusses.add(discuss);
-                }
-                try {
-                    Thread.sleep(2000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                HotDiscussEvent event = new HotDiscussEvent();
-                event.setDiscusses(discusses);
-                EventBus.getDefault().post(event);
-            }
-        });
+    public Data_DB_News getSpecificNews(final String newsId){
+        return mNewsManager.getNews(newsId);
     }
-
-    boolean support = false;
 
     /**
      * 用户对新闻点了赞
      */
-    public void newsSupport() {
-        SupportEvent event = new SupportEvent();
-        if (!support) {
-            support = true;
-            event.setState(SupportEvent.STATE_POSITIVE);
-        } else {
-            support = false;
-            event.setState(SupportEvent.STATE_NEGATIVE);
-        }
-        EventBus.getDefault().post(event);
+    public void newsSupport(final Data_DB_News news, final String userId) {
+        mExecutorService.submit(new Runnable() {
+            @Override
+            public void run() {
+                SupportEvent event = new SupportEvent();
+                httpPost httpPost = new httpPost();
+                LinkedHashMap<String, String> params = new LinkedHashMap<>();
+                params.put("type", news.getType() + "");
+                params.put("userId", userId);
+                params.put("fatherId", news.getId());
+                try {
+                    String response = httpPost.requireClass(BHApplication.Address + "/praise/addPraise", params, "UTF-8");
+                    PraiseResponse praiseResponse = mGson.fromJson(response, PraiseResponse.class);
+                    if (praiseResponse != null && praiseResponse.getCode() == Response.SUCESS_CODE) {
+                        event.setState(SupportEvent.STATE_POSITIVE);
+                    } else {
+                        event.setState(SupportEvent.STATE_NEGATIVE);
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                EventBus.getDefault().post(event);
+            }
+        });
     }
 
     boolean collect = false;
@@ -262,33 +214,95 @@ public class NewsPresenter {
     /**
      * 发表评论
      */
-    public void discussPushlish(Data_DB_Discuss discuss) {
+    public void discussPublish(final Data_DB_Discuss discuss) {
+        mExecutorService.submit(new Runnable() {
+            @Override
+            public void run() {
+                httpPost httpPost = new httpPost();
+                LinkedHashMap<String, String> params = new LinkedHashMap<>();
+                params.put("type", discuss.getType() + "");
+                params.put("userId", discuss.getUserId());
+                params.put("fatherId", discuss.getFatherId());
+                params.put("content", discuss.getContent());
+                try {
+                    String response = httpPost.requireClass(BHApplication.Address + "/comment/addComment", params, "UTF-8");
+                    DiscussResponse discussResponse = mGson.fromJson(response, DiscussResponse.class);
+                    DiscussEvent event = new DiscussEvent();
+                    if (discussResponse != null && discussResponse.getCode() == Response.SUCESS_CODE) {
+                        event.setAction(DiscussEvent.ACTION_PUBLISH_SUCCESS);
+                    } else {
+                        event.setAction(DiscussEvent.ACTION_PUBLISH_FAILED);
+                    }
+                    EventBus.getDefault().post(event);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
     }
 
-    private class DownloadControler{
+    public void getAllDiscuss(final Data_DB_News news){
+        mExecutorService.submit(new Runnable() {
+            @Override
+            public void run() {
+                httpPost httpPost = new httpPost();
+                LinkedHashMap<String, String> params = new LinkedHashMap<>();
+                params.put("type", news.getType() + "");
+                params.put("fatherId", news.getId());
+                try {
+                    String response = httpPost.requireClass(BHApplication.Address + "/comment/findComments", params, "UTF-8");
+                    DiscussResponse discussResponse = mGson.fromJson(response, DiscussResponse.class);
+                    DiscussEvent event = new DiscussEvent();
+                    if (discussResponse != null && discussResponse.getCode() == Response.SUCESS_CODE) {
+                        event.setAction(DiscussEvent.ACTION_GET_ALL_DISCUSS);
+                        event.setExtra(discussResponse.getList());
+                        EventBus.getDefault().post(event);
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+    }
+
+    /**
+     * 热门评论
+     */
+//    public void getHotDiscuss() {
+//        L.i(TAG, "getRelatedNews");
+//        mExecutorService.submit(new Runnable() {
+//            @Override
+//            public void run() {
+//                List<Data_DB_Discuss> discusses = new ArrayList<>();
+//                for (int i = 0; i < 5; i++) {
+//                    Data_DB_Discuss discuss = new Data_DB_Discuss();
+//                    discuss.setCreateTime(Method.getTS());
+//                    discuss.setContent("打你的年底啊阿森纳的骄傲是南京的哪家啊那经济法");
+//                    discusses.add(discuss);
+//                }
+//                try {
+//                    Thread.sleep(2000);
+//                } catch (InterruptedException e) {
+//                    e.printStackTrace();
+//                }
+//                HotDiscussEvent event = new HotDiscussEvent();
+//                event.setDiscusses(discusses);
+//                EventBus.getDefault().post(event);
+//            }
+//        });
+//    }
+
+    private class DownloadControler {
 
         private Context mContext;
-        private Map<Integer, Integer> mPageMap;
 
-        public DownloadControler(Context context){
+        public DownloadControler(Context context) {
             this.mContext = context;
-            this.mPageMap = new HashMap<>();
 
             ArrayList<Data_DB_NewsType> typeList = getNewsTypes();
-            for(Data_DB_NewsType news:typeList){
-                mPageMap.put(news.getTypeId(), 1);
-            }
         }
 
-        public int getPageNumber(int type){
-            return mPageMap.get(type);
-        }
-
-        public void putPageNumber(int type, int page){
-            mPageMap.put(type, page);
-        }
-
-        public ArrayList<Data_DB_NewsType> getNewsTypes(){
+        public ArrayList<Data_DB_NewsType> getNewsTypes() {
             ArrayList<Data_DB_NewsType> types = new ArrayList<>();
             String[] defaultTypes = mContext.getResources().getStringArray(R.array.news_category);
             int length = defaultTypes.length;

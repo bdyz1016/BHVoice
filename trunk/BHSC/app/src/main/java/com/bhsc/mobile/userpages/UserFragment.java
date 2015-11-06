@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.pc.ioc.event.EventBus;
 import com.android.pc.ioc.inject.InjectAll;
@@ -19,15 +20,19 @@ import com.android.pc.ioc.inject.InjectInit;
 import com.android.pc.ioc.view.listener.OnClick;
 import com.android.pc.util.Handler_Inject;
 import com.bhsc.mobile.R;
-import com.bhsc.mobile.datalcass.Data_DB_Discuss;
-import com.bhsc.mobile.datalcass.Data_DB_User;
+import com.bhsc.mobile.accessory.FeedbackActivity;
+import com.bhsc.mobile.accessory.FestivalActivity;
+import com.bhsc.mobile.dataclass.Data_DB_Discuss;
+import com.bhsc.mobile.dataclass.Data_DB_User;
+import com.bhsc.mobile.disclose.DiscloseActivity;
 import com.bhsc.mobile.disclose.views.MyListView;
+import com.bhsc.mobile.discuss.DiscussActivity;
 import com.bhsc.mobile.manager.UserManager;
-import com.bhsc.mobile.media.ImageUtil;
+import com.bhsc.mobile.accessory.NotificationActivity;
+import com.bhsc.mobile.settings.SettingsActivity;
 import com.bhsc.mobile.userpages.event.UserEvent;
 import com.bhsc.mobile.utils.L;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -35,12 +40,6 @@ import java.util.List;
  */
 public class UserFragment extends Fragment{
     private final String TAG = UserFragment.class.getSimpleName();
-
-    private View mContentView;
-    private Context mContext;
-    private DiscussAdapter mAdapter;
-    private List<Data_DB_Discuss> mDiscusses;
-
     @InjectAll
     private Views mViews;
 
@@ -53,9 +52,23 @@ public class UserFragment extends Fragment{
         View fragment_user_versions;
         @InjectBinder(method = "settings", listeners = {OnClick.class})
         View fragment_user_settings;
+        @InjectBinder(method = "notification", listeners = {OnClick.class})
+        View fragment_user_notify;
+        @InjectBinder(method = "activity", listeners = {OnClick.class})
+        View fragment_user_activity;
+        @InjectBinder(method = "disclose", listeners = {OnClick.class})
+        View fragment_user_disclose;
+        @InjectBinder(method = "feedback", listeners = {OnClick.class})
+        View fragment_user_feedback;
         TextView fragment_user_name;
         MyListView fragment_user_discuss_list;
     }
+
+    private View mContentView;
+    private Context mContext;
+    private DiscussAdapter mAdapter;
+    private List<Data_DB_Discuss> mDiscusses;
+    private UserManager mUserManager;
 
     @Override
     public void onAttach(Activity activity) {
@@ -81,6 +94,7 @@ public class UserFragment extends Fragment{
     @InjectInit
     private void initData(){
         UserPresenter.getInstance(mContext).initUserData();
+        mUserManager = UserManager.getInstance(mContext);
     }
 
     private void userInfo(){
@@ -95,24 +109,64 @@ public class UserFragment extends Fragment{
         }
     }
 
-    private void userDiscuss(){}
+    private void userDiscuss(){
+        if(mUserManager.isLogined()){
+            Intent intent = new Intent();
+            intent.setClass(mContext, DiscussActivity.class);
+            startActivity(intent);
+        } else {
+            Toast.makeText(mContext, "请先登录!", Toast.LENGTH_SHORT).show();
+        }
+    }
 
     private void version(){}
 
-    private void settings(){}
+    private void settings(){
+        Intent intent = new Intent();
+        intent.setClass(mContext, SettingsActivity.class);
+        startActivity(intent);
+    }
+
+    private void notification(){
+        Intent intent = new Intent();
+        intent.setClass(mContext, NotificationActivity.class);
+        startActivity(intent);
+    }
+
+    private void activity(){
+        Intent intent = new Intent();
+        intent.setClass(mContext, FestivalActivity.class);
+        startActivity(intent);
+    }
+
+    private void disclose(){
+        if(mUserManager.isLogined()){
+            Intent intent = new Intent();
+            intent.setClass(mContext, DiscloseActivity.class);
+            startActivity(intent);
+        } else {
+            Toast.makeText(mContext, "请先登录!", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void feedback(){
+        Intent intent = new Intent();
+        intent.setClass(mContext, FeedbackActivity.class);
+        startActivity(intent);
+    }
 
     public void onEventMainThread(DiscussEvent event){
-        List<Data_DB_Discuss> discusses = event.getDiscusses();
-        L.i(TAG, "刷新评论列表:" + discusses.size());
-        if(mAdapter == null){
-            mDiscusses = discusses;
-            mAdapter = new DiscussAdapter(mContext, mDiscusses);
-            mViews.fragment_user_discuss_list.setAdapter(mAdapter);
-        } else {
-            mDiscusses.clear();
-            mDiscusses.addAll(discusses);
-            mAdapter.notifyDataSetChanged();
-        }
+//        List<Data_DB_Discuss> discusses = event.getDiscusses();
+//        L.i(TAG, "刷新评论列表:" + discusses.size());
+//        if(mAdapter == null){
+//            mDiscusses = discusses;
+//            mAdapter = new DiscussAdapter(mContext, mDiscusses);
+//            mViews.fragment_user_discuss_list.setAdapter(mAdapter);
+//        } else {
+//            mDiscusses.clear();
+//            mDiscusses.addAll(discusses);
+//            mAdapter.notifyDataSetChanged();
+//        }
     }
     public void onEventMainThread(UserEvent event){
         if(event.getAction() == UserEvent.ACTION_GET_USERINFO){
@@ -121,7 +175,6 @@ public class UserFragment extends Fragment{
                 return;
             }
             mViews.fragment_user_name.setText(user.getNickName());
-//            ImageUtil.getInstance().loadBitmap(user.getPhotoPath(), mViews.fragment_user_photo, mViews.fragment_user_photo.getWidth(), mViews.fragment_user_photo.getHeight());
         }
     }
 }

@@ -1,6 +1,6 @@
 package com.bhsc.mobile.discuss.detail;
 
-import com.bhsc.mobile.datalcass.Data_DB_Discuss;
+import com.bhsc.mobile.dataclass.Data_DB_Discuss;
 
 import java.util.List;
 

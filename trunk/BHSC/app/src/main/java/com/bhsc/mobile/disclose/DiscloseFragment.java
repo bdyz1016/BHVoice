@@ -18,7 +18,8 @@ import com.android.pc.ioc.view.listener.OnClick;
 import com.android.pc.util.Handler_Inject;
 import com.bhsc.mobile.R;
 import com.bhsc.mobile.ThirdParty.ShareActivity;
-import com.bhsc.mobile.datalcass.Data_DB_Disclose;
+import com.bhsc.mobile.dataclass.Data_DB_Disclose;
+import com.bhsc.mobile.disclose.adapter.DiscloseAdapter;
 import com.bhsc.mobile.disclose.event.ActionEvent;
 import com.bhsc.mobile.disclose.views.MyListView;
 import com.bhsc.mobile.utils.L;
@@ -85,7 +86,9 @@ public class DiscloseFragment extends Fragment {
 
     @InjectInit
     private void init() {
+        L.i(TAG, "init");
         mDisclosePresenter = DisclosePresenter.getInstance(mContext);
+        mDataList.clear();
         mAdapter = new DiscloseAdapter(mContext, mDataList, new DiscloseAdapter.OnElementClickListener() {
             @Override
             public void onDelete(final int position) {
@@ -121,6 +124,12 @@ public class DiscloseFragment extends Fragment {
 
             @Override
             public void onSupport(int position) {
+                mDisclosePresenter.support(mDataList.get(position).getId());
+            }
+
+            @Override
+            public void onComment(int position) {
+
             }
         });
         views.fragment_disclose_list.setAdapter(mAdapter);
@@ -129,19 +138,23 @@ public class DiscloseFragment extends Fragment {
 
     private void createDisclose() {
         Intent intent = new Intent();
-        intent.setClass(mContext, DiscloseActivity.class);
+        intent.setClass(mContext, DiscloseListActivity.class);
         mContext.startActivity(intent);
     }
 
     public void onEventMainThread(ActionEvent event) {
         if (event.getAction() == ActionEvent.ACTION_LOAD_DISCLOSE) {
             L.i(TAG, "load disclose");
+            mDataList.clear();
             mDataList.addAll(event.getDiscloseList());
             mAdapter.notifyDataSetChanged();
         } else if (event.getAction() == ActionEvent.ACTION_DISCLOSE_DELETE_SUCCESS) {
             mDataList.remove(mDeletedPosition);
             mAdapter.notifyDataSetChanged();
         } else if(event.getAction() == ActionEvent.ACTION_ADD_DISCLOSE_FINISH){
+            L.i(TAG,"add disclose");
+            mDisclosePresenter.getAllDisclose();
+        } else if(event.getAction() == ActionEvent.ACTION_PRAISE_SUCCESS){
             mDisclosePresenter.getAllDisclose();
         }
     }

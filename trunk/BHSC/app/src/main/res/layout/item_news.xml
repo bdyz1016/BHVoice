@@ -3,6 +3,8 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="@dimen/news_item_height"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
     android:orientation="vertical">
 
     <ImageView
@@ -44,33 +46,40 @@
                 android:layout_gravity="center_vertical"/>
 
             <TextView
+                android:id="@+id/item_news_source"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:text="中新网"
                 />
 
             <ImageView
-                android:layout_width="11dp"
-                android:layout_height="11dp"
+                android:layout_width="15dp"
+                android:layout_height="15dp"
                 android:layout_gravity="center_vertical"
+                android:background="@mipmap/icon_collect_number"
                 android:layout_marginLeft="20dp"/>
 
             <TextView
+                android:id="@+id/item_news_collect"
+                android:layout_marginLeft="5dp"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:text="128"
+                android:text="0"
                 />
 
             <ImageView
-                android:layout_width="11dp"
-                android:layout_height="11dp"
+                android:layout_width="15dp"
+                android:layout_height="15dp"
                 android:layout_gravity="center_vertical"
+                android:background="@mipmap/icon_discuss_number"
                 android:layout_marginLeft="20dp"/>
 
             <TextView
+                android:id="@+id/item_news_discuss"
+                android:layout_marginLeft="5dp"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:text="259"/>
+                android:text="0"/>
         </LinearLayout>
     </LinearLayout>
 </RelativeLayout>

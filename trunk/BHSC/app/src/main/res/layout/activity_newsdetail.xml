@@ -57,14 +57,15 @@
                 android:paddingRight="15dp"
                 >
                 <TextView
+                    android:id="@+id/activity_newsdetail_news_title"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="习近平访美亮点  美工商界充满期待"
                     android:textColor="@color/news_title_color"
                     android:textSize="@dimen/news_detail_title_size"
                     />
 
                 <TextView
+                    android:id="@+id/activity_newsdetail_news_time"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="2015-9-20 10:21"
@@ -78,9 +79,9 @@
                     android:orientation="vertical"
                     >
                     <TextView
+                        android:id="@+id/activity_newsdetail_news_content"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="　　【环球时报驻英国特派记者 黄培昭】自白金汉宫宣布中国国家主席习近平20日将对英国进行国事访问后，这一消息成为眼下英国民众热议和关注的话题。接受《环球时报》记者采访的英国知名人士纷纷表示，热烈欢迎习主席访英，强调中国领导人的访问必将引领英中关系步入一个充满更多生机和活力的“黄金时代”。访英期间，习近平及夫人将下榻白金汉宫。日前，《环球时报》记者在英国外交部官员的带领下探访了这里。"
                         android:textColor="@color/news_content"
                         android:textSize="14sp"/>
                 </LinearLayout>

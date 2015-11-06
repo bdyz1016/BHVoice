@@ -1,13 +1,13 @@
 package com.bhsc.mobile.net;
 
-import com.bhsc.mobile.datalcass.Data_DB_News;
+import com.bhsc.mobile.dataclass.Data_DB_News;
 
 import java.util.List;
 
 /**
- * Created by lynn on 10/28/15.
+ * Created by lynn on 11/2/15.
  */
-public class NewsResponse {
+public class NewsResponse extends Response{
     private int code;
     private List<Data_DB_News> list;
 
@@ -27,3 +27,4 @@ public class NewsResponse {
         this.list = list;
     }
 }
+

@@ -1,7 +1,7 @@
 package com.bhsc.mobile.discuss.detail;
 
 import com.android.pc.ioc.event.EventBus;
-import com.bhsc.mobile.datalcass.Data_DB_Discuss;
+import com.bhsc.mobile.dataclass.Data_DB_Discuss;
 import com.bhsc.mobile.utils.Method;
 
 import java.util.ArrayList;

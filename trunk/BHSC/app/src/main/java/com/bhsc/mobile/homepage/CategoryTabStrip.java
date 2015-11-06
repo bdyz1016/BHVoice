@@ -13,15 +13,22 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AccelerateDecelerateInterpolator;
+import android.view.animation.Animation;
+import android.view.animation.AnimationSet;
+import android.view.animation.ScaleAnimation;
+import android.view.animation.TranslateAnimation;
 import android.widget.HorizontalScrollView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.bhsc.mobile.R;
 import com.bhsc.mobile.homepage.adapter.PagerAdapter;
+import com.bhsc.mobile.utils.L;
 
 
 public class CategoryTabStrip extends HorizontalScrollView {
+    private final String TAG = CategoryTabStrip.class.getSimpleName();
 
     public interface OnTabChangedListener{
         void onTabChanged(int position);
@@ -165,16 +172,8 @@ public class CategoryTabStrip extends HorizontalScrollView {
         }
 
         calculateIndicatorRect(indicatorRect);
-        int newScrollX = lastScrollX;
-        if (indicatorRect.left < getScrollX() + scrollOffset) {
-            newScrollX = indicatorRect.left - scrollOffset;
-        } else if (indicatorRect.right > getScrollX() + getWidth() - scrollOffset) {
-            newScrollX = indicatorRect.right - getWidth() + scrollOffset;
-        }
-        if (newScrollX != lastScrollX) {
-            lastScrollX = newScrollX;
-            scrollTo(newScrollX, 0);
-        }
+        int half = getWidth() / 2;
+        scrollTo(indicatorRect.centerX() - half, 0);
     }
 
     // 自定义绘图
@@ -242,6 +241,7 @@ public class CategoryTabStrip extends HorizontalScrollView {
     private class PageListener implements OnPageChangeListener {
         @Override
         public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+            L.i(TAG, "position:" + position + ",positionOffset:" + positionOffset + ",positionOffsetPixels:" + positionOffsetPixels);
             currentPosition = position;
             currentPositionOffset = positionOffset;
 
@@ -270,5 +270,17 @@ public class CategoryTabStrip extends HorizontalScrollView {
                 mTabChangedListener.onTabChanged(position);
             }
         }
+    }
+
+    private void scroll(int position){
+        int width = getWidth();
+        View view = getItemView(position);
+        int startX = (int)view.getX();
+        int endX = view.getWidth() + startX;
+        scrollTo(startX + endX/2, 0);
+    }
+
+    private View getItemView(int position) {
+        return tabsContainer.getChildAt(position);
     }
 }

@@ -89,6 +89,12 @@
                         android:textSize="16sp"
                         />
                 </LinearLayout>
+                <View android:layout_width="8dp"
+                      android:layout_height="13dp"
+                      android:layout_alignParentRight="true"
+                      android:layout_centerVertical="true"
+                      android:layout_marginRight="15dp"
+                      android:background="@mipmap/arrow_all_normal"/>
             </RelativeLayout>
 
             <com.bhsc.mobile.disclose.views.MyListView

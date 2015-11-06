@@ -1,25 +1,8 @@
 package com.bhsc.mobile.net;
 
 /**
- * Created by lynn on 10/30/15.
+ * Created by lynn on 11/2/15.
  */
-public class Response<T> {
-    private int code;
-    private T object;
-
-    public int getCode() {
-        return code;
-    }
-
-    public void setCode(int code) {
-        this.code = code;
-    }
-
-    public T getObject() {
-        return object;
-    }
-
-    public void setObject(T object) {
-        this.object = object;
-    }
+public abstract class Response {
+    public static int SUCESS_CODE = 200;
 }

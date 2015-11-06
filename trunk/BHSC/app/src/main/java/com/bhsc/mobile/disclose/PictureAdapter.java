@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ImageView;
 
 import com.bhsc.mobile.R;
@@ -23,9 +24,13 @@ public class PictureAdapter extends ArrayAdapter<String> {
 
     public static final String DEFAULT_IMAGE = "default";
 
+    public static final int UN_EDITABLE = -1;
+
     private LayoutInflater mInflater;
     private int mResource;
     private Context mContext;
+
+    private int mEditPosition = -1;
 
     private OnAddPictureListener mListener;
 
@@ -43,6 +48,7 @@ public class PictureAdapter extends ArrayAdapter<String> {
             convertView = mInflater.inflate(mResource, parent, false);
             holder = new ViewHolder();
             holder.Iv_Image = (ImageView) convertView.findViewById(R.id.picture);
+            holder.Btn_Detele = (Button) convertView.findViewById(R.id.delete);
             convertView.setTag(holder);
         } else {
             holder = (ViewHolder) convertView.getTag();
@@ -55,6 +61,18 @@ public class PictureAdapter extends ArrayAdapter<String> {
         } else {
             ImageUtil.getInstance().loadBitmap(picture, holder.Iv_Image, 100, 100);
         }
+        if(mEditPosition >= 0 && mEditPosition == position){
+            L.i(TAG, "position:" + position + ",EditPosition:" + mEditPosition);
+            holder.Btn_Detele.setVisibility(View.VISIBLE);
+        } else {
+            holder.Btn_Detele.setVisibility(View.GONE);
+        }
+        holder.Btn_Detele.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
         return convertView;
     }
 
@@ -62,28 +80,30 @@ public class PictureAdapter extends ArrayAdapter<String> {
         this.mListener = listener;
     }
 
+    public void setEdit(int position){
+        L.i(TAG, "setEdit:" + position);
+        mEditPosition = position;
+        notifyDataSetChanged();
+    }
+
+    public int getEditPostion(){
+        return mEditPosition;
+    }
+
+    public boolean isEditable(){
+        if(mEditPosition < 0){
+            return false;
+        }
+        return true;
+    }
+
     private class ViewHolder {
         public ImageView Iv_Image;
+        public Button Btn_Detele;
     }
 
     public interface OnAddPictureListener{
         void addPicture();
     }
 
-    private TextWatcher mTitleTextWatcher = new TextWatcher() {
-        @Override
-        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-        }
-
-        @Override
-        public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-        }
-
-        @Override
-        public void afterTextChanged(Editable s) {
-
-        }
-    };
 }

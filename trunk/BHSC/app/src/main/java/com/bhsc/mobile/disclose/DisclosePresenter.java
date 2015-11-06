@@ -1,17 +1,17 @@
 package com.bhsc.mobile.disclose;
 
 import android.content.Context;
-import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.net.Uri;
 
 import com.android.pc.ioc.event.EventBus;
 import com.bhsc.mobile.database.Constants_DB;
 import com.bhsc.mobile.database.DataBaseTools;
-import com.bhsc.mobile.datalcass.Data_DB_Disclose;
+import com.bhsc.mobile.dataclass.Data_DB_Disclose;
+import com.bhsc.mobile.dataclass.Data_DB_Picture;
 import com.bhsc.mobile.disclose.event.ActionEvent;
-import com.bhsc.mobile.media.FileUtil;
 import com.bhsc.mobile.media.ImageUtil;
+import com.bhsc.mobile.media.MediaManager;
 import com.bhsc.mobile.utils.Method;
 
 import java.io.IOException;
@@ -29,6 +29,10 @@ public class DisclosePresenter {
 
     private DataBaseTools mDataBaseTools;
 
+    private MediaManager mMediaManager;
+
+    private DiscloseManager mDiscloseManager;
+
     private static DisclosePresenter sDisclosePresenter;
 
     public static DisclosePresenter getInstance(Context context){
@@ -45,6 +49,8 @@ public class DisclosePresenter {
     private DisclosePresenter(Context context){
         mExecutorService = Executors.newCachedThreadPool();
         mDataBaseTools = new DataBaseTools(context);
+        mMediaManager = new MediaManager(context);
+        mDiscloseManager = new DiscloseManager(context);
     }
 
     private final int DEFAULT_QUALITY = 50;
@@ -80,19 +86,15 @@ public class DisclosePresenter {
         mExecutorService.submit(new Runnable() {
             @Override
             public void run() {
-                StringBuilder pathBuilder = new StringBuilder();
-                if(picturePaths != null){
-                    for(int i = 0;i < picturePaths.size();i++){
-                        String path = FileUtil.move(picturePaths.get(i), ImageUtil.ImagePath + Method.getTS() + ".png");
-                        if(i > 0){
-                            pathBuilder.append(',' + path);
-                        } else {
-                            pathBuilder.append(path);
-                        }
-                    }
+                disclose.setId(Method.createDataId());
+                disclose.setImagePaths(picturePaths);
+                mDataBaseTools.addData(Constants_DB.TABLE_DISCLOSE, disclose);//保存爆料
+                Data_DB_Picture picture = new Data_DB_Picture();
+                picture.setId(disclose.getId());
+                for(String path:picturePaths){
+                    picture.setPath(path);
+                    mMediaManager.savePicturePath(picture);//保存图片
                 }
-                disclose.setImagePaths(pathBuilder.toString());
-                mDataBaseTools.addData(Constants_DB.TABLE_DISCLOSE, disclose);
                 EventBus.getDefault().post(new ActionEvent(ActionEvent.ACTION_ADD_DISCLOSE_FINISH));
             }
         });
@@ -102,21 +104,22 @@ public class DisclosePresenter {
         mExecutorService.submit(new Runnable() {
             @Override
             public void run() {
+                ArrayList<Data_DB_Disclose> discloses = mDiscloseManager.getAllDisclose();
                 ActionEvent event = new ActionEvent(ActionEvent.ACTION_LOAD_DISCLOSE);
-                Cursor cursor = mDataBaseTools.selectData(Constants_DB.TABLE_DISCLOSE, null, null);
-                ArrayList<Data_DB_Disclose> discloses = new ArrayList<Data_DB_Disclose>();
-                if(cursor != null){
-                    for(cursor.moveToFirst();!cursor.isAfterLast();cursor.moveToNext()){
-                        Data_DB_Disclose disclose = new Data_DB_Disclose();
-                        disclose.setImagePaths(cursor.getString(cursor.getColumnIndex(Constants_DB.DISCLOSE_IMAGEPATHS)));
-                        disclose.setUserName(cursor.getString(cursor.getColumnIndex(Constants_DB.DISCLOSE_USERNAME)));
-                        disclose.setContent(cursor.getString(cursor.getColumnIndex(Constants_DB.DISCLOSE_CONTENT)));
-                        disclose.setCreateTime(cursor.getLong(cursor.getColumnIndex(Constants_DB.DISCLOSE_CREATETIME)));
-                        disclose.setTitle(cursor.getString(cursor.getColumnIndex(Constants_DB.DISCLOSE_TITLE)));
-                        discloses.add(disclose);
-                    }
-                }
                 event.setDiscloseList(discloses);
+                EventBus.getDefault().post(event);
+            }
+        });
+    }
+
+    public void support(final String dataId){
+        mExecutorService.submit(new Runnable() {
+            @Override
+            public void run() {
+                Data_DB_Disclose disclose = mDiscloseManager.getDisclose(dataId);
+                disclose.setPraiseCount(disclose.getPraiseCount() + 1);
+                mDiscloseManager.updataDisclose(disclose);
+                ActionEvent event = new ActionEvent(ActionEvent.ACTION_PRAISE_SUCCESS);
                 EventBus.getDefault().post(event);
             }
         });
@@ -126,8 +129,7 @@ public class DisclosePresenter {
         mExecutorService.submit(new Runnable() {
             @Override
             public void run() {
-                String conditionStr = Constants_DB.DISCLOSE_DATAID + " = '" + disclose.getId() + "'";
-                if(mDataBaseTools.deleteData(Constants_DB.TABLE_DISCLOSE, conditionStr)){
+                if(mDiscloseManager.deleteDisclose(disclose)){//删除爆料
                     ActionEvent event = new ActionEvent(ActionEvent.ACTION_DISCLOSE_DELETE_SUCCESS);
                     EventBus.getDefault().post(event);
                 } else {

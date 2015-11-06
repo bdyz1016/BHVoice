@@ -10,4 +10,9 @@
         <attr name="svg_raw_resource" format="reference" />
 
     </declare-styleable>
+
+    <declare-styleable name="RatioButton">
+        <attr name="normalDrawable" format="reference"/>
+        <attr name="selectDrawable" format="reference"/>
+    </declare-styleable>
 </resources>

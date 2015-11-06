@@ -91,6 +91,8 @@ public class DataBaseOpenHelper extends SQLiteOpenHelper {
 
 		createUserTable(db);
 		createDiscloseTable(db);
+		createPictureTable(db);
+		createNewsTable(db);
 
 		Log.d(TAG, "tableCreat()  end");
 	}
@@ -106,6 +108,8 @@ public class DataBaseOpenHelper extends SQLiteOpenHelper {
 				+ Constants_DB.USER_NICKNAME + " varchar(32),"
 				+ Constants_DB.USER_LASTCHANGETIME + " long(10,0),"
 				+ Constants_DB.USER_PASSWORD + " varchar(64),"
+				+ Constants_DB.USER_EMAIL + " varchar(64),"
+				+ Constants_DB.USER_USERID + " varchar(64),"
 				+ Constants_DB.USER_USERNAME + " varchar(64)"
 				+ ");";
 		try {
@@ -127,9 +131,11 @@ public class DataBaseOpenHelper extends SQLiteOpenHelper {
 				+ Constants_DB.DISCLOSE_TITLE + " varchar(32),"
 				+ Constants_DB.DISCLOSE_USERNAME + " varchar(32),"
 				+ Constants_DB.DISCLOSE_CONTENT + " varchar(256),"
-				+ Constants_DB.DISCLOSE_IMAGEPATHS + " varchar(512),"
 				+ Constants_DB.DISCLOSE_DATAID + " varchar(256),"
-				+ Constants_DB.DISCLOSE_CREATETIME + " long(10,0)"
+				+ Constants_DB.DISCLOSE_CREATETIME + " long(10,0),"
+				+ Constants_DB.DISCLOSE_PRAISECOUNT + " int(10,0),"
+				+ Constants_DB.DISCLOSE_COMMENTCOUNT + " int(10,0),"
+				+ " PRIMARY KEY (" + Constants_DB.DISCLOSE_DATAID + ")"
 				+ ");";
 		try {
 			db.beginTransaction();
@@ -141,5 +147,54 @@ public class DataBaseOpenHelper extends SQLiteOpenHelper {
 			db.endTransaction();
 		}
 		Log.d(TAG, "1,tableCreat()  execSql: " + Constants_DB.TABLE_DISCLOSE);
+	}
+
+	private void createPictureTable(SQLiteDatabase db){
+		String sql = "CREATE TABLE IF NOT EXISTS "
+				+ Constants_DB.TABLE_PICTURE
+				+ " ("
+				+ Constants_DB.PICTURE_ID + " varchar(256),"
+				+ Constants_DB.PICTURE_PATH + " varchar(128),"
+				+ " PRIMARY KEY (" + Constants_DB.PICTURE_PATH + ")"
+				+ ");";
+		try {
+			db.beginTransaction();
+			db.execSQL(sql);
+			db.setTransactionSuccessful();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			db.endTransaction();
+		}
+		Log.d(TAG, "1,tableCreat()  execSql: " + Constants_DB.TABLE_PICTURE);
+	}
+
+	private void createNewsTable(SQLiteDatabase db){
+		String sql = "CREATE TABLE IF NOT EXISTS "
+				+ Constants_DB.TABLE_NEWS
+				+ " ("
+				+ Constants_DB.NEWS_ISADV + " int(10,0),"
+				+ Constants_DB.NEWS_CONTENT + " varchar(512),"
+				+ Constants_DB.NEWS_TITLE + " varchar(128),"
+				+ Constants_DB.NEWS_PUBLISHTIME + " long(10,0),"
+				+ Constants_DB.NEWS_CREATEUSERID + " long(10,0),"
+				+ Constants_DB.NEWS_CREATETIME + " varchar(64),"
+				+ Constants_DB.NEWS_PRAISECOUNT + " int(10,0),"
+				+ Constants_DB.NEWS_ID + " varchar(256),"
+				+ Constants_DB.NEWS_SOURCE + " varchar(32),"
+				+ Constants_DB.NEWS_TYPE + " int(10,0),"
+				+ Constants_DB.NEWS_COMMENTCOUNT + " int(10,0),"
+				+ " PRIMARY KEY (" + Constants_DB.NEWS_ID + ")"
+				+ ");";
+		try {
+			db.beginTransaction();
+			db.execSQL(sql);
+			db.setTransactionSuccessful();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			db.endTransaction();
+		}
+		Log.d(TAG, "1,tableCreat()  execSql: " + Constants_DB.TABLE_NEWS);
 	}
 }

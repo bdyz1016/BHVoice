@@ -22,7 +22,7 @@ import com.android.pc.ioc.inject.InjectInit;
 import com.android.pc.ioc.inject.InjectLayer;
 import com.android.pc.ioc.view.listener.OnClick;
 import com.bhsc.mobile.R;
-import com.bhsc.mobile.datalcass.Data_DB_Discuss;
+import com.bhsc.mobile.dataclass.Data_DB_Discuss;
 import com.bhsc.mobile.disclose.views.MyListView;
 import com.bhsc.mobile.homepage.NewsPresenter;
 import com.bhsc.mobile.ThirdParty.ShareActivity;
@@ -178,7 +178,7 @@ public class DiscussDetailActivity extends Activity {
                     discuss.setToUserStatus(true);
                 }
                 discuss.setCreateTime(Method.getTS());
-                NewsPresenter.getInstance(DiscussDetailActivity.this).discussPushlish(discuss);
+                NewsPresenter.getInstance(DiscussDetailActivity.this).discussPublish(discuss);
                 mPopupWindow.dismiss();
             }
         });

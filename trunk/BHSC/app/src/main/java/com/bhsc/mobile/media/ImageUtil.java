@@ -8,16 +8,21 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Environment;
+import android.provider.MediaStore;
 import android.support.v4.util.LruCache;
 import android.util.Log;
 import android.widget.ImageView;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URL;
+import java.net.URLConnection;
 
 /**
  * Created by lynn on 10/15/15.
@@ -27,23 +32,23 @@ public class ImageUtil {
     public final static String ImagePath = FilePath + "img/";// 图片路径
     public final static String TempPath = FilePath + "temp/";// 临时缓存路径
 
-    private static class SingletonHolder{
+    private static class SingletonHolder {
         public static ImageUtil sImageUtil = new ImageUtil();
     }
 
-    public static ImageUtil getInstance(){
+    public static ImageUtil getInstance() {
         return SingletonHolder.sImageUtil;
     }
 
     private LruCache<String, Bitmap> mMemoryCache;
 
-    private ImageUtil(){
+    private ImageUtil() {
         File imgDir = new File(ImagePath);
-        if(!imgDir.exists()){
+        if (!imgDir.exists()) {
             imgDir.mkdirs();
         }
         File tempdir = new File(TempPath);
-        if(!tempdir.exists()){
+        if (!tempdir.exists()) {
             tempdir.mkdirs();
         }
         int maxMemory = (int) (Runtime.getRuntime().maxMemory() / 1024);
@@ -122,10 +127,10 @@ public class ImageUtil {
      *
      * @param absolutePath 图片绝对路径
      * @param mBitmap
-     * @param quality   Hint to the compressor, 0-100. 0 meaning compress for
-     *                  small size, 100 meaning compress for max quality. Some
-     *                  formats, like PNG which is lossless, will ignore the
-     *                  quality setting
+     * @param quality      Hint to the compressor, 0-100. 0 meaning compress for
+     *                     small size, 100 meaning compress for max quality. Some
+     *                     formats, like PNG which is lossless, will ignore the
+     *                     quality setting
      * @throws IOException
      */
     public String savePicture(String absolutePath, Bitmap mBitmap, int quality) throws IOException {
@@ -189,7 +194,6 @@ public class ImageUtil {
                 result = false;
             }
         }
-
         return result;
     }
 

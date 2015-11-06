@@ -11,24 +11,35 @@
     <string name="action_settings">Settings</string>
     <string name="hello_world">Hello world!</string>
 
-    <string name="category_all_my">推荐</string>
+
+    <!--<option value="0">要闻</option>-->
+    <!--<option value="1">街镇</option>-->
+    <!--<option value="2">热点</option>-->
+    <!--<option value="3">教育</option>-->
+    <!--<option value="4">文化</option>-->
+    <!--<option value="5">科技</option>-->
+    <!--<option value="6">娱乐</option>-->
+    <!--<option value="7">财经</option>-->
+
+
+    <!--<string name="category_all_my">推荐</string>-->
     <string name="category_all">推荐</string>
     <string name="category_important">要闻</string>
     <string name="category_nearby">街镇</string>
+    <string name="category_hot">热点</string>
     <string name="category_education">教育</string>
     <string name="category_culture">文化</string>
+    <string name="category_tech">科技</string>
+    <string name="category_entertainment">娱乐</string>
+    <string name="category_finance">财经</string>
     <string name="category_society">社会</string>
     <string name="category_subscribe">订阅</string>
     <string name="category_video">视频</string>
     <string name="category_health">健康</string>
     <string name="category_sports">体育</string>
-    <string name="category_tech">科技</string>
     <string name="category_car">汽车</string>
-    <string name="category_entertainment">娱乐</string>
-    <string name="category_finance">财经</string>
     <string name="category_military">军事</string>
     <string name="category_world">国际</string>
-    <string name="category_hot">热点</string>
     <string name="category_positive">正能量</string>
     <string name="category_essay_joke">段子</string>
     <string name="category_image_funny">趣图</string>
@@ -71,7 +82,9 @@
     <string name="opposition">踩</string>
     <string name="share">分享</string>
     <string name="collect">收藏</string>
-    <string name="disclose_hint">分享身边新鲜事...</string>
+    <string name="disclose_hint">分享身边新鲜事&#8230;</string>
+    <string name="disclose_list_title">爆料</string>
+    <string name="make_disclose">爆个料</string>
 
     <!--用户信息-->
     <string name="user_title">个人主页</string>
@@ -83,6 +96,7 @@
     <string name="complete">完成</string>
     <string name="photo">头像</string>
     <string name="nickname">昵称</string>
+    <string name="login">点击登录</string>
     <string name="status">签名</string>
     <string name="change_password">修改密码</string>
     <string name="logout">退出登录</string>
@@ -107,6 +121,7 @@
     <string name="publish">发表</string>
     <string name="related_news">相关阅读</string>
     <string name="hot_discuss">热门评论</string>
+    <string name="loading">正在加载...</string>
 
     <!-- 评论-->
     <string name="input_discuss">写评论...</string>
@@ -126,9 +141,21 @@
     <string name="register_password_repeat">确认密码:</string>
     <string name="register_email">邮箱:</string>
     <string name="register_nickname">昵称:</string>
-    <string name="login_error_1">账号或密码错误</string>
+    <string name="login_error_0">用户名不存在</string>
+    <string name="login_error_1">密码错误</string>
+    <string name="login_error_2">未知错误</string>
+    <string name="login_error_3">该邮箱已注册，请直接登录</string>
+    <string name="login_error_4">该昵称已被占用</string>
+    <string name="login_error_5">邮箱不能为空</string>
+    <string name="login_error_6">邮箱格式错误</string>
+    <string name="login_error_7">密码不能为空</string>
+    <string name="login_error_8">密码格式错误</string>
+
+    <string name="register_error_0">两次输入密码不一致</string>
+
     <string name="login_failed_hint_1">登录失败</string>
     <string name="login_failed_hint_2">请重试</string>
+    <string name="login_failed_hint_3">注册失败</string>
     <string name="login_forget_password">忘记密码？</string>
     <string name="reset_password_title">重置密码</string>
     <string name="reset_password_label">新密码:</string>
@@ -137,4 +164,9 @@
     <string name="edit_nick_name_title">请输入昵称</string>
     <string name="edit_nick_name_hint">2-20个字，支持中文、英文、数字、"&#8211;"和减号</string>
     <string name="edit_status_title">请输入个性签名</string>
+
+    <string name="setting_user_proDia_message_upload">上传中&#8230;</string>
+
+    <!-- 设置-->
+    <string name="title_settings">设置</string>
 </resources>

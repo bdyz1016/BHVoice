@@ -3,20 +3,23 @@ package com.bhsc.mobile.userpages;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.text.TextUtils;
 
 import com.android.pc.ioc.event.EventBus;
-import com.bhsc.mobile.database.Constants_DB;
-import com.bhsc.mobile.database.DataBaseTools;
-import com.bhsc.mobile.datalcass.Data_DB_Discuss;
-import com.bhsc.mobile.datalcass.Data_DB_User;
+import com.bhsc.mobile.R;
+import com.bhsc.mobile.dataclass.Data_DB_Discuss;
+import com.bhsc.mobile.dataclass.Data_DB_User;
 import com.bhsc.mobile.main.BHApplication;
 import com.bhsc.mobile.manager.UserManager;
+import com.bhsc.mobile.net.ObjectResponse;
 import com.bhsc.mobile.net.Response;
+import com.bhsc.mobile.net.UserResponse;
 import com.bhsc.mobile.net.httpPost;
 import com.bhsc.mobile.userpages.event.UserEvent;
 import com.bhsc.mobile.utils.L;
 import com.bhsc.mobile.utils.Method;
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -31,10 +34,10 @@ public class UserPresenter {
 
     private static UserPresenter sUserPresenter;
 
-    public static UserPresenter getInstance(Context context){
-        if(sUserPresenter == null){
+    public static UserPresenter getInstance(Context context) {
+        if (sUserPresenter == null) {
             synchronized (UserPresenter.class) {
-                if(sUserPresenter == null) {
+                if (sUserPresenter == null) {
                     sUserPresenter = new UserPresenter(context);
                 }
             }
@@ -43,25 +46,23 @@ public class UserPresenter {
     }
 
     private ExecutorService mExecutorService;
-    private DataBaseTools mDataBaseTools;
     private Context mContext;
     private Gson mGson;
 
-    private UserPresenter(Context context){
+    private UserPresenter(Context context) {
         mExecutorService = Executors.newCachedThreadPool();
-        mDataBaseTools = new DataBaseTools(context);
         mContext = context;
         mGson = new Gson();
     }
 
-    public void initUserData(){
+    public void initUserData() {
         L.i(TAG, "initUserData");
         mExecutorService.submit(new Runnable() {
             @Override
             public void run() {
                 L.i(TAG, "create discusses");
                 ArrayList<Data_DB_Discuss> discusses = new ArrayList<>();
-                for(int i = 0;i<10;i++){
+                for (int i = 0; i < 10; i++) {
                     Data_DB_Discuss data = new Data_DB_Discuss();
                     data.setContent("屠呦呦宁波旧居要卖1.5亿 吐槽：现在满世界都是我");
                     data.setCreateTime(Method.getTS());
@@ -71,7 +72,7 @@ public class UserPresenter {
                 event.setDiscusses(discusses);
                 EventBus.getDefault().post(event);
 
-                if(UserManager.getInstance(mContext).isLogined()){
+                if (UserManager.getInstance(mContext).isLogined()) {
                     UserEvent userEvent = new UserEvent();
                     userEvent.setAction(UserEvent.ACTION_GET_USERINFO);
                     userEvent.setExtra(UserManager.getInstance(mContext).getCurrentUser());
@@ -81,10 +82,56 @@ public class UserPresenter {
         });
     }
 
-    public void register(final String username, final String email, final String password){
+    public void register(final String email, final String password,final String confirmPassword) {
         mExecutorService.submit(new Runnable() {
             @Override
             public void run() {
+                //检验两次密码是否一致
+                if(TextUtils.isEmpty(password)){
+                    UserEvent event = new UserEvent();
+                    event.setAction(UserEvent.ACTION_REGISTER_FAILED);
+                    event.setExtra(mContext.getString(R.string.login_error_7));
+                    event.setErrorCode(UserEvent.ERROR_PASSWORD_EMPTY);
+                    EventBus.getDefault().post(event);
+                    return;
+                } else if(TextUtils.isEmpty(confirmPassword) ||!password.equals(confirmPassword)){
+                    UserEvent event = new UserEvent();
+                    event.setAction(UserEvent.ACTION_REGISTER_FAILED);
+                    event.setExtra(mContext.getString(R.string.register_error_0));
+                    event.setErrorCode(UserEvent.ERROR_PASSWORD_INCONSISTENT);
+                    EventBus.getDefault().post(event);
+                    return;
+                }
+
+                int checkFormatResult = Method.checkUserNameAndPswd(email, password);
+                //检验用户名密码格式是否正确
+                if(checkFormatResult != 0) {
+                    String message;
+                    switch (checkFormatResult) {
+                        case 1:
+                            message = mContext.getString(R.string.login_error_5);
+                            break;
+                        case 2:
+                            message = mContext.getString(R.string.login_error_6);
+                            break;
+                        case 3:
+                            message = mContext.getString(R.string.login_error_7);
+                            break;
+                        case 4:
+                            message = mContext.getString(R.string.login_error_8);
+                            break;
+                        default:
+                            message = mContext.getString(R.string.login_error_2);
+                            break;
+                    }
+                    UserEvent event = new UserEvent();
+                    event.setAction(UserEvent.ACTION_REGISTER_FAILED);
+                    event.setExtra(message);
+                    event.setErrorCode(checkFormatResult);
+                    EventBus.getDefault().post(event);
+                    return;
+                }
+
                 LinkedHashMap<String, String> params = new LinkedHashMap<>();
                 params.put("loginId", email);
                 params.put("email", email);
@@ -93,6 +140,25 @@ public class UserPresenter {
                 try {
                     String response = httpPost.requireClass(BHApplication.Address + "/user/register", params, "UTF-8");
                     L.i(TAG, response);
+                    ObjectResponse<Data_DB_User> userResponse = mGson.fromJson(response, new TypeToken<ObjectResponse<Data_DB_User>>(){}.getType());
+                    if(userResponse.getCode() == Response.SUCESS_CODE){
+                        UserManager.getInstance(mContext).setCurrentUser(userResponse.getObject());
+                        UserEvent event = new UserEvent();
+                        event.setAction(UserEvent.ACTION_REGISTER_SUCCESS);
+                        EventBus.getDefault().post(event);
+                    } else if(userResponse.getCode() == 201){
+                        UserEvent event = new UserEvent();
+                        event.setAction(UserEvent.ACTION_REGISTER_FAILED);
+                        event.setExtra(mContext.getString(R.string.login_error_4));
+                        event.setErrorCode(UserEvent.ERROR_USERNAME_EXIST);
+                        EventBus.getDefault().post(event);
+                    } else if(userResponse.getCode() == 202){
+                        UserEvent event = new UserEvent();
+                        event.setAction(UserEvent.ACTION_REGISTER_FAILED);
+                        event.setExtra(mContext.getString(R.string.login_error_3));
+                        event.setErrorCode(UserEvent.ERROR_USERNAME_EXIST);
+                        EventBus.getDefault().post(event);
+                    }
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -100,10 +166,39 @@ public class UserPresenter {
         });
     }
 
-    public void login(final String username, final String password){
+    public void login(final String username, final String password) {
         mExecutorService.submit(new Runnable() {
             @Override
             public void run() {
+                int checkFormatResult = Method.checkUserNameAndPswd(username, password);
+
+                //检验用户名密码格式是否正确
+                if(checkFormatResult != 0) {
+                    String message;
+                    switch (checkFormatResult){
+                        case 1:
+                            message = mContext.getString(R.string.login_error_5);
+                            break;
+                        case 2:
+                            message = mContext.getString(R.string.login_error_6);
+                            break;
+                        case 3:
+                            message = mContext.getString(R.string.login_error_7);
+                            break;
+                        case 4:
+                            message = mContext.getString(R.string.login_error_8);
+                            break;
+                        default:
+                            message = mContext.getString(R.string.login_error_2);
+                            break;
+                    }
+                    UserEvent event = new UserEvent();
+                    event.setAction(UserEvent.ACTION_LOGIN_FAILED);
+                    event.setExtra(message);
+                    event.setErrorCode(checkFormatResult);
+                    EventBus.getDefault().post(event);
+                    return;
+                }
 
                 LinkedHashMap<String, String> params = new LinkedHashMap<>();
                 params.put("loginId", username);
@@ -112,34 +207,37 @@ public class UserPresenter {
                 try {
                     String response = httpPost.requireClass(BHApplication.Address + "/user/login", params, "UTF-8");
                     L.i(TAG, response);
-                    Response<Data_DB_User> userResponse = mGson.fromJson(response, )
+                    UserResponse userResponse = mGson.fromJson(response, UserResponse.class);
+                    if (userResponse.getCode() == Response.SUCESS_CODE) {
+                        UserManager.getInstance(mContext).login(userResponse.getUser());
+                        UserEvent event = new UserEvent();
+                        event.setAction(UserEvent.ACTION_LOGIN_SUCCESS);
+                        EventBus.getDefault().post(event);
+                    } else if (userResponse.getCode() == 201){
+                        UserEvent event = new UserEvent();
+                        event.setAction(UserEvent.ACTION_LOGIN_FAILED);
+                        event.setExtra(mContext.getResources().getString(R.string.login_error_0));
+                        event.setErrorCode(UserEvent.ERROR_USERNAME_WRONG);
+                        EventBus.getDefault().post(event);
+                    } else if (userResponse.getCode() == 202){
+                        UserEvent event = new UserEvent();
+                        event.setAction(UserEvent.ACTION_LOGIN_FAILED);
+                        event.setExtra(mContext.getResources().getString(R.string.login_error_1));
+                        event.setErrorCode(UserEvent.ERROR_PASSWORD_WRONG);
+                        EventBus.getDefault().post(event);
+                    }
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-//                Data_DB_User user = new Data_DB_User();
-//                user.setUserName(username);
-//                user.setPassword(password);
-//                mDataBaseTools.addData(Constants_DB.TABLE_USER, user);
-
-//                if(UserManager.getInstance(mContext).login(username, password)){
-//                    UserEvent event = new UserEvent();
-//                    event.setAction(UserEvent.ACTION_LOGIN_SUCCESS);
-//                    EventBus.getDefault().post(event);
-//                }
             }
         });
     }
 
-    public void saveUserInfo(final Data_DB_User user){
+    public void saveUserInfo(final Data_DB_User user) {
         mExecutorService.submit(new Runnable() {
             @Override
             public void run() {
-                String conditionStr = Constants_DB.USER_USERNAME + " = '" + user.getUserName() + "'";
-                String valueStr = Constants_DB.USER_NICKNAME + " = '" + user.getNickName() + "',"
-                        + Constants_DB.USER_LASTCHANGETIME + " = " + user.getLastChangeTime() + ","
-                        + Constants_DB.USER_STATUS + " = '" + user.getStatus() + "',"
-                        + Constants_DB.USER_PHOTOPATH + " = '" + user.getPhotoPath() + "'";
-                if(mDataBaseTools.updateData(Constants_DB.TABLE_USER, conditionStr, valueStr)){
+                if(UserManager.getInstance(mContext).updateCurrentUser(user)){
                     UserEvent event = new UserEvent();
                     event.setAction(UserEvent.ACTION_UPDATE_USERINFO_SUCCESS);
                     EventBus.getDefault().post(event);
@@ -152,7 +250,7 @@ public class UserPresenter {
         });
     }
 
-    public void deleteUserInfo(){
+    public void deleteUserInfo() {
         mExecutorService.submit(new Runnable() {
             @Override
             public void run() {

@@ -26,4 +26,9 @@
 
     <!-- 对话框-->
     <dimen name="dialog_width">220dp</dimen>
+    
+    <dimen name="personage_btn_text_size">17sp</dimen>
+    <dimen name="personage_btn_height">40dp</dimen>
+
+    <dimen name="settings_btn_height">40dp</dimen>
 </resources>

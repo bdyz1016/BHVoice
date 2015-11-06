@@ -6,23 +6,20 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.view.ViewPager;
-import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.android.pc.ioc.event.EventBus;
 import com.android.pc.ioc.inject.InjectAll;
 import com.android.pc.ioc.inject.InjectBinder;
 import com.android.pc.ioc.inject.InjectInit;
 import com.android.pc.ioc.view.listener.OnClick;
 import com.android.pc.util.Handler_Inject;
 import com.bhsc.mobile.R;
-import com.bhsc.mobile.datalcass.Data_DB_NewsType;
+import com.bhsc.mobile.dataclass.Data_DB_NewsType;
 import com.bhsc.mobile.homepage.adapter.PagerAdapter;
-import com.bhsc.mobile.homepage.event.NewsEvent;
 import com.bhsc.mobile.utils.L;
+import com.bhsc.mobile.view.MyViewPager;
 
 import java.util.ArrayList;
 
@@ -31,16 +28,14 @@ import java.util.ArrayList;
  */
 public class HomeFragment extends Fragment {
     private final String TAG = HomeFragment.class.getSimpleName();
-
     @InjectAll
     Views views;
 
-    class Views{
+    class Views {
         public CategoryTabStrip fragment_home_category;
-        public ViewPager fragment_home_viewpager;
+        public MyViewPager fragment_home_viewpager;
         @InjectBinder(method = "search", listeners = {OnClick.class})
         public View fragment_home_search;
-        SwipeRefreshLayout refresh_layout;
     }
 
     private Context mContext;
@@ -49,80 +44,32 @@ public class HomeFragment extends Fragment {
 
     private ArrayList<Data_DB_NewsType> mNewsTypeList;
 
-    /**
-     *  当前显示的新闻类型
-     */
-    private int mCurrentNewsType;
-
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
         mContext = activity;
     }
 
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        EventBus.getDefault().register(this);
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        EventBus.getDefault().unregister(this);
-    }
-
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        L.i(TAG,"onCreateView");
+        L.i(TAG, "onCreateView");
         View rootView = inflater.inflate(R.layout.fragment_homepage, container, false);
         Handler_Inject.injectFragment(this, rootView);
         return rootView;
     }
 
     @InjectInit
-    private void initView(){
-        L.i(TAG,"initView");
+    private void initView() {
+        L.i(TAG, "initView");
+
         mNewsTypeList = NewsPresenter.getInstance(mContext).getNewsTypes(mContext);
         mPagerAdapter = new PagerAdapter(mContext, getChildFragmentManager(), mNewsTypeList);
         views.fragment_home_viewpager.setAdapter(mPagerAdapter);
         views.fragment_home_category.setViewPager(views.fragment_home_viewpager);
-        views.fragment_home_category.setOnTabChangedListener(new CategoryTabStrip.OnTabChangedListener() {
-            @Override
-            public void onTabChanged(int position) {
-                L.i(TAG, "onTabChanged:" + position);
-                mCurrentNewsType = mNewsTypeList.get(position).getTypeId();
-                NewsPresenter.getInstance(mContext).getNews(mCurrentNewsType);
-            }
-        });
-        views.refresh_layout.setOnRefreshListener(mRefreshListener);
-
-        mCurrentNewsType = mNewsTypeList.get(0).getTypeId();
-        /**
-         * 加载新闻
-         */
-        NewsPresenter.getInstance(mContext).getNews(mCurrentNewsType);
     }
 
-    private void search(){
+    private void search() {
         startActivity(new Intent(mContext, SearchActivity.class));
-    }
-
-    private SwipeRefreshLayout.OnRefreshListener mRefreshListener = new SwipeRefreshLayout.OnRefreshListener(){
-        @Override
-        public void onRefresh() {
-            NewsPresenter.getInstance(mContext).getNews(mCurrentNewsType);
-        }
-    };
-
-    public void onEventMainThread(NewsEvent event){
-        if(event.getAction() == NewsEvent.ACTION_REFRESH_COMPLETE) {
-            views.refresh_layout.setRefreshing(false);
-        } else if(event.getAction() == NewsEvent.ACTION_REFRESH_ENABLE){
-            views.refresh_layout.setEnabled(true);
-        } else if(event.getAction() == NewsEvent.ACTION_REFRESH_DISABLE){
-            views.refresh_layout.setEnabled(false);
-        }
     }
 }

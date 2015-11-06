@@ -2,8 +2,9 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
               android:layout_width="match_parent"
               android:layout_height="match_parent"
-              android:background="@color/white"
-              android:orientation="vertical">
+              android:background="#f4f5f6"
+              android:orientation="vertical"
+    >
 
     <RelativeLayout
         android:id="@+id/fragment_disclose_title"
@@ -23,29 +24,35 @@
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
+            android:layout_alignParentBottom="true"
             android:background="@color/divider"
-            android:layout_alignParentBottom="true"/>
+            />
     </RelativeLayout>
 
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        >
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            >
 
             <RelativeLayout
+                android:id="@+id/fragment_user_login_view"
                 android:layout_width="match_parent"
-                android:layout_height="256dp">
+                android:layout_height="256dp"
+                >
 
                 <ImageView
                     android:layout_width="match_parent"
                     android:layout_height="229dp"
                     android:layout_marginBottom="27dp"
                     android:scaleType="centerCrop"
-                    android:src="@mipmap/background_user"/>
+                    android:src="@mipmap/background_user"
+                    />
 
                 <ImageView
                     android:id="@+id/fragment_user_photo"
@@ -54,7 +61,8 @@
                     android:layout_alignParentBottom="true"
                     android:layout_marginLeft="15dp"
                     android:scaleType="centerCrop"
-                    android:src="@mipmap/icon_default_photo"/>
+                    android:src="@mipmap/default_photo"
+                    />
 
                 <TextView
                     android:id="@+id/fragment_user_name"
@@ -64,36 +72,33 @@
                     android:layout_marginLeft="8dp"
                     android:layout_toRightOf="@+id/fragment_user_photo"
                     android:gravity="center_vertical"
-                    android:text="@string/nickname"/>
+                    android:text="点击登录"
+                    />
             </RelativeLayout>
-
-            <!--分隔线-->
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:layout_marginTop="15dp"
-                android:background="@color/divider"
-                />
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="30dp"
-                android:background="#e3e3e3"
+                android:layout_marginTop="15dp"
+                android:background="@mipmap/background_settings"
                 android:orientation="horizontal"
                 android:paddingLeft="15dp"
-                android:paddingRight="15dp">
+                android:paddingRight="15dp"
+                >
 
                 <RelativeLayout
                     android:id="@+id/fragment_user_discuss"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_weight="1">
+                    android:layout_weight="1"
+                    >
 
                     <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="40dp"
                         android:layout_centerInParent="true"
-                        android:orientation="horizontal">
+                        android:orientation="horizontal"
+                        >
 
                         <ImageView
                             android:layout_width="wrap_content"
@@ -116,13 +121,15 @@
                     android:id="@+id/fragment_user_versions"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_weight="1">
+                    android:layout_weight="1"
+                    >
 
                     <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="40dp"
                         android:layout_centerInParent="true"
-                        android:orientation="horizontal">
+                        android:orientation="horizontal"
+                        >
 
                         <ImageView
                             android:layout_width="wrap_content"
@@ -142,16 +149,18 @@
                 </RelativeLayout>
 
                 <RelativeLayout
+                    android:id="@+id/fragment_user_settings"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:id="@+id/fragment_user_settings"
-                    android:layout_weight="1">
+                    android:layout_weight="1"
+                    >
 
                     <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="40dp"
                         android:layout_centerInParent="true"
-                        android:orientation="horizontal">
+                        android:orientation="horizontal"
+                        >
 
                         <ImageView
                             android:layout_width="wrap_content"
@@ -170,19 +179,119 @@
                     </LinearLayout>
                 </RelativeLayout>
             </LinearLayout>
-            <!--分隔线-->
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="@color/divider"
-                />
 
-            <com.bhsc.mobile.disclose.views.MyListView
-                android:id="@+id/fragment_user_discuss_list"
-                android:layout_marginRight="15dp"
-                android:layout_marginLeft="15dp"
+            <!-- 通知-->
+            <RelativeLayout
+                android:id="@+id/fragment_user_notify"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"/>
+                android:layout_marginTop="15dp"
+                android:layout_height="@dimen/personage_btn_height"
+                android:background="@color/white"
+                android:paddingLeft="25dp"
+                >
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_gravity="center_vertical"
+                    android:text="通知"
+                    android:textSize="@dimen/personage_btn_text_size"
+                    />
+                <View android:layout_width="8dp"
+                      android:layout_height="13dp"
+                      android:layout_alignParentRight="true"
+                      android:layout_centerVertical="true"
+                      android:layout_marginRight="15dp"
+                      android:background="@mipmap/arrow_all_normal"
+                    />
+            </RelativeLayout>
+
+            <!-- 活动-->
+            <RelativeLayout
+                android:layout_marginTop="15dp"
+                android:id="@+id/fragment_user_activity"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/personage_btn_height"
+                android:background="@color/white"
+                android:paddingLeft="25dp"
+                >
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_gravity="center_vertical"
+                    android:text="活动"
+                    android:textSize="@dimen/personage_btn_text_size"
+                    />
+                <View android:layout_width="8dp"
+                      android:layout_height="13dp"
+                      android:layout_alignParentRight="true"
+                      android:layout_centerVertical="true"
+                      android:layout_marginRight="15dp"
+                      android:background="@mipmap/arrow_all_normal"
+                    />
+                <View android:layout_width="match_parent"
+                      android:layout_height="2px"
+                      android:layout_alignParentBottom="true"
+                      android:background="@color/divider"
+                    />
+            </RelativeLayout>
+            <!-- 爆料-->
+            <RelativeLayout
+                android:id="@+id/fragment_user_disclose"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/personage_btn_height"
+                android:background="@color/white"
+                android:paddingLeft="25dp"
+                >
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_gravity="center_vertical"
+                    android:text="爆料"
+                    android:textSize="@dimen/personage_btn_text_size"
+                    />
+                <View android:layout_width="8dp"
+                      android:layout_height="13dp"
+                      android:layout_alignParentRight="true"
+                      android:layout_centerVertical="true"
+                      android:layout_marginRight="15dp"
+                      android:background="@mipmap/arrow_all_normal"
+                    />
+                <View android:layout_width="match_parent"
+                      android:layout_height="2px"
+                      android:layout_alignParentBottom="true"
+                      android:background="@color/divider"
+                    />
+            </RelativeLayout>
+
+            <!-- 反馈-->
+            <RelativeLayout
+                android:id="@+id/fragment_user_feedback"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/personage_btn_height"
+                android:background="@color/white"
+                android:paddingLeft="25dp"
+                >
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_gravity="center_vertical"
+                    android:text="反馈"
+                    android:textSize="@dimen/personage_btn_text_size"
+                    />
+                <View android:layout_width="8dp"
+                      android:layout_height="13dp"
+                      android:layout_alignParentRight="true"
+                      android:layout_centerVertical="true"
+                      android:layout_marginRight="15dp"
+                      android:background="@mipmap/arrow_all_normal"
+                    />
+            </RelativeLayout>
+
         </LinearLayout>
     </ScrollView>
 </LinearLayout>

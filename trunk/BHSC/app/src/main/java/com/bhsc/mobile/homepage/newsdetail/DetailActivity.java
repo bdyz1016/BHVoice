@@ -14,6 +14,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.PopupWindow;
+import android.widget.TextView;
 
 import com.android.pc.ioc.event.EventBus;
 import com.android.pc.ioc.inject.InjectAll;
@@ -23,13 +24,15 @@ import com.android.pc.ioc.inject.InjectLayer;
 import com.android.pc.ioc.view.listener.OnClick;
 import com.android.pc.ioc.view.listener.OnItemClick;
 import com.bhsc.mobile.R;
-import com.bhsc.mobile.datalcass.Data_DB_Discuss;
-import com.bhsc.mobile.datalcass.Data_DB_News;
+import com.bhsc.mobile.dataclass.Data_DB_Discuss;
+import com.bhsc.mobile.dataclass.Data_DB_News;
 import com.bhsc.mobile.disclose.views.MyListView;
 import com.bhsc.mobile.homepage.NewsPresenter;
 import com.bhsc.mobile.homepage.adapter.NewsAdapter;
 import com.bhsc.mobile.discuss.detail.DiscussDetailActivity;
 import com.bhsc.mobile.homepage.newsdetail.adapter.HotDiscussAdapter;
+import com.bhsc.mobile.manager.UserManager;
+import com.bhsc.mobile.userpages.LoginAndRegisterActivity;
 import com.bhsc.mobile.utils.L;
 import com.bhsc.mobile.utils.Method;
 import com.bhsc.mobile.utils.SyncArrayList;
@@ -44,10 +47,12 @@ import java.util.List;
 public class DetailActivity extends Activity {
     private final String TAG = DetailActivity.class.getName();
 
+    public static final String INTENT_KEY_NEWSID = "newsId";
+
     @InjectAll
     private Views mViews;
 
-    class Views{
+    class Views {
         @InjectBinder(method = "goBack", listeners = {OnClick.class})
         View activity_newsdetail_title_back;
         @InjectBinder(method = "opposition", listeners = {OnClick.class})
@@ -64,18 +69,30 @@ public class DetailActivity extends Activity {
         @InjectBinder(method = "onDiscussItemClick", listeners = {OnItemClick.class})
         MyListView activity_newsdetail_discuss_list;
         View activity_newsdetail_related_news, activity_newsdetail_hot_discuss, activity_newsdetail_news_list_divider;
+        TextView activity_newsdetail_news_title, activity_newsdetail_news_time, activity_newsdetail_news_content;
     }
 
     private PopupWindow mPopupWindow;
     private NewsAdapter mNewsAdapter;
+    private Data_DB_News mNews;
+    private UserManager mUserManager;
     private HotDiscussAdapter mHotDiscussAdapter;
     private final SyncArrayList<Data_DB_News> mNewsList = new SyncArrayList<>(new ArrayList<Data_DB_News>());
     private final List<Data_DB_Discuss> mDiscusses = new ArrayList<>();
+
+    /**
+     * 新闻ID
+     */
+    private String mNewsId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EventBus.getDefault().register(this);
+        Intent intent = getIntent();
+        if (intent != null) {
+            mNewsId = intent.getStringExtra(INTENT_KEY_NEWSID);
+        }
     }
 
     @Override
@@ -85,78 +102,108 @@ public class DetailActivity extends Activity {
     }
 
     @InjectInit
-    private void initView(){
+    private void init() {
+        initData();
+        initView();
+    }
+
+    private void initView() {
+        mViews.activity_newsdetail_news_title.setText(mNews.getTitle());
+        mViews.activity_newsdetail_news_time.setText(mNews.getCreateTime());
+        mViews.activity_newsdetail_news_content.setText(mNews.getContent());
+
         mNewsAdapter = new NewsAdapter(this, mNewsList);
         mHotDiscussAdapter = new HotDiscussAdapter(this, mDiscusses);
         mViews.activity_newsdetail_news_list.setAdapter(mNewsAdapter);
         mViews.activity_newsdetail_news_list.setFocusable(false);
         mViews.activity_newsdetail_discuss_list.setAdapter(mHotDiscussAdapter);
         mViews.activity_newsdetail_discuss_list.setFocusable(false);
-        NewsPresenter.getInstance(this).getRelatedNews();
-        NewsPresenter.getInstance(this).getHotDiscuss();
+//        NewsPresenter.getInstance(this).getRelatedNews();
+        NewsPresenter.getInstance(this).getAllDiscuss(mNews);
     }
 
-    private void goBack(){
+    private void initData() {
+        mUserManager = UserManager.getInstance(this);
+        if (!TextUtils.isEmpty(mNewsId)) {
+            mNews = NewsPresenter.getInstance(this).getSpecificNews(mNewsId);
+        } else {
+            finish();
+        }
+    }
+
+    private void goBack() {
         finish();
     }
 
-    private void support(){
-        NewsPresenter.getInstance(this).newsSupport();
+    private void support() {
+        if (mUserManager.isLogined()) {
+            NewsPresenter.getInstance(this).newsSupport(mNews, mUserManager.getCurrentUser().getEmail());
+        } else {
+            Intent intent = new Intent();
+            intent.setClass(this, LoginAndRegisterActivity.class);
+            startActivity(intent);
+        }
     }
 
-    private void opposition(){
+    private void opposition() {
         NewsPresenter.getInstance(this).newsOpp();
     }
 
-    private void collect(){
+    private void collect() {
         NewsPresenter.getInstance(this).newsCollect();
     }
 
-    private void discuss(){
-        showDialag();
+    private void discuss() {
+        if (mUserManager.isLogined()) {
+            showDialog();
+        } else {
+            Intent intent = new Intent();
+            intent.setClass(this, LoginAndRegisterActivity.class);
+            startActivity(intent);
+        }
     }
 
-    private void onNewsItemClick(){
+    private void onNewsItemClick() {
         Intent intent = new Intent();
         intent.setClass(this, DetailActivity.class);
         startActivity(intent);
         finish();
     }
 
-    private void onDiscussItemClick(){
+    private void onDiscussItemClick() {
         Intent intent = new Intent();
         intent.setClass(this, DiscussDetailActivity.class);
         startActivity(intent);
     }
 
-    private void onEventMainThread(SupportEvent event){
-        if(event.getState() == SupportEvent.STATE_NEGATIVE){
+    private void onEventMainThread(SupportEvent event) {
+        if (event.getState() == SupportEvent.STATE_NEGATIVE) {
             mViews.activity_newsdetail_support_icon.setBackgroundResource(R.mipmap.btn_support_big_normal);
         } else {
             mViews.activity_newsdetail_support_icon.setBackgroundResource(R.mipmap.btn_support_big_press);
         }
     }
 
-    private void onEventMainThread(CollectEvent event){
-        if(event.getState() == SupportEvent.STATE_NEGATIVE){
+    private void onEventMainThread(CollectEvent event) {
+        if (event.getState() == SupportEvent.STATE_NEGATIVE) {
             mViews.activity_newsdetail_collect_icon.setBackgroundResource(R.mipmap.btn_collect_normal);
         } else {
             mViews.activity_newsdetail_collect_icon.setBackgroundResource(R.mipmap.btn_collect_press);
         }
     }
 
-    private void onEventMainThread(OppEvent event){
-        if(event.getState() == SupportEvent.STATE_NEGATIVE){
+    private void onEventMainThread(OppEvent event) {
+        if (event.getState() == SupportEvent.STATE_NEGATIVE) {
             mViews.activity_newsdetail_opposition_icon.setBackgroundResource(R.mipmap.btn_opposition_normal);
         } else {
             mViews.activity_newsdetail_opposition_icon.setBackgroundResource(R.mipmap.btn_opposition_press);
         }
     }
 
-    private void onEventMainThread(RelatedNewsEvent event){
+    private void onEventMainThread(RelatedNewsEvent event) {
         List<Data_DB_News> newsList = event.getNewsList();
         L.i(TAG, "初始化新闻列表:" + newsList.size());
-        if(newsList.size() > 0){
+        if (newsList.size() > 0) {
             mViews.activity_newsdetail_related_news.setVisibility(View.VISIBLE);
             mViews.activity_newsdetail_news_list_divider.setVisibility(View.VISIBLE);
         }
@@ -164,10 +211,26 @@ public class DetailActivity extends Activity {
         mNewsAdapter.notifyDataSetChanged();
     }
 
-    private void onEventMainThread(HotDiscussEvent event){
+    private void onEventMainThread(DiscussEvent event) {
+        L.i(TAG, "discuss event");
+        if (event.getAction() == DiscussEvent.ACTION_GET_ALL_DISCUSS) {
+            L.i(TAG, "get all discuss");
+            List<Data_DB_Discuss> discusses = (List<Data_DB_Discuss>) event.getExtra();
+            if (discusses.size() > 0) {
+                mDiscusses.clear();
+                mDiscusses.addAll(discusses);
+                mHotDiscussAdapter.notifyDataSetChanged();
+            }
+        } else if (event.getAction() == DiscussEvent.ACTION_PUBLISH_SUCCESS) {
+            L.i(TAG, "publish success!");
+            NewsPresenter.getInstance(this).getAllDiscuss(mNews);
+        }
+    }
+
+    private void onEventMainThread(HotDiscussEvent event) {
         List<Data_DB_Discuss> discusses = event.getDiscusses();
         L.i(TAG, "初始化评论列表:" + discusses.size());
-        if(discusses.size() > 0){
+        if (discusses.size() > 0) {
             mViews.activity_newsdetail_hot_discuss.setVisibility(View.VISIBLE);
         }
         mDiscusses.clear();
@@ -175,7 +238,7 @@ public class DetailActivity extends Activity {
         mHotDiscussAdapter.notifyDataSetChanged();
     }
 
-    private void showDialag() {
+    private void showDialog() {
         backgroundAlpha(0.4f);
 
         View view = LayoutInflater.from(this).inflate(R.layout.pop_input_discuss, null);
@@ -206,8 +269,8 @@ public class DetailActivity extends Activity {
         status.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Boolean toUserStatus = (Boolean)status.getTag();
-                if(toUserStatus == null || !toUserStatus){
+                Boolean toUserStatus = (Boolean) status.getTag();
+                if (toUserStatus == null || !toUserStatus) {
                     status.setTag(true);
                     status.setBackgroundResource(R.mipmap.btn_status_press);
                 } else {
@@ -221,19 +284,23 @@ public class DetailActivity extends Activity {
             @Override
             public void onClick(View v) {
                 String discussContent = text.getText().toString();
-                if(TextUtils.isEmpty(discussContent)){
+                if (TextUtils.isEmpty(discussContent)) {
                     return;
                 }
                 Data_DB_Discuss discuss = new Data_DB_Discuss();
                 discuss.setContent(discussContent);
-                Boolean toUserStatus = (Boolean)status.getTag();
-                if(toUserStatus == null || !toUserStatus){
+                discuss.setType(mNews.getType());
+                discuss.setCreateTime(Method.getTS());
+                discuss.setFatherId(mNews.getId());
+                discuss.setUserId(mUserManager.getCurrentUser().getUserId());
+                Boolean toUserStatus = (Boolean) status.getTag();
+                if (toUserStatus == null || !toUserStatus) {
                     discuss.setToUserStatus(false);
                 } else {
                     discuss.setToUserStatus(true);
                 }
                 discuss.setCreateTime(Method.getTS());
-                NewsPresenter.getInstance(DetailActivity.this).discussPushlish(discuss);
+                NewsPresenter.getInstance(DetailActivity.this).discussPublish(discuss);
                 mPopupWindow.dismiss();
             }
         });
