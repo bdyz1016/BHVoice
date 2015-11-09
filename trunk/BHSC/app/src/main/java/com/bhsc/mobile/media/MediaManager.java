@@ -42,6 +42,7 @@ public class MediaManager {
         if(TextUtils.isEmpty(id)){
             return false;
         }
-        return mDataBaseTools.deleteData(Constants_DB.TABLE_PICTURE, id);
+        String conditionStr = Constants_DB.PICTURE_ID + " = '" + id + "'";
+        return mDataBaseTools.deleteData(Constants_DB.TABLE_PICTURE, conditionStr);
     }
 }

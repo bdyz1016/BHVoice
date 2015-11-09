@@ -43,6 +43,13 @@ public class MainActivity extends BaseActivity {
 
     private String mCurrentTab;
 
+    private final int FRAGMENT_HOME = 0;
+    private final int FRAGMENT_DISCLOSE = 1;
+    private final int FRAGMENT_USER = 2;
+
+    private Fragment[] mFragments;
+    private int mPosition = 0;
+
     @InjectAll
     Views views;
 
@@ -86,6 +93,12 @@ public class MainActivity extends BaseActivity {
         L.i(TAG, "init");
 //        getSupportFragmentManager().beginTransaction().replace(R.id.activty_main_container, new HomeFragment()).commit();
         views.activity_main_NavigationMenu.setOnMenuItemClickListener(mMenuItemClickListener);
+
+        mFragments = new Fragment[3];
+        mFragments[0] = new HomeFragment();
+        mFragments[1] = new DiscloseFragment();
+        mFragments[2] = new UserFragment();
+
         switchHome();
         regToWX();//注册到微信
     }
@@ -110,21 +123,23 @@ public class MainActivity extends BaseActivity {
         }
     };
 
-    private void switchView(Fragment fragment) {
-        L.i(TAG, "switchView");
+//    private void switchView(Fragment fragment) {
+//        L.i(TAG, "switchView");
+//        FragmentManager fragmentManager = getSupportFragmentManager();
+//        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+//        fragmentTransaction.replace(R.id.activty_main_container, fragment, fragment.getClass().getName()).commitAllowingStateLoss();
+//    }
+
+    private void switchView(int position) {
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-//        Fragment to_fragment = fragmentManager.findFragmentByTag(fragment.getClass().getName());
-//        if (to_fragment != null) {
-//            for (int i = 0; i < fragmentManager.getBackStackEntryCount(); i++) {
-//                FragmentManager.BackStackEntry entry = fragmentManager.getBackStackEntryAt(i);
-//                if (fragment.getClass().getName().equals(entry.getName())) {
-//                    fragmentManager.popBackStack(entry.getName(), 1);
-//                }
-//            }
-//        }
-//        fragmentTransaction.addToBackStack(fragment.getClass().getName());
-        fragmentTransaction.replace(R.id.activty_main_container, fragment, fragment.getClass().getName()).commitAllowingStateLoss();
+        fragmentTransaction.hide(mFragments[mPosition]);
+        if (!mFragments[position].isAdded()) {
+            fragmentTransaction.add(R.id.activty_main_container, mFragments[position]);
+        }
+        mPosition = position;
+        fragmentTransaction.show(mFragments[position]);
+        fragmentTransaction.commit();
     }
 
     private void switchHome() {
@@ -135,7 +150,8 @@ public class MainActivity extends BaseActivity {
         views.Navigation_btn_1_icon.setBackgroundResource(R.mipmap.btn_home_press);
         views.Navigation_btn_2_icon.setBackgroundResource(R.mipmap.btn_disclose_normal);
         views.Navigation_btn_3_icon.setBackgroundResource(R.mipmap.btn_profile_nomal);
-        switchView(new HomeFragment());
+//        switchView(new HomeFragment());
+        switchView(FRAGMENT_HOME);
     }
 
     private void switchDisclose() {
@@ -146,7 +162,8 @@ public class MainActivity extends BaseActivity {
         views.Navigation_btn_1_icon.setBackgroundResource(R.mipmap.btn_home_normal);
         views.Navigation_btn_2_icon.setBackgroundResource(R.mipmap.btn_disclose_press);
         views.Navigation_btn_3_icon.setBackgroundResource(R.mipmap.btn_profile_nomal);
-        switchView(new DiscloseFragment());
+//        switchView(new DiscloseFragment());
+        switchView(FRAGMENT_DISCLOSE);
     }
 
     private void switchProfile() {
@@ -157,7 +174,8 @@ public class MainActivity extends BaseActivity {
         views.Navigation_btn_1_icon.setBackgroundResource(R.mipmap.btn_home_normal);
         views.Navigation_btn_2_icon.setBackgroundResource(R.mipmap.btn_disclose_normal);
         views.Navigation_btn_3_icon.setBackgroundResource(R.mipmap.btn_profile_press);
-        switchView(new UserFragment());
+//        switchView(new UserFragment());
+        switchView(FRAGMENT_USER);
     }
 
 //    private void switchLogin() {

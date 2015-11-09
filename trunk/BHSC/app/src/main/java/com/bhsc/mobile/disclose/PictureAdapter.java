@@ -67,12 +67,8 @@ public class PictureAdapter extends ArrayAdapter<String> {
         } else {
             holder.Btn_Detele.setVisibility(View.GONE);
         }
-        holder.Btn_Detele.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-            }
-        });
+        holder.Btn_Detele.setFocusable(false);
+        holder.Btn_Detele.setClickable(false);
         return convertView;
     }
 

@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="270dp"
+    android:layout_height="wrap_content"
+    android:background="@drawable/background_alertdialog"
+    android:orientation="vertical"
+    android:paddingTop="30dp"
+    >
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:gravity="center"
+        android:text="@string/disclose_introductions_title"
+        android:textColor="@color/black"
+        android:textSize="19sp"
+        />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:layout_marginTop="15dp"
+        android:gravity="left"
+        android:text="@string/disclose_introductions"
+        android:textColor="@color/default_text_color"
+        android:textSize="15sp"
+        />
+    <!-- divider-->
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="2px"
+        android:layout_marginTop="20dp"
+        android:background="@color/divider"
+        />
+    <Button
+        android:id="@+id/dialog_alert_positive"
+        android:layout_width="match_parent"
+        android:layout_height="45dp"
+        android:background="@null"
+        android:gravity="center"
+        android:text="确定"
+        android:textColor="@color/dialog_btn_text"
+        android:textSize="18sp"
+        />
+</LinearLayout>

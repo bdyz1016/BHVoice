@@ -85,6 +85,10 @@
     <string name="disclose_hint">分享身边新鲜事&#8230;</string>
     <string name="disclose_list_title">爆料</string>
     <string name="make_disclose">爆个料</string>
+    <string name="disclose_introductions_title">爆料说明</string>
+    <string name="disclose_introductions">欢迎使用滨海视窗客户端“我要爆料”，分享你身边的新鲜事，与
+        数千万网友互动交流！爆料范围包括但不限于个人见闻、社会热点，为了更好的分享交流，请尽量以“图+文”方式描述
+        事情。被成功采纳的爆料内容，将会进入话题：爆料，并有机会进入信息流推荐。</string>
 
     <!--用户信息-->
     <string name="user_title">个人主页</string>
@@ -169,4 +173,10 @@
 
     <!-- 设置-->
     <string name="title_settings">设置</string>
+
+    <!-- 通知-->
+    <string name="title_notification">通知</string>
+
+    <!-- 活动-->
+    <string name="title_activity">活动</string>
 </resources>

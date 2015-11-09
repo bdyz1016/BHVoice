@@ -1,36 +1,38 @@
 package com.bhsc.mobile.media;
 
-import android.content.ContentResolver;
 import android.content.Context;
+import android.content.Intent;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.drawable.Drawable;
+import android.graphics.Matrix;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.v4.util.LruCache;
+import android.text.TextUtils;
 import android.util.Log;
 import android.widget.ImageView;
 
-import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.net.URL;
-import java.net.URLConnection;
 
 /**
  * Created by lynn on 10/15/15.
  */
 public class ImageUtil {
+    private static final String TAG = ImageUtil.class.getSimpleName();
+
     public final static String FilePath = "/mnt/sdcard/bhsc/";
     public final static String ImagePath = FilePath + "img/";// 图片路径
     public final static String TempPath = FilePath + "temp/";// 临时缓存路径
+
+    public final static int PICTURE_MAX_WIDTH = 1024;
+    public final static int PICTURE_MAX_HEIGHT = 1024;
 
     private static class SingletonHolder {
         public static ImageUtil sImageUtil = new ImageUtil();
@@ -62,7 +64,7 @@ public class ImageUtil {
         };
     }
 
-    public Bitmap decodeSampledBitmapFromSource(String source, int reqWidth, int reqHeight) {
+    public static Bitmap decodeSampledBitmapFromSource(String source, int reqWidth, int reqHeight) {
         // 第一次解析将inJustDecodeBounds设置为true，来获取图片大小
         final BitmapFactory.Options options = new BitmapFactory.Options();
         options.inJustDecodeBounds = true;
@@ -163,38 +165,42 @@ public class ImageUtil {
         return absoluteFilePath;
     }
 
-    public boolean copyPicture(Context context, Uri source, String dest) {
-        boolean result = false;
-        int bytesum = 0;
-        int byteread = 0;
-        File destFile = new File(dest);
-        String scheme = source.getScheme();
-        if (ContentResolver.SCHEME_CONTENT.equals(scheme)
-                || ContentResolver.SCHEME_FILE.equals(scheme)) {
-            InputStream inStream = null;
-            try {
-                inStream = context.getContentResolver().openInputStream(source);
-                if (!destFile.exists()) {
-                    result = destFile.createNewFile();
-                }
-                if (result) {
-                    FileOutputStream fs = new FileOutputStream(dest);
-                    byte[] buffer = new byte[1024];
-                    while ((byteread = inStream.read(buffer)) != -1) {
-                        bytesum += byteread; //字节数 文件大小
-                        System.out.println(bytesum);
-                        fs.write(buffer, 0, byteread);
-                    }
-                    inStream.close();
-                    fs.flush();
-                    fs.close();
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-                result = false;
-            }
+    /**
+     * 拷贝图片
+     * @param source
+     * @param dest
+     * @return
+     */
+    public boolean copyPicture(String source, String dest) {
+        File sourceFile = new File(source);
+        if (!sourceFile.exists()) {
+            return false;
         }
-        return result;
+        try {
+            File destFile = new File(dest);
+            if (!destFile.exists()) {
+                destFile.createNewFile();
+            }
+            if (!destFile.exists()) {
+                return false;
+            }
+            FileInputStream fileInputStream = new FileInputStream(sourceFile);
+            FileOutputStream fileOutputStream = new FileOutputStream(destFile);
+            byte[] buffer = new byte[1024];
+            int byteCount;
+            while ((byteCount = fileInputStream.read(buffer)) != -1) {
+                fileOutputStream.write(buffer, 0, byteCount);
+            }
+            fileInputStream.close();
+            fileOutputStream.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+            return false;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        }
+        return true;
     }
 
     private boolean isHaveSdcard() {
@@ -204,5 +210,89 @@ public class ImageUtil {
         } else {
             return false;
         }
+    }
+
+    public static String resolvePhotoFromIntent(final Context ctx, final Intent data, final String dir) {
+        if (ctx == null || data == null || dir == null) {
+            Log.e(TAG, "resolvePhotoFromIntent fail, invalid argument");
+            return null;
+        }
+
+        String filePath = null;
+
+        final Uri uri = Uri.parse(data.toURI());
+        Cursor cursor = ctx.getContentResolver().query(uri, null, null, null, null);
+        if (cursor != null && cursor.getCount() > 0) {
+            try {
+                cursor.moveToFirst();
+                String imagePath = cursor.getString(cursor.getColumnIndex(MediaStore.MediaColumns.DATA));
+                String orientation = cursor.getString(cursor.getColumnIndex(MediaStore.Images.ImageColumns.ORIENTATION));
+                Log.e(TAG, "orition: " + orientation);
+                if(!TextUtils.isEmpty(imagePath)){
+                    Bitmap bitmap = decodeSampledBitmapFromSource(imagePath, PICTURE_MAX_WIDTH, PICTURE_MAX_HEIGHT);
+                    if(!TextUtils.isEmpty(orientation)){
+                        int angle = Integer.parseInt(orientation);
+                        if(angle != 0){
+                            Matrix matrix = new Matrix();
+                            int width = bitmap.getWidth();
+                            int height = bitmap.getHeight();
+                            matrix.setRotate(angle);
+                            bitmap = Bitmap.createBitmap(bitmap, 0, 0, width, height, matrix, true);
+                        }
+                    }
+                    final String fileName = "IMG" + System.currentTimeMillis() + ".png";
+                    filePath = dir + fileName;
+                    final File file = new File(filePath);
+                    if (!file.exists()) {
+                        file.createNewFile();
+                    }
+                    BufferedOutputStream bufferedOutputStream = new BufferedOutputStream(new FileOutputStream(file));
+                    bitmap.compress(Bitmap.CompressFormat.PNG, 100, bufferedOutputStream);
+                    bitmap.recycle();
+                    bufferedOutputStream.close();
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            cursor.close();
+        } else if (data.getData() != null) {
+            filePath = data.getData().getPath();
+            if (!(new File(filePath)).exists()) {
+                filePath = null;
+            }
+            Log.d(TAG, "photo file from data, path:" + filePath);
+
+        } else if (data.getAction() != null && data.getAction().equals("inline-data")) {
+
+            try {
+                final String fileName = "IMG" + System.currentTimeMillis() + ".png";
+                filePath = dir + fileName;
+                final Bitmap bitmap = (Bitmap) data.getExtras().get("data");
+                final File file = new File(filePath);
+                if (!file.exists()) {
+                    file.createNewFile();
+                }
+                BufferedOutputStream out;
+                out = new BufferedOutputStream(new FileOutputStream(file));
+                final int cQuality = 100;
+                bitmap.compress(Bitmap.CompressFormat.PNG, cQuality, out);
+                out.close();
+                Log.d(TAG, "photo image from data, path:" + filePath);
+            } catch (final Exception e) {
+                e.printStackTrace();
+            }
+        } else {
+            if (cursor != null) {
+                cursor.close();
+                cursor = null;
+            }
+            Log.e(TAG, "resolve photo from intent failed");
+            return null;
+        }
+        if (cursor != null) {
+            cursor.close();
+            cursor = null;
+        }
+        return filePath;
     }
 }

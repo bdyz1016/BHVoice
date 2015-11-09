@@ -81,6 +81,10 @@
                   android:screenOrientation="portrait"/>
         <activity android:name=".settings.SettingsActivity"
                   android:screenOrientation="portrait"/>
+        <activity android:name=".accessory.NotificationActivity"
+                  android:screenOrientation="portrait"/>
+        <activity android:name=".accessory.FestivalActivity"
+                  android:screenOrientation="portrait"/>
         <activity
             android:name="com.tencent.tauth.AuthActivity"
             android:launchMode="singleTask"

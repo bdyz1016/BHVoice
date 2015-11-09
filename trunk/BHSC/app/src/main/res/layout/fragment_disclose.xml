@@ -3,6 +3,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:background="#eeeeee"
+                android:id="@+id/fragment_disclose_container"
     >
 
     <RelativeLayout
@@ -21,7 +22,7 @@
             android:textSize="20sp"
             />
 
-        <ImageView
+        <ImageView android:visibility="gone"
             android:id="@+id/fragment_disclose_title_menu"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

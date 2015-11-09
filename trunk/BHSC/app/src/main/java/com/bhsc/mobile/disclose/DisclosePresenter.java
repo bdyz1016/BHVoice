@@ -70,18 +70,6 @@ public class DisclosePresenter {
         return imageName;
     }
 
-    /**
-     * 拷贝图片到指定目录
-     * @param source
-     * @return 成功返回图片绝对路径，失败返回null
-     */
-    public String copyPicture(Context context, Uri source, String dest){
-        if(ImageUtil.getInstance().copyPicture(context, source, dest)){
-            return dest;
-        }
-        return null;
-    }
-
     public void publish(final Data_DB_Disclose disclose, final List<String> picturePaths){
         mExecutorService.submit(new Runnable() {
             @Override

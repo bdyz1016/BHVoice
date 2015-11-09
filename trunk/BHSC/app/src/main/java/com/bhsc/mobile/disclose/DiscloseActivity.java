@@ -172,16 +172,10 @@ public class DiscloseActivity extends Activity {
         }
         switch (requestCode) {
             case PHOTO_MAKE_WITH_DATA:
-                Bitmap photo = data.getParcelableExtra("data");
-                Uri photoPath = data.getData();
-                if (photoPath != null) {
-                    picturesChanged(mDisclosePresenter.copyPicture(DiscloseActivity.this, photoPath, ImageUtil.TempPath + Method.getTS() + ".png"));
-                } else if (photo != null) {
-                    picturesChanged(mDisclosePresenter.savePicture(photo, ImageUtil.TempPath + Method.getTS() + ".png"));
-                }
+                picturesChanged(ImageUtil.resolvePhotoFromIntent(DiscloseActivity.this, data, ImageUtil.TempPath));
                 break;
             case PHOTO_CHOOSE_WITH_DATA:
-                picturesChanged(mDisclosePresenter.copyPicture(DiscloseActivity.this, data.getData(), ImageUtil.TempPath + Method.getTS() + ".png"));
+                picturesChanged(ImageUtil.resolvePhotoFromIntent(DiscloseActivity.this, data, ImageUtil.TempPath));
                 break;
             case PHOTO_CUT:
                 Bundle extras = data.getExtras();
@@ -381,6 +375,9 @@ public class DiscloseActivity extends Activity {
             } else if(mPictureAdapter.getEditPostion() == position){
                 mPictures.remove(position);
                 mPictureAdapter.setEdit(PictureAdapter.UN_EDITABLE);
+                if(mPictures.size() <= 0){
+                    mPictures.add(PictureAdapter.DEFAULT_IMAGE);
+                }
                 mPictureAdapter.notifyDataSetChanged();
             } else {
                 Intent intent = new Intent();

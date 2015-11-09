@@ -1,6 +1,7 @@
 package com.bhsc.mobile.disclose;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -9,6 +10,8 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.RelativeLayout;
 
 import com.android.pc.ioc.event.EventBus;
 import com.android.pc.ioc.inject.InjectAll;
@@ -22,11 +25,14 @@ import com.bhsc.mobile.dataclass.Data_DB_Disclose;
 import com.bhsc.mobile.disclose.adapter.DiscloseAdapter;
 import com.bhsc.mobile.disclose.event.ActionEvent;
 import com.bhsc.mobile.disclose.views.MyListView;
+import com.bhsc.mobile.manager.UserManager;
+import com.bhsc.mobile.userpages.LoginAndRegisterActivity;
 import com.bhsc.mobile.utils.L;
 import com.bhsc.mobile.utils.SyncArrayList;
 import com.bhsc.mobile.view.dialog.DefaultDialog;
 
 import java.util.LinkedList;
+import java.util.List;
 
 /**
  * Created by lynn on 15-9-29.
@@ -38,9 +44,12 @@ public class DiscloseFragment extends Fragment {
         @InjectBinder(method = "createDisclose", listeners = {OnClick.class})
         public View fragment_disclose_create;
         public MyListView fragment_disclose_list;
+        public RelativeLayout fragment_disclose_container;
     }
 
     private View mContentView;
+
+    private View mDiscloseGuide;
 
     private Context mContext;
 
@@ -51,6 +60,8 @@ public class DiscloseFragment extends Fragment {
     private DisclosePresenter mDisclosePresenter;
 
     private DefaultDialog mDialog;
+
+    private IntroductionsDialog mIntroductionsDialog;
 
     private int mDeletedPosition;
     @InjectAll
@@ -72,6 +83,12 @@ public class DiscloseFragment extends Fragment {
     public void onDestroy() {
         super.onDestroy();
         EventBus.getDefault().unregister(this);
+        if(mDialog != null && mDialog.isShowing()){
+            mDialog.dismiss();
+        }
+        if(mIntroductionsDialog != null && mIntroductionsDialog.isShowing()){
+            mDialog.dismiss();
+        }
     }
 
     @Nullable
@@ -134,6 +151,7 @@ public class DiscloseFragment extends Fragment {
         });
         views.fragment_disclose_list.setAdapter(mAdapter);
         mDisclosePresenter.getAllDisclose();
+        addDiscloseGuideView();
     }
 
     private void createDisclose() {
@@ -145,17 +163,86 @@ public class DiscloseFragment extends Fragment {
     public void onEventMainThread(ActionEvent event) {
         if (event.getAction() == ActionEvent.ACTION_LOAD_DISCLOSE) {
             L.i(TAG, "load disclose");
-            mDataList.clear();
-            mDataList.addAll(event.getDiscloseList());
-            mAdapter.notifyDataSetChanged();
+            List<Data_DB_Disclose> list = event.getDiscloseList();
+            if(list != null && list.size() > 0) {
+                removeDiscloseGuideView();
+                mDataList.clear();
+                mDataList.addAll(list);
+                mAdapter.notifyDataSetChanged();
+            }
         } else if (event.getAction() == ActionEvent.ACTION_DISCLOSE_DELETE_SUCCESS) {
             mDataList.remove(mDeletedPosition);
             mAdapter.notifyDataSetChanged();
-        } else if(event.getAction() == ActionEvent.ACTION_ADD_DISCLOSE_FINISH){
-            L.i(TAG,"add disclose");
+        } else if (event.getAction() == ActionEvent.ACTION_ADD_DISCLOSE_FINISH) {
+            L.i(TAG, "add disclose");
             mDisclosePresenter.getAllDisclose();
-        } else if(event.getAction() == ActionEvent.ACTION_PRAISE_SUCCESS){
+        } else if (event.getAction() == ActionEvent.ACTION_PRAISE_SUCCESS) {
             mDisclosePresenter.getAllDisclose();
+        }
+    }
+
+    private void addDiscloseGuideView() {
+        final LayoutInflater inflater = LayoutInflater.from(mContext);
+        mDiscloseGuide = inflater.inflate(R.layout.view_disclose_direction, null, true);
+        RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+        layoutParams.addRule(RelativeLayout.CENTER_IN_PARENT, RelativeLayout.TRUE);
+        mDiscloseGuide.setLayoutParams(layoutParams);
+        views.fragment_disclose_container.addView(mDiscloseGuide);
+
+        View guide = mDiscloseGuide.findViewById(R.id.view_disclose_direction_guide);
+        guide.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(mIntroductionsDialog != null && mIntroductionsDialog.isShowing()){
+                    mIntroductionsDialog.dismiss();
+                }
+                mIntroductionsDialog = new IntroductionsDialog(mContext);
+                mIntroductionsDialog.show();
+            }
+        });
+
+        Button editDisclose = (Button) mDiscloseGuide.findViewById(R.id.view_disclose_direction_edit);
+        editDisclose.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(UserManager.getInstance(mContext).isLogined()){
+                    Intent intent = new Intent();
+                    intent.setClass(mContext, DiscloseActivity.class);
+                    startActivity(intent);
+                } else {
+                    Intent intent = new Intent();
+                    intent.setClass(mContext, LoginAndRegisterActivity.class);
+                    startActivity(intent);
+                }
+            }
+        });
+    }
+
+    private void removeDiscloseGuideView(){
+        if(mDiscloseGuide != null) {
+            views.fragment_disclose_container.removeView(mDiscloseGuide);
+        }
+    }
+
+    private class IntroductionsDialog extends AlertDialog{
+
+        private IntroductionsDialog(Context context){
+            super(context, R.style.DefaultDialogStyle);
+        }
+
+        private Button Btn_Confirm;
+
+        @Override
+        protected void onCreate(Bundle savedInstanceState) {
+            super.onCreate(savedInstanceState);
+            setContentView(R.layout.dialog_disclose_introductions);
+            Btn_Confirm = (Button) findViewById(R.id.dialog_alert_positive);
+            Btn_Confirm.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    IntroductionsDialog.this.dismiss();
+                }
+            });
         }
     }
 }
