@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#3F51B5</color>
+    <color name="colorPrimaryDark">#303F9F</color>
+    <color name="colorAccent">#FF4081</color>
+    <color name="white">#ffffff</color>
+    <color name="black">#000000</color>
+    <color name="transparency">#00000000</color>
+
+    <color name="default_text_color">#7e7e7e</color>
+
+    <color name="activity_bg_color">#fffafafa</color>
+    <color name="top_category_bar_background">#ffeeeeee</color>
+    <color name="divider">#ffdddddd</color>
+
+    <color name="category_tab_text">#ff707070</color>
+    <color name="category_tab_text_dark">#fffafafa</color>
+    <color name="category_tab_highlight_text">#fffae954</color>
+    <color name="category_tab_highlight_text_dark">#ffd43d3d</color>
+    <color name="category_tab_highlight_bg">#ffd43d3d</color>
+    <color name="category_tab_highlight_dark_bg">#fffafafa</color>
+
+    <color name="user_divider">#e7e7e7</color>
+
+    <color name="select_image_text">#666666</color>
+
+    <color name="hint_text_color">#c9c9c9</color>
+
+    <color name="input_text_color">#919191</color>
+
+    <color name="disclose_publish">#214d8e</color>
+    <color name="disclose_cancel">#a0a0a0</color>
+
+
+    <color name="news_title_color">#000000</color>
+    <color name="news_content">#575757</color>
+
+    <color name="background_color">#f7f7f7</color>
+    <!-- 用户-->
+    <color name="warning_text">#ff2425</color>
+    <color name="agreement_text">#0e8fcd</color>
+
+    <!-- dialog-->
+    <color name="dialog_btn_text">#007af5</color>
+
+    <color name="translucent">#80000000</color>
+</resources>

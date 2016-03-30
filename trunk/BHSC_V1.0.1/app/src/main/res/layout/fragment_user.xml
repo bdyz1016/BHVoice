@@ -1,0 +1,297 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:background="#f4f5f6"
+              android:orientation="vertical"
+    >
+
+    <RelativeLayout
+        android:id="@+id/fragment_disclose_title"
+        android:layout_width="match_parent"
+        android:layout_height="45dp"
+        android:background="@color/white"
+        >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:text="@string/user_title"
+            android:textColor="@color/black"
+            android:textSize="20sp"
+            />
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_alignParentBottom="true"
+            android:background="@color/divider"
+            />
+    </RelativeLayout>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            >
+
+            <RelativeLayout
+                android:id="@+id/fragment_user_login_view"
+                android:layout_width="match_parent"
+                android:layout_height="256dp"
+                >
+
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="229dp"
+                    android:layout_marginBottom="27dp"
+                    android:scaleType="centerCrop"
+                    android:src="@mipmap/background_user"
+                    />
+
+                <ImageView
+                    android:id="@+id/fragment_user_photo"
+                    android:layout_width="55dp"
+                    android:layout_height="55dp"
+                    android:layout_alignParentBottom="true"
+                    android:layout_marginLeft="15dp"
+                    android:scaleType="centerCrop"
+                    android:src="@mipmap/default_photo"
+                    />
+
+                <TextView
+                    android:id="@+id/fragment_user_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="27dp"
+                    android:layout_alignParentBottom="true"
+                    android:layout_marginLeft="8dp"
+                    android:layout_toRightOf="@+id/fragment_user_photo"
+                    android:gravity="center_vertical"
+                    android:text="点击登录"
+                    />
+            </RelativeLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="30dp"
+                android:layout_marginTop="15dp"
+                android:background="@mipmap/background_settings"
+                android:orientation="horizontal"
+                android:paddingLeft="15dp"
+                android:paddingRight="15dp"
+                >
+
+                <RelativeLayout
+                    android:id="@+id/fragment_user_discuss"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    >
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="40dp"
+                        android:layout_centerInParent="true"
+                        android:orientation="horizontal"
+                        >
+
+                        <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_vertical"
+                            android:src="@mipmap/user_discuss_icon"
+                            />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_vertical"
+                            android:layout_marginLeft="12dp"
+                            android:text="@string/user_discuss"
+                            />
+                    </LinearLayout>
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/fragment_user_versions"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    >
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="40dp"
+                        android:layout_centerInParent="true"
+                        android:orientation="horizontal"
+                        >
+
+                        <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_vertical"
+                            android:src="@mipmap/user_versions_icon"
+                            />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_vertical"
+                            android:layout_marginLeft="12dp"
+                            android:text="@string/versions"
+                            />
+                    </LinearLayout>
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/fragment_user_settings"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    >
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="40dp"
+                        android:layout_centerInParent="true"
+                        android:orientation="horizontal"
+                        >
+
+                        <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_vertical"
+                            android:src="@mipmap/user_settings_icon"
+                            />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_vertical"
+                            android:layout_marginLeft="12dp"
+                            android:text="@string/settings"
+                            />
+                    </LinearLayout>
+                </RelativeLayout>
+            </LinearLayout>
+
+            <!-- 通知-->
+            <RelativeLayout
+                android:id="@+id/fragment_user_notify"
+                android:layout_width="match_parent"
+                android:layout_marginTop="15dp"
+                android:layout_height="@dimen/personage_btn_height"
+                android:background="@color/white"
+                android:paddingLeft="25dp"
+                >
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_gravity="center_vertical"
+                    android:text="通知"
+                    android:textSize="@dimen/personage_btn_text_size"
+                    />
+                <View android:layout_width="8dp"
+                      android:layout_height="13dp"
+                      android:layout_alignParentRight="true"
+                      android:layout_centerVertical="true"
+                      android:layout_marginRight="15dp"
+                      android:background="@mipmap/arrow_all_normal"
+                    />
+            </RelativeLayout>
+
+            <!-- 活动-->
+            <RelativeLayout
+                android:layout_marginTop="15dp"
+                android:id="@+id/fragment_user_activity"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/personage_btn_height"
+                android:background="@color/white"
+                android:paddingLeft="25dp"
+                >
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_gravity="center_vertical"
+                    android:text="活动"
+                    android:textSize="@dimen/personage_btn_text_size"
+                    />
+                <View android:layout_width="8dp"
+                      android:layout_height="13dp"
+                      android:layout_alignParentRight="true"
+                      android:layout_centerVertical="true"
+                      android:layout_marginRight="15dp"
+                      android:background="@mipmap/arrow_all_normal"
+                    />
+                <View android:layout_width="match_parent"
+                      android:layout_height="2px"
+                      android:layout_alignParentBottom="true"
+                      android:background="@color/divider"
+                    />
+            </RelativeLayout>
+            <!-- 爆料-->
+            <RelativeLayout
+                android:id="@+id/fragment_user_disclose"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/personage_btn_height"
+                android:background="@color/white"
+                android:paddingLeft="25dp"
+                >
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_gravity="center_vertical"
+                    android:text="爆料"
+                    android:textSize="@dimen/personage_btn_text_size"
+                    />
+                <View android:layout_width="8dp"
+                      android:layout_height="13dp"
+                      android:layout_alignParentRight="true"
+                      android:layout_centerVertical="true"
+                      android:layout_marginRight="15dp"
+                      android:background="@mipmap/arrow_all_normal"
+                    />
+                <View android:layout_width="match_parent"
+                      android:layout_height="2px"
+                      android:layout_alignParentBottom="true"
+                      android:background="@color/divider"
+                    />
+            </RelativeLayout>
+
+            <!-- 反馈-->
+            <RelativeLayout
+                android:id="@+id/fragment_user_feedback"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/personage_btn_height"
+                android:background="@color/white"
+                android:paddingLeft="25dp"
+                >
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_gravity="center_vertical"
+                    android:text="反馈"
+                    android:textSize="@dimen/personage_btn_text_size"
+                    />
+                <View android:layout_width="8dp"
+                      android:layout_height="13dp"
+                      android:layout_alignParentRight="true"
+                      android:layout_centerVertical="true"
+                      android:layout_marginRight="15dp"
+                      android:background="@mipmap/arrow_all_normal"
+                    />
+            </RelativeLayout>
+
+        </LinearLayout>
+    </ScrollView>
+</LinearLayout>

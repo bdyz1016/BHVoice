@@ -45,9 +45,9 @@ public class HomeFragment extends Fragment {
     private ArrayList<Data_DB_NewsType> mNewsTypeList;
 
     @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-        mContext = activity;
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        mContext = context;
     }
 
     @Nullable

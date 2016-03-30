@@ -26,7 +26,8 @@
         </RelativeLayout>
     </RelativeLayout>
 
-    <com.bhsc.mobile.homepage.CategoryTabStrip android:id="@+id/fragment_home_category"
+    <com.bhsc.mobile.homepage.CategoryTabStrip
+        android:id="@+id/fragment_home_category"
         android:layout_width="match_parent"
         android:layout_height="@dimen/home_tab_height"
         android:background="#db2959" />

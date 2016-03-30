@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="vertical"
+              android:background="@color/transparency"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content">
+
+    <TextView
+        android:id="@+id/select_image_camera"
+        android:layout_width="match_parent"
+        android:layout_height="34dp"
+        android:text="@string/image_from_camera"
+        android:gravity="center"
+        android:textColor="@color/select_image_text"
+        android:background="@color/white"
+        />
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#f5f5f5"/>
+    <TextView
+        android:id="@+id/select_image_gallery"
+        android:layout_width="match_parent"
+        android:layout_height="34dp"
+        android:text="@string/image_from_gallery"
+        android:gravity="center"
+        android:textColor="@color/select_image_text"
+        android:background="@color/white"
+        />
+    <TextView
+        android:id="@+id/select_image_cancel"
+        android:layout_marginTop="5dp"
+        android:layout_width="match_parent"
+        android:layout_height="34dp"
+        android:text="@string/cancel"
+        android:gravity="center"
+        android:textColor="@color/select_image_text"
+        android:background="@color/white"
+        />
+</LinearLayout>
