@@ -1,6 +1,7 @@
 package com.bhsc.news.model;
 
 import com.orm.SugarRecord;
+import com.orm.dsl.Column;
 
 /**
  * Created by lynn on 15-9-17.
@@ -17,9 +18,11 @@ public class Data_DB_News extends SugarRecord {
     private String content = "";
     private String title = "";
     private String[] Images = null;
+    @Column(name="publish_time")
     private long PublishTime;
     private long createUserId;
-    private String createTime;
+    @Column(name="createTime")
+    private long createTime;
     private String titleImg;
     /**
      * 点赞数量
@@ -105,11 +108,11 @@ public class Data_DB_News extends SugarRecord {
         this.praiseCount = praiseCount;
     }
 
-    public String getCreateTime() {
+    public long getCreateTime() {
         return createTime;
     }
 
-    public void setCreateTime(String createTime) {
+    public void setCreateTime(long createTime) {
         this.createTime = createTime;
     }
 

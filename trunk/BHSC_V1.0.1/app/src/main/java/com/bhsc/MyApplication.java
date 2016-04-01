@@ -2,6 +2,7 @@ package com.bhsc;
 
 import android.app.Application;
 
+import com.facebook.drawee.backends.pipeline.Fresco;
 import com.orm.SugarContext;
 
 /**
@@ -18,6 +19,7 @@ public class MyApplication extends Application {
     public void onCreate() {
         super.onCreate();
         SugarContext.init(this);
+        Fresco.initialize(this);
     }
     @Override
     public void onTerminate() {

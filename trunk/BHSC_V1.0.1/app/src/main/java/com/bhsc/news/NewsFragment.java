@@ -23,8 +23,10 @@ import com.bhsc.MyApplication;
 import com.bhsc.mobile.R;
 import com.bhsc.net.MyRetryPolicy;
 import com.bhsc.net.MySingleton;
+import com.bhsc.news.adapter.NewsAdapter;
 import com.bhsc.news.model.Data_DB_News;
 import com.bhsc.news.newsdetail.DetailActivity;
+import com.bhsc.news.newsdetail.NewsActivity;
 import com.bhsc.utils.L;
 import com.joanzapata.android.BaseAdapterHelper;
 import com.joanzapata.android.QuickAdapter;
@@ -32,12 +34,13 @@ import com.joanzapata.android.QuickAdapter;
 import org.greenrobot.eventbus.EventBus;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
  * Created by lynn on 15-9-17.
  */
-public class NewsFragment extends Fragment {
+public class NewsFragment extends Fragment implements NewsManager.OnNewsListener{
     private final String TAG = NewsFragment.class.getSimpleName();
 
     private static final String ARG_POSITION = "position";
@@ -57,7 +60,7 @@ public class NewsFragment extends Fragment {
     private TextView Tv_FooterText;
     private ProgressBar Pb_FooterProgress;
 
-    private QuickAdapter<Data_DB_News> mAdapter;
+    private NewsAdapter mAdapter;
 
     private LayoutInflater inflater;
 
@@ -68,13 +71,9 @@ public class NewsFragment extends Fragment {
      */
     private int mNewsType;
 
-    /**
-     * 当前加载的页面
-     */
-    private int mPage;
-
     private LayoutInflater mInflater;
-    private StringRequest mStringRequest;
+
+    private NewsManager mManager;
 
     @Override
     public void onAttach(Context context) {
@@ -103,7 +102,13 @@ public class NewsFragment extends Fragment {
     public void onResume() {
         L.i(TAG, "onResume");
         super.onResume();
-        loadMore();
+        mManager.refreshed(mNewsType);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        mManager.cancel();
     }
 
     @Override
@@ -120,25 +125,18 @@ public class NewsFragment extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Intent intent = new Intent();
-                intent.putExtra(DetailActivity.INTENT_KEY_NEWSID, mAdapter.getItem(position).getId());
-                intent.setClass(mContext, DetailActivity.class);
+                intent.putExtra(NewsActivity.INTENT_KEY_NEWSID, ((Data_DB_News)mAdapter.getItem(position)).getId());
+                intent.setClass(mContext, NewsActivity.class);
                 startActivity(intent);
             }
         });
     }
 
     private void initData(){
-        /**
-         * 加载新闻
-         */
-        mPage = 1;
+        mManager = new NewsManager(mContext);
+        mManager.setNewsListener(this);
         mInflater = LayoutInflater.from(mContext);
-        mAdapter = new QuickAdapter<Data_DB_News>(mContext, R.layout.item_news) {
-            @Override
-            protected void convert(BaseAdapterHelper helper, Data_DB_News item) {
-
-            }
-        };
+        mAdapter = new NewsAdapter(mContext);
     }
 
     private void initView(){
@@ -173,37 +171,6 @@ public class NewsFragment extends Fragment {
 //        }
 //    }
 
-    private void loadMore(){
-        cancelRequest();
-        mStringRequest = new StringRequest(Request.Method.GET, MyApplication.Address + "/news/getNews", new Response.Listener<String>() {
-            @Override
-            public void onResponse(String response) {
-                L.d("zhanglei", response);
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-
-            }
-        }){
-            @Override
-            protected Map<String, String> getParams() throws AuthFailureError {
-                Map<String, String> params = new HashMap<>();
-                params.put("type", mNewsType + "");
-                params.put("page", mPage + "");
-                return params;
-            }
-        };
-        mStringRequest.setRetryPolicy(new MyRetryPolicy());
-        MySingleton.getInstance(mContext).getRequestQueue().add(mStringRequest);
-    }
-
-    private void cancelRequest(){
-        if(mStringRequest != null && !mStringRequest.isCanceled()){
-            mStringRequest.cancel();
-        }
-    }
-
     public void setNewsType(int type){
         L.i(TAG, "news type:" + type);
         mNewsType = type;
@@ -217,4 +184,15 @@ public class NewsFragment extends Fragment {
 //            mNewsPresenter.getNews(mNewsType, mPage);
         }
     };
+
+    @Override
+    public void loaded(List<Data_DB_News> list) {
+        mAdapter.addAll(list);
+    }
+
+    @Override
+    public void refreshed(List<Data_DB_News> list) {
+        mAdapter.clear();
+        mAdapter.addAll(list);
+    }
 }

@@ -74,7 +74,7 @@ public class HomeFragment extends Fragment {
         ArrayList<Data_DB_NewsType> types = new ArrayList<>();
         String[] defaultTypes = mContext.getResources().getStringArray(R.array.news_category);
         int length = defaultTypes.length;
-        for (int i = 0; i < length; i++) {
+        for (int i = 1; i < length; i++) {
             Data_DB_NewsType type = new Data_DB_NewsType();
             type.setTypeId(i);
             type.setTypeName(defaultTypes[i]);

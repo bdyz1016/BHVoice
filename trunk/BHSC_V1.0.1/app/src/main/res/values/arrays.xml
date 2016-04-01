@@ -2,12 +2,10 @@
 <resources>
     <array name="news_category">
         <item>@string/category_important</item>
-        <item>@string/category_nearby</item>
-        <item>@string/category_hot</item>
+        <item>@string/category_life</item>
         <item>@string/category_education</item>
         <item>@string/category_culture</item>
-        <item>@string/category_tech</item>
-        <item>@string/category_entertainment</item>
-        <item>@string/category_finance</item>
+        <item>@string/category_news_home</item>
+        <item>@string/category_news_food</item>
     </array>
 </resources>
