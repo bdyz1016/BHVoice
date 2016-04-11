@@ -5,7 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#f7f7f7"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    xmlns:fresco="http://schemas.android.com/apk/res-auto">
 
     <RelativeLayout
         android:id="@+id/activity_userinfo_title"
@@ -78,7 +79,7 @@
         android:paddingRight="15dp">
 
         <RelativeLayout
-            android:id="@+id/activity_userinfo_take_photo"
+            android:id="@+id/take_photo"
             android:layout_width="wrap_content"
             android:layout_height="80dp">
 
@@ -96,15 +97,15 @@
                 android:layout_centerVertical="true"
                 android:src="@mipmap/icon_next"/>
 
-            <com.bhsc.mobile.view.meg7.widget.RectangleImageView
-                android:id="@+id/activity_userinfo_photo"
+            <com.facebook.drawee.view.SimpleDraweeView
+                android:id="@+id/photo"
                 android:layout_width="66dp"
                 android:layout_height="66dp"
                 android:layout_centerVertical="true"
                 android:layout_marginRight="10dp"
                 android:layout_toLeftOf="@+id/activity_userinfo_next1"
                 android:scaleType="centerCrop"
-                android:src="@mipmap/icon_default_photo"
+                fresco:placeholderImage="@mipmap/default_photo"
                 />
         </RelativeLayout>
 
@@ -116,16 +117,15 @@
             />
 
         <RelativeLayout
-            android:id="@+id/activity_userinfo_nickname_edit"
+            android:id="@+id/nickname_edit"
             android:layout_width="wrap_content"
             android:layout_height="46dp">
 
             <TextView
-                android:id="@+id/activity_userinfo_nickname_label"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:id="@+id/nickname_label"
                 android:layout_centerVertical="true"
-                android:text="@string/nickname"/>
+                android:text="@string/nickname"
+                style="@style/SettingsLabel"/>
 
             <ImageView
                 android:id="@+id/activity_userinfo_next2"
@@ -142,15 +142,14 @@
                 android:layout_marginLeft="20dp"
                 android:layout_marginRight="10dp"
                 android:layout_toLeftOf="@+id/activity_userinfo_next2"
-                android:layout_toRightOf="@+id/activity_userinfo_nickname_label">
+                android:layout_toRightOf="@+id/nickname_label">
 
                 <TextView
-                    android:id="@+id/activity_userinfo_nickname"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:id="@+id/nickname"
                     android:layout_alignParentRight="true"
                     android:gravity="center_vertical|left"
-                    android:text="@string/nickname"/>
+                    android:text="@string/nickname"
+                    style="@style/SettingsLabel"/>
             </RelativeLayout>
         </RelativeLayout>
 
@@ -162,17 +161,16 @@
             />
 
         <RelativeLayout
-            android:id="@+id/activity_userinfo_status_edit"
+            android:id="@+id/status_edit"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
+            android:layout_height="46dp">
 
             <TextView
                 android:id="@+id/activity_userinfo_status_label"
-                android:layout_width="wrap_content"
-                android:layout_height="46dp"
                 android:layout_centerVertical="true"
                 android:gravity="center_vertical"
-                android:text="@string/status"/>
+                android:text="@string/status"
+                style="@style/SettingsLabel"/>
 
             <ImageView
                 android:id="@+id/activity_userinfo_next3"
@@ -192,12 +190,11 @@
                 android:layout_toRightOf="@+id/activity_userinfo_status_label">
 
                 <TextView
-                    android:id="@+id/activity_userinfo_status"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:id="@+id/status"
                     android:layout_alignParentRight="true"
                     android:gravity="center_vertical|left"
-                    android:text="@string/status"/>
+                    android:text="@string/status"
+                    style="@style/SettingsLabel"/>
             </RelativeLayout>
         </RelativeLayout>
 
@@ -209,13 +206,12 @@
             />
 
         <RelativeLayout
-            android:id="@+id/activty_userinfo_password_change"
+            android:id="@+id/change_password"
             android:layout_width="wrap_content"
             android:layout_height="46dp">
 
             <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                style="@style/SettingsLabel"
                 android:layout_centerVertical="true"
                 android:text="@string/change_password"/>
 
@@ -237,7 +233,7 @@
         />
 
     <TextView
-        android:id="@+id/activity_userinfo_logout"
+        android:id="@+id/logout"
         android:layout_width="330dp"
         android:layout_height="36dp"
         android:layout_gravity="center_horizontal"

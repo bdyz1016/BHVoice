@@ -3,7 +3,7 @@ package com.bhsc.ThirdParty;
 import android.app.Activity;
 import android.os.Bundle;
 
-import com.bhsc.mobile.utils.L;
+import com.bhsc.utils.L;
 import com.tencent.tauth.IUiListener;
 import com.tencent.tauth.Tencent;
 import com.tencent.tauth.UiError;

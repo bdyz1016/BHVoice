@@ -1,9 +1,7 @@
 package com.bhsc.userpages;
 
-import com.bhsc.news.model.Data_DB_News;
 import com.bhsc.userpages.model.Data_DB_User;
 import com.orm.SugarRecord;
-import com.orm.query.Select;
 
 /**
  * Created by zhanglei on 16/3/31.
@@ -20,7 +18,7 @@ public class UserManager {
     public static final int ERROR_UNKNOWN = 0X20;
 
     public static synchronized boolean isLogin(){
-        return SugarRecord.count(Data_DB_News.class) > 0;
+        return SugarRecord.count(Data_DB_User.class) > 0;
     }
 
     public static synchronized void login(Data_DB_User user){
@@ -31,7 +29,7 @@ public class UserManager {
     }
 
     public static synchronized boolean logout(){
-        return SugarRecord.deleteAll(Data_DB_News.class) > 0;
+        return SugarRecord.deleteAll(Data_DB_User.class) > 0;
     }
 
     public static synchronized Data_DB_User getUser(){

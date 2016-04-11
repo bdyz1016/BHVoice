@@ -9,13 +9,13 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bhsc.baseclass.BaseActivity;
+import com.bhsc.disclose.DiscloseFragment;
 import com.bhsc.mobile.R;
 import com.bhsc.news.HomeFragment;
+import com.bhsc.userpages.UserFragment;
 import com.bhsc.utils.L;
 import com.bhsc.views.NavigationMenu;
 import com.tencent.mm.sdk.openapi.IWXAPI;
-import com.tencent.mm.sdk.openapi.WXAPIFactory;
-
 
 /**
  * Created by lynn on 15-9-16.
@@ -95,8 +95,8 @@ public class MainActivity extends BaseActivity {
 
         mFragments = new Fragment[3];
         mFragments[0] = new HomeFragment();
-//        mFragments[1] = new DiscloseFragment();
-//        mFragments[2] = new UserFragment();
+        mFragments[1] = new DiscloseFragment();
+        mFragments[2] = new UserFragment();
 
         switchHome();
         regToWX();//注册到微信
@@ -153,25 +153,25 @@ public class MainActivity extends BaseActivity {
     }
 
     private void switchDisclose() {
-//        if (!TextUtils.isEmpty(mCurrentTab) && mCurrentTab.equals(DiscloseFragment.class.getSimpleName())) {
-//            return;
-//        }
-//        mCurrentTab = DiscloseFragment.class.getSimpleName();
-//        Navigation_btn_1_icon.setBackgroundResource(R.mipmap.btn_home_normal);
-//        Navigation_btn_2_icon.setBackgroundResource(R.mipmap.btn_disclose_press);
-//        Navigation_btn_3_icon.setBackgroundResource(R.mipmap.btn_profile_nomal);
-//        switchView(FRAGMENT_DISCLOSE);
+        if (!TextUtils.isEmpty(mCurrentTab) && mCurrentTab.equals(DiscloseFragment.class.getSimpleName())) {
+            return;
+        }
+        mCurrentTab = DiscloseFragment.class.getSimpleName();
+        Navigation_btn_1_icon.setBackgroundResource(R.mipmap.btn_home_normal);
+        Navigation_btn_2_icon.setBackgroundResource(R.mipmap.btn_disclose_press);
+        Navigation_btn_3_icon.setBackgroundResource(R.mipmap.btn_profile_nomal);
+        switchView(FRAGMENT_DISCLOSE);
     }
 
     private void switchProfile() {
-//        if (!TextUtils.isEmpty(mCurrentTab) && mCurrentTab.equals(UserFragment.class.getSimpleName())) {
-//            return;
-//        }
-//        mCurrentTab = UserFragment.class.getSimpleName();
-//        Navigation_btn_1_icon.setBackgroundResource(R.mipmap.btn_home_normal);
-//        Navigation_btn_2_icon.setBackgroundResource(R.mipmap.btn_disclose_normal);
-//        Navigation_btn_3_icon.setBackgroundResource(R.mipmap.btn_profile_press);
-//        switchView(FRAGMENT_USER);
+        if (!TextUtils.isEmpty(mCurrentTab) && mCurrentTab.equals(UserFragment.class.getSimpleName())) {
+            return;
+        }
+        mCurrentTab = UserFragment.class.getSimpleName();
+        Navigation_btn_1_icon.setBackgroundResource(R.mipmap.btn_home_normal);
+        Navigation_btn_2_icon.setBackgroundResource(R.mipmap.btn_disclose_normal);
+        Navigation_btn_3_icon.setBackgroundResource(R.mipmap.btn_profile_press);
+        switchView(FRAGMENT_USER);
     }
 
 //    private void switchLogin() {

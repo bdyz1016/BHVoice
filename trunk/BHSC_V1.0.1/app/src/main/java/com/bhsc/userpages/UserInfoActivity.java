@@ -23,187 +23,198 @@ import android.widget.PopupWindow;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.android.pc.ioc.event.EventBus;
-import com.android.pc.ioc.inject.InjectAll;
-import com.android.pc.ioc.inject.InjectBinder;
-import com.android.pc.ioc.inject.InjectInit;
-import com.android.pc.ioc.inject.InjectLayer;
-import com.android.pc.ioc.view.listener.OnClick;
 import com.bhsc.mobile.R;
-import com.bhsc.mobile.common.ImageBrowserActivity;
-import com.bhsc.mobile.dataclass.Data_DB_User;
-import com.bhsc.mobile.main.BHApplication;
-import com.bhsc.mobile.media.ImageUtil;
-import com.bhsc.mobile.userpages.event.UserEvent;
-import com.bhsc.mobile.utils.L;
-import com.bhsc.mobile.utils.Method;
-import com.bhsc.mobile.view.dialog.EditNicknameDialog;
-import com.bhsc.mobile.view.dialog.EditStatusDialog;
-import com.bhsc.mobile.view.meg7.widget.RectangleImageView;
+import com.bhsc.userpages.dialog.EditNicknameDialog;
+import com.bhsc.userpages.dialog.EditStatusDialog;
+import com.bhsc.userpages.model.Data_DB_User;
+import com.bhsc.utils.L;
+import com.facebook.drawee.view.SimpleDraweeView;
 
-import java.io.IOException;
 import java.util.List;
 
 /**
  * Created by lynn on 15-10-7.
  */
-@InjectLayer(R.layout.activity_userinfo)
-public class UserInfoActivity extends Activity {
+public class UserInfoActivity extends Activity implements View.OnClickListener {
 
     public static final int PHOTO_CHOOSE_WITH_DATA = 0x10;
     public static final int PHOTO_MAKE_WITH_DATA = 0x11;
     public static final int PHOTO_CUT = 0x12;
 
-    class Views {
-        @InjectBinder(method = "goBack", listeners = {OnClick.class})
-        View fragment_userinfo_back;
-        @InjectBinder(method = "complete", listeners = {OnClick.class})
-        View fragment_userinfo_complete;
-        @InjectBinder(method = "showDialag", listeners = {OnClick.class})
-        View activity_userinfo_take_photo;
-        @InjectBinder(method = "changePassword", listeners = {OnClick.class})
-        View activty_userinfo_password_change;
-        @InjectBinder(method = "logout" ,listeners = {OnClick.class})
-        Button activity_userinfo_logout;
-        @InjectBinder(method = "editNickname", listeners = {OnClick.class})
-        View activity_userinfo_nickname_edit;
-        @InjectBinder(method = "editStatus", listeners = {OnClick.class})
-        View activity_userinfo_status_edit;
-        TextView activity_userinfo_nickname;
-        TextView activity_userinfo_status;
-        @InjectBinder(method = "bigImage", listeners = {OnClick.class})
-        RectangleImageView activity_userinfo_photo;
-    }
-
-    @InjectAll
-    private Views mViews;
+    private SimpleDraweeView mPhoto;
+    private View mTakePhoto;
+    private View mEditNickname;
+    private View mEditStatus;
+    private View mChangePasswd;
+    private View mLogout;
+    private TextView Tv_Nickname;
+    private TextView Tv_Status;
 
     private PopupWindow mPopupWindow;
 
     private EditNicknameDialog mEditNicknameDialog;
     private EditStatusDialog mEditStatusDialog;
 
-    private Data_DB_User mCurrentUser = new Data_DB_User();
-    @InjectInit
-    private void init(){
-        UserPresenter.getInstance(this).initUserData();
-        EventBus.getDefault().register(this);
+    private Data_DB_User mCurrentUser;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_userinfo);
+    }
+
+    @Override
+    protected void onPostCreate(Bundle savedInstanceState) {
+        super.onPostCreate(savedInstanceState);
+        initWidget();
+    }
+
+    @Override
+    protected void onPostResume() {
+        super.onPostResume();
+        initView();
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        EventBus.getDefault().unregister(this);
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (resultCode != RESULT_OK) {
-            return;
-        }
-        switch (requestCode) {
-            case PHOTO_MAKE_WITH_DATA:
-                Bitmap photo = data.getParcelableExtra("data");
-                if (photo != null) {
-                    if (data.getData() == null) {
-                        try {
-                            String imageName = Method.getTS() + "";
-                            if (Method.isHaveSdcard()) {
-                                // Bitmap b = Bitmap.createScaledBitmap(photo, 100,
-                                // 100, true);
-                                if((BHApplication.screenWidth == 540 && BHApplication.screenHeight == 888)
-                                        ||(BHApplication.screenWidth == 720 && BHApplication.screenHeight == 1184)){
-                                    Method.saveMyBitmap_low(imageName, Bitmap.createBitmap(photo, photo.getWidth()/2-40, photo.getHeight()/2-40, 80, 80));
-                                    mViews.activity_userinfo_photo.setImageBitmap(Bitmap.createBitmap(photo, photo.getWidth()/2-40, photo.getHeight()/2-40, 80, 80));
-                                }else{
-                                    Method.saveMyBitmap_low(imageName, Bitmap.createBitmap(photo,photo.getWidth() / 2 - 50,photo.getHeight() / 2 - 50, 100,100));
-                                    mViews.activity_userinfo_photo.setImageBitmap(Bitmap.createBitmap(photo,photo.getWidth() / 2 - 50,photo.getHeight() / 2 - 50, 100, 100));
-                                }
-                            } else
-                                Toast.makeText(this,
-                                        getResources().getString(
-                                                R.string.user_userinfo_nosdcard),
-                                        Toast.LENGTH_LONG).show();
-                        } catch (IOException ex) {
-                            // 专为红米无SD卡无权限
-                            L.d("LL", "error IOException(红米无SD卡无权限)");
-                            ex.printStackTrace();
-                            Toast.makeText(this, getResources().getString(
-                                            R.string.user_userinfo_nosdcard),
-                                    Toast.LENGTH_SHORT).show();
-                            return;
-                        } catch (Exception ex) {
-                            L.d("LL", "error 4");
-                            Toast.makeText(this, getResources().getString(R.string.user_userinfo_takephoneError_take_failed),
-                                    Toast.LENGTH_SHORT).show();
-                            return;
-                        }
+    private void initWidget(){
+        mPhoto = (SimpleDraweeView) findViewById(R.id.photo);
+        Tv_Nickname = (TextView) findViewById(R.id.nickname);
+        Tv_Status = (TextView) findViewById(R.id.status);
+        mTakePhoto = findViewById(R.id.take_photo);
+        mEditNickname = findViewById(R.id.nickname_edit);
+        mEditStatus = findViewById(R.id.status_edit);
+        mChangePasswd = findViewById(R.id.change_password);
+        mLogout = findViewById(R.id.logout);
+    }
 
-                    } else {
-                        // 拍照截图防止上传图片过大--licheng
-                        photoCut(data.getData());
-                    }
-                    System.out.println("开始点我截图片啦2！！！！！！！！！！！！");
-                } else {
-                    L.d("LL", "error 3");
-                    Toast.makeText(this,
-                            getResources()
-                                    .getString(
-                                            R.string.user_userinfo_takephoneError_take_failed),
-                            Toast.LENGTH_SHORT).show();
-                }
-                break;
-
-            case PHOTO_CHOOSE_WITH_DATA:
-                photoCut(data.getData());
-                break;
-
-            case PHOTO_CUT:
-                Bundle extras = data.getExtras();
-                Bitmap photo1 = null;
-                if (extras != null)
-                    photo1 = extras.getParcelable("data");
-                if (photo1 != null) {
-                    try {
-                        String imageName = Method.getTS() + "";
-                        if (Method.isHaveSdcard()) {
-                            Method.saveMyBitmap_low(imageName, photo1);
-                            mViews.activity_userinfo_photo.setImageBitmap(photo1);
-                        } else
-                            Toast.makeText(this,
-                                    getResources().getString(
-                                            R.string.user_userinfo_nosdcard),
-                                    Toast.LENGTH_LONG).show();
-                    } catch (IOException ex) {
-                        // 专为红米无SD卡无权限
-                        L.d("LL", "error IOException(红米无SD卡无权限)");
-                        ex.printStackTrace();
-                        Toast.makeText(this,getResources().getString(R.string.user_userinfo_nosdcard),
-                                Toast.LENGTH_SHORT).show();
-                        return;
-                    } catch (Exception ex) {
-                        L.d("LL", "error 4");
-                        ex.printStackTrace();
-                        Toast.makeText(this, getResources().getString(R.string.user_userinfo_takephoneError_cut_failed),
-                                Toast.LENGTH_SHORT).show();
-                        return;
-                    }
-
-                } else {
-                    L.d("LL", "error 5");
-                    Toast.makeText(this, getResources().getString(R.string.user_userinfo_takephoneError_cut_failed),
-                            Toast.LENGTH_SHORT).show();
-                }
-                break;
-
-            default:
-                break;
+    private void initView(){
+        if(UserManager.isLogin() && (mCurrentUser = UserManager.getUser()) != null){
+            if(!TextUtils.isEmpty(mCurrentUser.getHeadurl())){
+                mPhoto.setImageURI(Uri.parse(mCurrentUser.getHeadurl()));
+            }
+            if(!TextUtils.isEmpty(mCurrentUser.getUsername())){
+                Tv_Nickname.setText(mCurrentUser.getUsername());
+            } else if(!TextUtils.isEmpty(mCurrentUser.getEmail())){
+                Tv_Nickname.setText(mCurrentUser.getEmail());
+            }
+            if(!TextUtils.isEmpty(mCurrentUser.getStatus())){
+                Tv_Status.setText(mCurrentUser.getStatus());
+            }
         }
     }
 
-    private void complete() {
-        UserPresenter.getInstance(this).saveUserInfo(mCurrentUser);
-    }
+//    @Override
+//    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+//        if (resultCode != RESULT_OK) {
+//            return;
+//        }
+//        switch (requestCode) {
+//            case PHOTO_MAKE_WITH_DATA:
+//                Bitmap photo = data.getParcelableExtra("data");
+//                if (photo != null) {
+//                    if (data.getData() == null) {
+//                        try {
+//                            String imageName = Method.getTS() + "";
+//                            if (Method.isHaveSdcard()) {
+//                                // Bitmap b = Bitmap.createScaledBitmap(photo, 100,
+//                                // 100, true);
+//                                if((BHApplication.screenWidth == 540 && BHApplication.screenHeight == 888)
+//                                        ||(BHApplication.screenWidth == 720 && BHApplication.screenHeight == 1184)){
+//                                    Method.saveMyBitmap_low(imageName, Bitmap.createBitmap(photo, photo.getWidth()/2-40, photo.getHeight()/2-40, 80, 80));
+//                                    mViews.activity_userinfo_photo.setImageBitmap(Bitmap.createBitmap(photo, photo.getWidth()/2-40, photo.getHeight()/2-40, 80, 80));
+//                                }else{
+//                                    Method.saveMyBitmap_low(imageName, Bitmap.createBitmap(photo,photo.getWidth() / 2 - 50,photo.getHeight() / 2 - 50, 100,100));
+//                                    mViews.activity_userinfo_photo.setImageBitmap(Bitmap.createBitmap(photo,photo.getWidth() / 2 - 50,photo.getHeight() / 2 - 50, 100, 100));
+//                                }
+//                            } else
+//                                Toast.makeText(this,
+//                                        getResources().getString(
+//                                                R.string.user_userinfo_nosdcard),
+//                                        Toast.LENGTH_LONG).show();
+//                        } catch (IOException ex) {
+//                            // 专为红米无SD卡无权限
+//                            L.d("LL", "error IOException(红米无SD卡无权限)");
+//                            ex.printStackTrace();
+//                            Toast.makeText(this, getResources().getString(
+//                                            R.string.user_userinfo_nosdcard),
+//                                    Toast.LENGTH_SHORT).show();
+//                            return;
+//                        } catch (Exception ex) {
+//                            L.d("LL", "error 4");
+//                            Toast.makeText(this, getResources().getString(R.string.user_userinfo_takephoneError_take_failed),
+//                                    Toast.LENGTH_SHORT).show();
+//                            return;
+//                        }
+//
+//                    } else {
+//                        // 拍照截图防止上传图片过大--licheng
+//                        photoCut(data.getData());
+//                    }
+//                    System.out.println("开始点我截图片啦2！！！！！！！！！！！！");
+//                } else {
+//                    L.d("LL", "error 3");
+//                    Toast.makeText(this,
+//                            getResources()
+//                                    .getString(
+//                                            R.string.user_userinfo_takephoneError_take_failed),
+//                            Toast.LENGTH_SHORT).show();
+//                }
+//                break;
+//
+//            case PHOTO_CHOOSE_WITH_DATA:
+//                photoCut(data.getData());
+//                break;
+//
+//            case PHOTO_CUT:
+//                Bundle extras = data.getExtras();
+//                Bitmap photo1 = null;
+//                if (extras != null)
+//                    photo1 = extras.getParcelable("data");
+//                if (photo1 != null) {
+//                    try {
+//                        String imageName = Method.getTS() + "";
+//                        if (Method.isHaveSdcard()) {
+//                            Method.saveMyBitmap_low(imageName, photo1);
+//                            mViews.activity_userinfo_photo.setImageBitmap(photo1);
+//                        } else
+//                            Toast.makeText(this,
+//                                    getResources().getString(
+//                                            R.string.user_userinfo_nosdcard),
+//                                    Toast.LENGTH_LONG).show();
+//                    } catch (IOException ex) {
+//                        // 专为红米无SD卡无权限
+//                        L.d("LL", "error IOException(红米无SD卡无权限)");
+//                        ex.printStackTrace();
+//                        Toast.makeText(this,getResources().getString(R.string.user_userinfo_nosdcard),
+//                                Toast.LENGTH_SHORT).show();
+//                        return;
+//                    } catch (Exception ex) {
+//                        L.d("LL", "error 4");
+//                        ex.printStackTrace();
+//                        Toast.makeText(this, getResources().getString(R.string.user_userinfo_takephoneError_cut_failed),
+//                                Toast.LENGTH_SHORT).show();
+//                        return;
+//                    }
+//
+//                } else {
+//                    L.d("LL", "error 5");
+//                    Toast.makeText(this, getResources().getString(R.string.user_userinfo_takephoneError_cut_failed),
+//                            Toast.LENGTH_SHORT).show();
+//                }
+//                break;
+//
+//            default:
+//                break;
+//        }
+//    }
+//
+//    private void complete() {
+//        UserPresenter.getInstance(this).saveUserInfo(mCurrentUser);
+//    }
 
     private void goBack() {
         finish();
@@ -217,8 +228,7 @@ public class UserInfoActivity extends Activity {
         mEditNicknameDialog.setOnPositiveButtonClickListener(new EditNicknameDialog.OnPositiveButtonClickListener() {
             @Override
             public void onConfirm(String nickname) {
-                mViews.activity_userinfo_nickname.setText(nickname);
-                mCurrentUser.setNickName(nickname);
+                Tv_Nickname.setText(nickname);
             }
         });
         mEditNicknameDialog.show();
@@ -232,15 +242,13 @@ public class UserInfoActivity extends Activity {
         mEditStatusDialog.setOnPositiveButtonClickListener(new EditStatusDialog.OnPositiveButtonClickListener() {
             @Override
             public void onConfirm(String status) {
-                mViews.activity_userinfo_status.setText(status);
-                mCurrentUser.setStatus(status);
+                Tv_Status.setText(status);
             }
         });
         mEditStatusDialog.show();
     }
 
     private void logout(){
-        UserPresenter.getInstance(this).deleteUserInfo();
     }
 
     private void changePassword(){
@@ -386,32 +394,52 @@ public class UserInfoActivity extends Activity {
         startActivityForResult(intent, PHOTO_CUT);
     }
 
-    private void setUserPhoto(String path){
-        if(!TextUtils.isEmpty(path)){
-            ImageUtil.getInstance().loadBitmap(path, mViews.activity_userinfo_photo, 100, 100);
-        }
+//    private void setUserPhoto(String path){
+//        if(!TextUtils.isEmpty(path)){
+//            ImageUtil.getInstance().loadBitmap(path, mViews.activity_userinfo_photo, 100, 100);
+//        }
+//    }
+
+//    private void bigImage(String path){
+//        if(TextUtils.isEmpty(path)){
+//            return;
+//        }
+//        Intent intent = new Intent();
+//        intent.putExtra(ImageBrowserActivity.INTENT_PATH, path);
+//        intent.setClass(UserInfoActivity.this, ImageBrowserActivity.class);
+//        startActivity(intent);
+//    }
+
+//    public void onEventMainThread(UserEvent event){
+//        if(event.getAction() == UserEvent.ACTION_UPDATE_USERINFO_SUCCESS){
+//            finish();
+//        } else if(event.getAction() == UserEvent.ACTION_DELETE_USERINFO_COMPLETE){
+//            finish();
+//        } else if(event.getAction() == UserEvent.ACTION_GET_USERINFO){
+//            mCurrentUser = (Data_DB_User) event.getExtra();
+//            mViews.activity_userinfo_nickname.setText(mCurrentUser.getNickName());
+//            mViews.activity_userinfo_status.setText(mCurrentUser.getStatus());
+////            ImageUtil.getInstance().loadBitmap(mCurrentUser.getPhotoPath(), mViews.activity_userinfo_photo, mViews.activity_userinfo_photo.getWidth(), mViews.activity_userinfo_photo.getHeight());
+//        }
+//    }
+
+    private void tackPicture(){
+
     }
 
-    private void bigImage(String path){
-        if(TextUtils.isEmpty(path)){
-            return;
-        }
-        Intent intent = new Intent();
-        intent.putExtra(ImageBrowserActivity.INTENT_PATH, path);
-        intent.setClass(UserInfoActivity.this, ImageBrowserActivity.class);
-        startActivity(intent);
-    }
-
-    public void onEventMainThread(UserEvent event){
-        if(event.getAction() == UserEvent.ACTION_UPDATE_USERINFO_SUCCESS){
-            finish();
-        } else if(event.getAction() == UserEvent.ACTION_DELETE_USERINFO_COMPLETE){
-            finish();
-        } else if(event.getAction() == UserEvent.ACTION_GET_USERINFO){
-            mCurrentUser = (Data_DB_User) event.getExtra();
-            mViews.activity_userinfo_nickname.setText(mCurrentUser.getNickName());
-            mViews.activity_userinfo_status.setText(mCurrentUser.getStatus());
-//            ImageUtil.getInstance().loadBitmap(mCurrentUser.getPhotoPath(), mViews.activity_userinfo_photo, mViews.activity_userinfo_photo.getWidth(), mViews.activity_userinfo_photo.getHeight());
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()){
+            case R.id.take_photo:
+                break;
+            case R.id.status_edit:
+                break;
+            case R.id.nickname_edit:
+                break;
+            case R.id.change_password:
+                break;
+            case R.id.logout:
+                break;
         }
     }
 }

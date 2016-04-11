@@ -66,4 +66,21 @@
         <item name="android:textColor">@color/white</item>
         <item name="textAllCaps">true</item>
     </style>
+
+    <style name="SettingsLabel">
+        <item name="android:textSize">17sp</item>
+        <item name="android:textColor">@color/category_tab_text</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+    </style>
+
+    <style name="item_disclose_button">
+        <item name="android:layout_width">77dp</item>
+        <item name="android:layout_height">30dp</item>
+        <item name="android:textSize">10sp</item>
+        <item name="android:textColor">@color/default_text_color</item>
+        <item name="android:paddingLeft">10dp</item>
+        <item name="android:gravity">center</item>
+        <item name="android:background">@mipmap/btn_news_normal</item>
+    </style>
 </resources>

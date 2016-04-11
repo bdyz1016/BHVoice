@@ -1,53 +1,54 @@
 package com.bhsc.userpages;
 
 import android.app.Activity;
+import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
-import com.android.pc.ioc.inject.InjectAll;
-import com.android.pc.ioc.inject.InjectBinder;
-import com.android.pc.ioc.inject.InjectLayer;
-import com.android.pc.ioc.view.listener.OnClick;
 import com.bhsc.mobile.R;
-import com.bhsc.mobile.view.dialog.DefaultDialog;
 
 /**
  * Created by lynn on 10/15/15.
  */
-@InjectLayer(R.layout.activity_reset_password)
-public class ResetPasswordActivity extends Activity {
+public class ResetPasswordActivity extends Activity implements View.OnClickListener{
 
-    class Views{
-        @InjectBinder(method = "goback", listeners = {OnClick.class})
-        View activity_reset_password_back;
-        EditText activity_reset_password;
-        EditText activity_reset_password_repeat;
-        @InjectBinder(method = "done", listeners = {OnClick.class})
-        Button activity_reset_password_done;
+    private View activity_reset_password_back;
+    private EditText activity_reset_password;
+    private EditText activity_reset_password_repeat;
+    private Button activity_reset_password_done;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_reset_password);
     }
 
-    @InjectAll
-    private Views mViews;
+    @Override
+    protected void onPostCreate(Bundle savedInstanceState) {
+        super.onPostCreate(savedInstanceState);
+        initWidget();
+    }
 
-    private DefaultDialog mDialog;
+    private void initWidget(){
+        activity_reset_password_back = findViewById(R.id.activity_reset_password_back);
+        activity_reset_password = (EditText) findViewById(R.id.activity_reset_password);
+        activity_reset_password_repeat = (EditText) findViewById(R.id.activity_reset_password_repeat);
+        activity_reset_password_done = (Button) findViewById(R.id.activity_reset_password_done);
+    }
 
-    private void goback(){
+    private void goBack(){
         finish();
     }
 
-    private void done(){
-        if(mDialog != null && mDialog .isShowing()){
-            mDialog.dismiss();
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()){
+            case R.id.activity_reset_password_back:
+                goBack();
+                break;
+            default:
+                break;
         }
-        mDialog = new DefaultDialog(this);
-        mDialog.setMessage("密码修改成功");
-        mDialog.setOnPositiveClickListener(new DefaultDialog.OnButtonClickListener() {
-            @Override
-            public void onClick() {
-                mDialog.dismiss();
-            }
-        });
-        mDialog.show();
     }
 }
