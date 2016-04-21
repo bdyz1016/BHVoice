@@ -1,58 +1,69 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/fragment_disclose_container"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#eeeeee">
+    xmlns:fab="http://schemas.android.com/apk/res-auto"
+    android:background="@color/white">
 
-    <LinearLayout
-        android:id="@+id/content"
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/refresh_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_below="@+id/title"
         android:orientation="vertical">
-
-        <RelativeLayout
-            android:id="@+id/fragment_disclose_title"
-            android:layout_width="match_parent"
-            android:layout_height="45dp"
-            android:background="@color/white">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerInParent="true"
-                android:text="@string/title_disclose"
-                android:textColor="@color/black"
-                android:textSize="20sp" />
-
-            <ImageView
-                android:id="@+id/fragment_disclose_title_menu"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:layout_centerVertical="true"
-                android:layout_marginRight="16dp"
-                android:background="@mipmap/btn_disclose_menu"
-                android:visibility="gone" />
-        </RelativeLayout>
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/disclose_list"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginLeft="@dimen/activity_horizontal_margin"
-            android:layout_marginRight="@dimen/activity_horizontal_margin"
-            android:layout_marginTop="10dp" />
-    </LinearLayout>
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/create_disclose"
+            android:layout_marginRight="@dimen/activity_horizontal_margin" />
+    </android.support.v4.widget.SwipeRefreshLayout>
+
+    <RelativeLayout
+        android:id="@+id/title"
+        android:layout_width="match_parent"
+        android:layout_height="50dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:text="@string/title_disclose"
+            android:textColor="@color/black"
+            android:textSize="20sp" />
+    </RelativeLayout>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="5dp"
+        android:background="@drawable/bg_shadow"
+        android:layout_below="@+id/title"/>
+
+    <com.github.clans.fab.FloatingActionMenu
+        android:id="@+id/float_action_menu"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="16dp"
-        android:clickable="true"
-        android:src="@mipmap/arrow_all_normal"
-        app:layout_anchor="@id/content"
-        app:layout_anchorGravity="bottom|right|end"
-        app:layout_behavior="com.bhsc.utils.ScrollAwareFABBehavior"/>
-</android.support.design.widget.CoordinatorLayout>
+        android:layout_alignParentRight="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginRight="@dimen/activity_horizontal_margin"
+        android:layout_marginBottom="@dimen/activity_horizontal_margin"
+        fab:menu_fab_show_animation="@anim/jump_from_down"
+        fab:menu_fab_hide_animation="@anim/hide_to_bottom"
+        >
+        <com.github.clans.fab.FloatingActionButton
+            android:id="@+id/fab_create_disclose"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@mipmap/ic_edit"
+            fab:fab_label="@string/disclose"
+            style="@style/MenuButtonsStyle" />
+
+        <com.github.clans.fab.FloatingActionButton
+            android:id="@+id/fab_my_disclose"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@mipmap/ic_star"
+            fab:fab_label="@string/my_disclose"
+            style="@style/MenuButtonsStyle" />
+    </com.github.clans.fab.FloatingActionMenu>
+</RelativeLayout>

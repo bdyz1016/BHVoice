@@ -6,12 +6,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bhsc.disclose.model.Data_DB_Disclose;
 import com.bhsc.mobile.R;
 import com.bhsc.utils.DateFormat;
+import com.bhsc.views.footer.LoadingMoreFooter;
 import com.jaeger.ninegridimageview.NineGridImageView;
 import com.jaeger.ninegridimageview.NineGridImageViewAdapter;
 import com.orm.dsl.NotNull;
@@ -25,38 +27,73 @@ import java.util.List;
 /**
  * Created by zhanglei on 16/4/5.
  */
-public class DiscloseRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
+public class DiscloseRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+
+    public static final int STATE_LOADING = 0;
+    public static final int STATE_LOAD_COMPLETE = 1;
+    public static final int STATE_NO_MORE = 2;
 
     private static final int TYPE_HEADER = 0;
-    private static final int TYPE_CONTENT = 1;
+    private static final int TYPE_FOOTER = 1;
+    private static final int TYPE_CONTENT = 2;
 
     private final List<Data_DB_Disclose> mDataList = new LinkedList<>();
-    public DiscloseRecyclerAdapter(){
 
+    private boolean mHasFooter = false;
+    private boolean mHasHeader = false;
+
+    private int mCurrentState = STATE_LOADING;
+
+    public DiscloseRecyclerAdapter() {
     }
 
-    public void addAll(Collection<Data_DB_Disclose> collection){
+    public void addAll(Collection<Data_DB_Disclose> collection) {
         mDataList.addAll(collection);
         notifyDataSetChanged();
     }
 
-    public void clear(){
+    public void clear() {
         mDataList.clear();
+        notifyDataSetChanged();
+    }
+
+    public void hasFooter() {
+        mHasFooter = true;
+    }
+
+    public void hasHeader() {
+        mHasHeader = true;
+    }
+
+    public void setState(int state){
+        if(state == mCurrentState){
+            return;
+        }
+        if(state != STATE_LOAD_COMPLETE && state != STATE_LOADING && state != STATE_NO_MORE){
+            return;
+        }
+        mCurrentState = state;
         notifyDataSetChanged();
     }
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         RecyclerView.ViewHolder viewHolder = null;
-        switch (viewType){
+        switch (viewType) {
             case TYPE_HEADER: {
                 View contentView = LayoutInflater.from(parent.getContext()).inflate(R.layout.header_disclose, parent, false);
-                viewHolder = new HealderViewHolder(contentView);
+                viewHolder = new HeaderViewHolder(contentView);
                 break;
             }
             case TYPE_CONTENT: {
                 View contentView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_disclose, parent, false);
                 viewHolder = new ContentViewHolder(contentView);
+                break;
+            }
+            case TYPE_FOOTER: {
+//                View contentView = new LoadingMoreFooter(parent.getContext());
+                View contentView = LayoutInflater.from(parent.getContext()).inflate(R.layout.footer_news_list, parent, false);
+                viewHolder = new FooterViewHolder(contentView);
                 break;
             }
         }
@@ -65,9 +102,9 @@ public class DiscloseRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.V
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-        switch (getItemViewType(position)){
+        switch (getItemViewType(position)) {
             case TYPE_HEADER:
-                HealderViewHolder healderViewHolder = (HealderViewHolder) holder;
+                HeaderViewHolder healderViewHolder = (HeaderViewHolder) holder;
                 healderViewHolder.mCreate.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -75,8 +112,30 @@ public class DiscloseRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.V
                     }
                 });
                 break;
+            case TYPE_FOOTER:
+                FooterViewHolder footerViewHolder = (FooterViewHolder) holder;
+                switch (mCurrentState){
+                    case STATE_LOADING:
+                        footerViewHolder.loading();
+                        break;
+                    case STATE_LOAD_COMPLETE:
+                        footerViewHolder.complete();
+                        break;
+                    case STATE_NO_MORE:
+                        footerViewHolder.noMore();
+                        break;
+                    default:
+                        break;
+                }
+                break;
             case TYPE_CONTENT:
                 ContentViewHolder contentViewHolder = (ContentViewHolder) holder;
+                if ((mHasHeader && position >= mDataList.size())
+                        || (!mHasHeader && position >= mDataList.size() - 1)) {
+                    contentViewHolder.mDivider.setVisibility(View.GONE);
+                } else {
+                    contentViewHolder.mDivider.setVisibility(View.VISIBLE);
+                }
                 contentViewHolder.bind(mDataList.get(position));
                 break;
         }
@@ -84,31 +143,66 @@ public class DiscloseRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.V
 
     @Override
     public int getItemCount() {
-//        return mDataList.size() + 1;
-        return mDataList.size();
+        int count = mDataList.size();
+        if (mHasFooter) {
+            count++;
+        }
+        if (mHasHeader) {
+            count++;
+        }
+        return count;
     }
 
     @Override
     public int getItemViewType(int position) {
-//        if(position == 0){
-//            return TYPE_HEADER;
-//        }
+        if (mHasHeader && position == 0) {
+            return TYPE_HEADER;
+        } else if (mHasFooter && position == getItemCount() - 1) {
+            return TYPE_FOOTER;
+        }
         return TYPE_CONTENT;
     }
 
-    private static class HealderViewHolder extends RecyclerView.ViewHolder{
+    private static class HeaderViewHolder extends RecyclerView.ViewHolder {
 
         public View mCreate;
-        public HealderViewHolder(View itemView) {
+
+        public HeaderViewHolder(View itemView) {
             super(itemView);
             mCreate = itemView.findViewById(R.id.create);
         }
     }
 
-    private static class ContentViewHolder extends RecyclerView.ViewHolder{
+    private static class FooterViewHolder extends RecyclerView.ViewHolder {
+        public TextView Tv_Hint;
+        public ProgressBar Pb_Progress;
+        public FooterViewHolder(View itemView) {
+            super(itemView);
+            Tv_Hint = (TextView) itemView.findViewById(R.id.newslist_footer_text);
+            Pb_Progress = (ProgressBar) itemView.findViewById(R.id.newslist_footer_progressbar);
+        }
+
+        public void loading(){
+            Pb_Progress.setVisibility(View.VISIBLE);
+            Tv_Hint.setText(Tv_Hint.getContext().getString(R.string.loading));
+        }
+
+        public void complete(){
+            Pb_Progress.setVisibility(View.GONE);
+            Tv_Hint.setText(Tv_Hint.getContext().getString(R.string.loaded));
+        }
+
+        public void noMore(){
+            Pb_Progress.setVisibility(View.GONE);
+            Tv_Hint.setText(Tv_Hint.getContext().getString(R.string.no_more));
+        }
+    }
+
+    private static class ContentViewHolder extends RecyclerView.ViewHolder {
 
         public TextView Tv_Date, Tv_Time, Tv_Content, Tv_Delete, Tv_Support, Tv_Dicuss, Tv_Share;
         public NineGridImageView mPictures;
+        public View mDivider;
 
         private DateFormat mDateFormat;
 
@@ -134,6 +228,7 @@ public class DiscloseRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.V
 
         public ContentViewHolder(View itemView) {
             super(itemView);
+            mDivider = itemView.findViewById(R.id.divider);
             Tv_Date = (TextView) itemView.findViewById(R.id.date);
             Tv_Time = (TextView) itemView.findViewById(R.id.time);
             Tv_Content = (TextView) itemView.findViewById(R.id.content);

@@ -29,7 +29,6 @@ public class Data_DB_User extends SugarRecord{
     private int isAdmin;
     private int isFreeze;
     private String createTime;
-    private String id;
     /**
      * 性别  0：不确定，1：男 ，2：女
      */
@@ -131,13 +130,5 @@ public class Data_DB_User extends SugarRecord{
 
     public void setCreateTime(String createTime) {
         this.createTime = createTime;
-    }
-
-    public String getUserId() {
-        return id;
-    }
-
-    public void setUserId(String userId) {
-        this.id = userId;
     }
 }

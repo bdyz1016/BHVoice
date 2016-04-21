@@ -14,27 +14,12 @@ import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.android.volley.AuthFailureError;
-import com.android.volley.Request;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.StringRequest;
-import com.bhsc.MyApplication;
 import com.bhsc.mobile.R;
-import com.bhsc.net.MyRetryPolicy;
-import com.bhsc.net.MySingleton;
 import com.bhsc.news.adapter.NewsAdapter;
 import com.bhsc.news.model.Data_DB_News;
-import com.bhsc.news.newsdetail.DetailActivity;
 import com.bhsc.news.newsdetail.NewsActivity;
 import com.bhsc.utils.L;
-import com.joanzapata.android.BaseAdapterHelper;
-import com.joanzapata.android.QuickAdapter;
-
-
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Created by lynn on 15-9-17.
@@ -60,8 +45,6 @@ public class NewsFragment extends Fragment implements NewsManager.OnNewsListener
     private ProgressBar Pb_FooterProgress;
 
     private NewsAdapter mAdapter;
-
-    private LayoutInflater inflater;
 
     private Context mContext;
 
@@ -89,7 +72,6 @@ public class NewsFragment extends Fragment implements NewsManager.OnNewsListener
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         L.i(TAG, "onCreateView");
-        this.inflater = inflater;
         mContentView = inflater.inflate(R.layout.fragment_news, container, false);
         initWidget();
         initData();

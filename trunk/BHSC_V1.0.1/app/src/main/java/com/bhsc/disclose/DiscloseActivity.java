@@ -1,6 +1,7 @@
 package com.bhsc.disclose;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -13,6 +14,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.support.annotation.NonNull;
 import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.KeyEvent;
@@ -29,15 +31,20 @@ import android.widget.PopupWindow;
 import android.widget.Toast;
 
 import com.bhsc.MyApplication;
+import com.bhsc.disclose.model.DiscloseResponse;
 import com.bhsc.mobile.R;
 import com.bhsc.net.UploadFile;
+import com.bhsc.userpages.UserManager;
 import com.bhsc.userpages.dialog.DefaultDialog;
 import com.bhsc.utils.L;
 import com.facebook.drawee.drawable.ScalingUtils;
 import com.facebook.drawee.generic.GenericDraweeHierarchy;
 import com.facebook.drawee.view.SimpleDraweeView;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.jaeger.ninegridimageview.NineGridImageView;
 import com.jaeger.ninegridimageview.NineGridImageViewAdapter;
+import com.orm.dsl.NotNull;
 
 import java.io.File;
 import java.io.IOException;
@@ -75,9 +82,10 @@ public class DiscloseActivity extends Activity {
     private PopupWindow mPopupWindow;
 
     private DefaultDialog mDialog;
-
+    private ProgressDialog mProgressDialog;
     private int mPictureCount;
 
+    private String mUserId;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -144,6 +152,12 @@ public class DiscloseActivity extends Activity {
     private void initData() {
         mNineGridImageView.setAdapter(mAdapter);
         mNineGridImageView.setImagesData(new ArrayList<>(mPictures));
+        if(UserManager.isLogin()){
+            mUserId = String.valueOf(UserManager.getUser().getId());
+        } else {
+            Toast.makeText(this, "请登录", Toast.LENGTH_SHORT).show();
+            finish();
+        }
     }
 
     private void menu() {
@@ -154,7 +168,10 @@ public class DiscloseActivity extends Activity {
     }
 
     private void confirm() {
-        new SubmitAsync().execute("");
+        displayProgressDialog("正在上传");
+        String title = Edit_Title.getText().toString();
+        String content = Edit_Content.getText().toString();
+        new SubmitAsync().execute(title, content, mUserId);
     }
 
     private void cancel() {
@@ -164,6 +181,18 @@ public class DiscloseActivity extends Activity {
     private void picturesItemClicked() {
     }
 
+    private void displayProgressDialog(@NotNull String message){
+        dismissPrigressDialog();
+        mProgressDialog = new ProgressDialog(this);
+        mProgressDialog.setMessage(message);
+        mProgressDialog.show();
+    }
+
+    private void dismissPrigressDialog(){
+        if(mProgressDialog != null && mProgressDialog.isShowing()){
+            mProgressDialog.dismiss();
+        }
+    }
 
     private void showDialag() {
         backgroundAlpha(0.4f);
@@ -378,6 +407,11 @@ public class DiscloseActivity extends Activity {
 
     private class SubmitAsync extends AsyncTask<String, Void, Integer> {
 
+        private Gson mGson;
+        public SubmitAsync(){
+            mGson = new Gson();
+        }
+
         @Override
         protected Integer doInBackground(String... params) {
             List<File> files = new ArrayList<>();
@@ -391,13 +425,30 @@ public class DiscloseActivity extends Activity {
             String title = params[0];
             String content = params[1];
             String userId = params[2];
+            String response = null;
             try {
-                String response = UploadFile.uploadMultiFileSync(MyApplication.Address + "/mood/addMood?title="+ title +"&content="+ content +"&userId=" + userId, null, files, null);
+                String url = MyApplication.Address + "/mood/addMood?title="+ title +"&content="+ content +"&userId=" + userId;
+                L.i(TAG, "add mood url:" + url);
+                response = UploadFile.uploadMultiFileSync(url, null, files, null);
                 L.i(TAG, "add mood:" + response);
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            return null;
+            if(!TextUtils.isEmpty(response)){
+                DiscloseResponse discloseResponse = mGson.fromJson(response, new TypeToken<DiscloseResponse>(){}.getType());
+                return discloseResponse.getCode();
+            }
+            return 0;
+        }
+
+        @Override
+        protected void onPostExecute(Integer integer) {
+            dismissPrigressDialog();
+            if(integer != null && integer == DiscloseResponse.SUCESS_CODE){
+                finish();
+            } else {
+                Toast.makeText(DiscloseActivity.this, "上传失败", Toast.LENGTH_SHORT).show();
+            }
         }
     }
 }

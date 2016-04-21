@@ -1,25 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@color/white"
-    android:orientation="vertical"
-    android:paddingBottom="8dp"
-    android:paddingLeft="8dp"
-    android:paddingRight="8dp">
+    android:orientation="vertical">
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="25dp">
+        android:layout_height="25dp"
+        android:layout_marginLeft="@dimen/activity_horizontal_margin"
+        android:layout_marginRight="@dimen/activity_horizontal_margin">
 
         <TextView
             android:id="@+id/date"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
-            android:text="2015-9-30"
-            />
+            android:text="2015-9-30" />
 
         <TextView
             android:id="@+id/time"
@@ -28,60 +26,70 @@
             android:layout_centerVertical="true"
             android:layout_marginLeft="8dp"
             android:layout_toRightOf="@+id/date"
-            android:text="18:04"
-            />
+            android:text="18:04" />
 
         <TextView
             android:id="@+id/delete"
             android:layout_width="40dp"
             android:layout_height="match_parent"
             android:layout_alignParentRight="true"
-            android:drawableRight="@mipmap/btn_disclose_delete"/>
+            android:drawableRight="@mipmap/btn_disclose_delete" />
     </RelativeLayout>
     <!--爆料内容-->
     <TextView
         android:id="@+id/content"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="滨海视窗"
-        />
+        android:layout_marginLeft="@dimen/activity_horizontal_margin"
+        android:layout_marginRight="@dimen/activity_horizontal_margin"
+        android:text="滨海视窗" />
 
     <!--爆料图片-->
     <com.jaeger.ninegridimageview.NineGridImageView
         android:id="@+id/pictures"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/activity_horizontal_margin"
+        android:layout_marginRight="@dimen/activity_horizontal_margin"
         app:imgGap="4dp"
         app:showStyle="fill"
-        app:singleImgSize="120dp"/>
+        app:singleImgSize="120dp" />
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="53dp">
+        android:layout_height="53dp"
+        android:layout_marginLeft="@dimen/activity_horizontal_margin"
+        android:layout_marginRight="@dimen/activity_horizontal_margin">
         <!--赞-->
         <TextView
             android:id="@+id/support"
             style="@style/item_disclose_button"
-            android:text="888888"
+            android:layout_centerVertical="true"
             android:drawableLeft="@mipmap/btn_support_press"
-            android:layout_centerVertical="true"/>
+            android:text="888888" />
         <!--评论-->
         <TextView
             android:id="@+id/discuss"
             style="@style/item_disclose_button"
-            android:text="888888"
-            android:drawableLeft="@mipmap/btn_discuss_normal"
             android:layout_centerVertical="true"
             android:layout_marginLeft="15dp"
-            android:layout_toRightOf="@+id/support"/>
+            android:layout_toRightOf="@+id/support"
+            android:drawableLeft="@mipmap/btn_discuss_normal"
+            android:text="888888" />
         <!--分享-->
         <TextView
             android:id="@+id/share"
             style="@style/item_disclose_button"
-            android:text="888888"
-            android:drawableLeft="@mipmap/btn_share_normal"
+            android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
             android:layout_marginLeft="15dp"
-            android:layout_alignParentRight="true"/>
+            android:drawableLeft="@mipmap/btn_share_normal"
+            android:text="888888" />
     </RelativeLayout>
+    <View
+        android:id="@+id/divider"
+        android:layout_marginTop="8dp"
+        android:layout_width="match_parent"
+        android:layout_height="5dp"
+        android:background="@color/divider"/>
 </LinearLayout>

@@ -1,6 +1,7 @@
 package com.bhsc.userpages;
 
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -14,6 +15,7 @@ import android.widget.Toast;
 
 import com.bhsc.mobile.R;
 import com.bhsc.userpages.model.Data_DB_User;
+import com.bhsc.utils.L;
 import com.facebook.drawee.view.SimpleDraweeView;
 
 /**
@@ -62,6 +64,7 @@ public class UserFragment extends Fragment implements View.OnClickListener{
         mDisclose = mContentView.findViewById(R.id.disclose);
         mAbout = mContentView.findViewById(R.id.about);
         mFeedback = mContentView.findViewById(R.id.feedback);
+        mPhoto.setOnClickListener(this);
     }
 
     private void initView(){
@@ -113,6 +116,13 @@ public class UserFragment extends Fragment implements View.OnClickListener{
                 disclose();
                 break;
             case R.id.discuss:
+                break;
+            case R.id.photo:
+                if(UserManager.isLogin()){
+                    startActivity(new Intent(mContext, UserInfoActivity.class));
+                } else {
+                    startActivity(new Intent(mContext, LoginAndRegisterActivity.class));
+                }
                 break;
             default:
                 break;

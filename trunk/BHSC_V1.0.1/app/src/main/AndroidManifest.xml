@@ -30,10 +30,15 @@
         </activity>
         <activity android:name="com.bhsc.news.newsdetail.DetailActivity" />
         <activity android:name="com.bhsc.news.SearchActivity" />
-        <activity android:name="com.bhsc.disclose.DiscloseActivity"/>
+        <activity android:name="com.bhsc.disclose.DiscloseActivity" />
+        <activity android:name="com.bhsc.disclose.UserDiscloseActivity"/>
+        <activity android:name="com.bhsc.userpages.LoginAndRegisterActivity" />
+        <activity android:name="com.bhsc.userpages.LoginActivity" />
+        <activity android:name="com.bhsc.userpages.RegisterActivity" />
+        <activity android:name="com.bhsc.userpages.UserInfoActivity" />
         <activity
-            android:configChanges="orientation|screenSize"
-            android:name="me.nereo.multi_image_selector.MultiImageSelectorActivity" />
+            android:name="me.nereo.multi_image_selector.MultiImageSelectorActivity"
+            android:configChanges="orientation|screenSize" />
 
         <meta-data
             android:name="DATABASE"

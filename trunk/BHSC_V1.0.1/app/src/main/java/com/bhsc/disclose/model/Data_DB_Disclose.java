@@ -20,6 +20,7 @@ public class Data_DB_Disclose extends SugarRecord {
     private String headurl;
     private int state;
     private String title;
+    @Column(name="user_id")
     private int userId;
     private String content;
     private String username;

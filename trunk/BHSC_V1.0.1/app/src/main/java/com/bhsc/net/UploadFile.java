@@ -62,13 +62,13 @@ public class UploadFile {
 
         outputStream = new DataOutputStream(connection.getOutputStream());
 
-        for(File file :fileList) {
-            FileInputStream fileInputStream = new FileInputStream(file);
+        for(int i = 0;i < fileList.size();i++) {
+            FileInputStream fileInputStream = new FileInputStream(fileList.get(i));
             bytesAvailable = fileInputStream.available();
             bufferSize = Math.min(bytesAvailable, maxBufferSize);
             buffer = new byte[bufferSize];
             outputStream.writeBytes(twoHyphens + boundary + lineEnd);
-            outputStream.writeBytes("Content-Disposition: form-data; name=\"file\";filename=\"" + file.getName() + "\"" + lineEnd);
+            outputStream.writeBytes("Content-Disposition: form-data; name=\"file" + i +"\";filename=\"" + fileList.get(i).getName() + "\"" + lineEnd);
             outputStream.writeBytes(lineEnd);
 
             // Read file

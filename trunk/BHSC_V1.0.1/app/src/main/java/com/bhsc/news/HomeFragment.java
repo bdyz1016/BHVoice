@@ -63,7 +63,7 @@ public class HomeFragment extends Fragment {
         mNewsTypeList = getNewsTypes();
         mPagerAdapter = new PagerAdapter(mContext, getChildFragmentManager(), mNewsTypeList);
         fragment_home_viewpager.setAdapter(mPagerAdapter);
-//        tablayout.setupWithViewPager(fragment_home_viewpager);
+        tablayout.setupWithViewPager(fragment_home_viewpager);
     }
 
     private void search() {

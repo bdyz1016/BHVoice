@@ -23,8 +23,8 @@ dependencies {
     compile files('libs/libammsdk.jar')
     compile files('libs/mta-sdk-1.6.2.jar')
     compile files('libs/open_sdk_r5276.jar')
-    compile 'com.android.support:design:23.0.1'
-    compile 'com.android.support:recyclerview-v7:23.0.1'
+    compile 'com.android.support:design:23.2.1'
+    compile 'com.android.support:recyclerview-v7:23.2.1'
     compile 'com.mcxiaoke.volley:library:1.0.19'
     compile 'com.google.code.gson:gson:2.6.2'
     compile 'com.jaeger.ninegridimageview:library:1.0.1'
@@ -32,6 +32,7 @@ dependencies {
     compile 'com.github.satyan:sugar:1.4'
     compile 'com.joanzapata.android:base-adapter-helper:1.1.11'
     compile 'com.android.support:appcompat-v7:23.2.1'
-    compile 'com.android.support:support-v4:23.0.1'
+    compile 'com.android.support:support-v4:23.2.1'
+    compile 'com.github.clans:fab:1.6.3'
     compile project(':multi-image-selector')
 }
