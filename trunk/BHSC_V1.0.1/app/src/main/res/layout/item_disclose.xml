@@ -27,13 +27,6 @@
             android:layout_marginLeft="8dp"
             android:layout_toRightOf="@+id/date"
             android:text="18:04" />
-
-        <TextView
-            android:id="@+id/delete"
-            android:layout_width="40dp"
-            android:layout_height="match_parent"
-            android:layout_alignParentRight="true"
-            android:drawableRight="@mipmap/btn_disclose_delete" />
     </RelativeLayout>
     <!--爆料内容-->
     <TextView
@@ -52,7 +45,7 @@
         android:layout_marginLeft="@dimen/activity_horizontal_margin"
         android:layout_marginRight="@dimen/activity_horizontal_margin"
         app:imgGap="4dp"
-        app:showStyle="fill"
+        app:showStyle="grid"
         app:singleImgSize="120dp" />
 
     <RelativeLayout

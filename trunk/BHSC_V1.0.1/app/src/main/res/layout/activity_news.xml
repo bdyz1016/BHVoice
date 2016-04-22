@@ -39,5 +39,10 @@
         android:id="@+id/webview"
         android:layout_below="@+id/title"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"></WebView>
+        android:layout_height="match_parent"/>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="5dp"
+        android:background="@drawable/bg_shadow"
+        android:layout_below="@+id/title"/>
 </RelativeLayout>

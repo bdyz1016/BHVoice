@@ -20,6 +20,8 @@ import com.google.gson.reflect.TypeToken;
 import com.orm.SugarRecord;
 import com.orm.dsl.NotNull;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.util.List;
 
 /**
@@ -58,6 +60,11 @@ public class DiscloseManager {
                         @Override
                         public void onResponse(String response) {
                             L.i(TAG, response);
+                            try {
+                                response = URLDecoder.decode(response, "UTF-8");
+                            } catch (UnsupportedEncodingException e) {
+                                e.printStackTrace();
+                            }
                             DiscloseResponse discloseResponse = mGson.fromJson(response, new TypeToken<DiscloseResponse>(){}.getType());
                             if(discloseResponse.getCode() == com.bhsc.net.Response.SUCESS_CODE){
                                 if(discloseResponse.getList().size() > 0){

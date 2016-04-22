@@ -39,6 +39,8 @@ public class UserDiscloseActivity extends AppCompatActivity implements DiscloseM
     private DiscloseRecyclerAdapter mAdapter;
     private LinearLayoutManager mLayoutManager;
     private DiscloseManager mManager;
+
+    private boolean isTitleCollapsed = false;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -66,19 +68,13 @@ public class UserDiscloseActivity extends AppCompatActivity implements DiscloseM
                 int maxScroll = appBarLayout.getTotalScrollRange();
                 float percentage = (float) Math.abs(verticalOffset) / (float) maxScroll;
                 L.i("zahnglei", "percentage:" + percentage);
-//                if (percentage > PERCENTAGE_TO_SHOW_TITLE_AT_TOOLBAR) {
-//                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-//                        Tv_Title.setTextColor(getColor(R.color.black));
-//                    } else {
-//                        Tv_Title.setTextColor(getResources().getColor(R.color.black));
-//                    }
-//                } else {
-//                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-//                        Tv_Title.setTextColor(getColor(R.color.transparency));
-//                    } else {
-//                        Tv_Title.setTextColor(getResources().getColor(R.color.transparency));
-//                    }
-//                }
+                if(percentage > PERCENTAGE_TO_SHOW_TITLE_AT_TOOLBAR && !isTitleCollapsed){
+                    isTitleCollapsed = true;
+                    mToolbar.setNavigationIcon(R.mipmap.btn_goback);
+                } else if(percentage < PERCENTAGE_TO_HIDE_TITLE_DETAILS && isTitleCollapsed){
+                    isTitleCollapsed = false;
+                    mToolbar.setNavigationIcon(R.mipmap.btn_back);
+                }
             }
         });
     }

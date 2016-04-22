@@ -24,7 +24,9 @@ import com.orm.SugarRecord;
 import com.orm.dsl.NotNull;
 import com.orm.query.Select;
 
+import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Field;
+import java.net.URLDecoder;
 import java.util.List;
 
 /**
@@ -101,6 +103,11 @@ public class NewsManager {
             public void onResponse(String response) {
                 if (!TextUtils.isEmpty(response)) {
                     L.d("zhanglei", response);
+                    try {
+                        response = URLDecoder.decode(response, "UTF-8");
+                    } catch (UnsupportedEncodingException e) {
+                        e.printStackTrace();
+                    }
                     NewsResponse newsResponse = mGson.fromJson(response, new TypeToken<NewsResponse>() {
                     }.getType());
                     if (newsResponse.getCode() == NewsResponse.SUCESS_CODE &&
