@@ -20,7 +20,7 @@
             android:textSize="20sp" />
 
         <RelativeLayout
-            android:id="@+id/activity_login_back"
+            android:id="@+id/back"
             android:layout_width="@dimen/title_btn_width"
             android:layout_height="match_parent"
             android:layout_alignParentLeft="true"
@@ -32,12 +32,6 @@
                 android:layout_centerVertical="true"
                 android:background="@mipmap/btn_goback" />
         </RelativeLayout>
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:layout_alignParentBottom="true"
-            android:background="@color/divider" />
     </RelativeLayout>
 
     <LinearLayout

@@ -14,28 +14,28 @@
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
 
     <application
-        android:name="com.bhsc.MyApplication"
+        android:name=".MyApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme" >
-        <activity android:name="com.bhsc.MainActivity" />
-        <activity android:name="com.bhsc.WelcomeActivity" >
+        <activity android:name=".MainActivity" />
+        <activity android:name=".WelcomeActivity" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="com.bhsc.news.newsdetail.DetailActivity" />
-        <activity android:name="com.bhsc.news.SearchActivity" />
-        <activity android:name="com.bhsc.disclose.DiscloseActivity" />
-        <activity android:name="com.bhsc.disclose.UserDiscloseActivity"/>
-        <activity android:name="com.bhsc.userpages.LoginAndRegisterActivity" />
-        <activity android:name="com.bhsc.userpages.LoginActivity" />
-        <activity android:name="com.bhsc.userpages.RegisterActivity" />
-        <activity android:name="com.bhsc.userpages.UserInfoActivity" />
+        <activity android:name=".news.newsdetail.DetailActivity" />
+        <activity android:name=".news.SearchActivity" />
+        <activity android:name=".disclose.DiscloseActivity" />
+        <activity android:name=".disclose.UserDiscloseActivity"/>
+        <activity android:name=".userpages.LoginAndRegisterActivity" />
+        <activity android:name=".userpages.LoginActivity" />
+        <activity android:name=".userpages.RegisterActivity" />
+        <activity android:name=".userpages.UserInfoActivity" />
         <activity
             android:name="me.nereo.multi_image_selector.MultiImageSelectorActivity"
             android:configChanges="orientation|screenSize" />
@@ -58,7 +58,9 @@
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:theme="@android:style/Theme.Translucent.NoTitleBar"
             />
-
+        <activity android:name=".wxapi.WXEntryActivity"
+            android:exported="true"
+            android:label="@string/app_name"/>
         <meta-data
             android:name="DATABASE"
             android:value="bhsc.db" />
@@ -72,7 +74,7 @@
             android:name="DOMAIN_PACKAGE_NAME"
             android:value="com.bhsc" />
 
-        <activity android:name="com.bhsc.news.newsdetail.NewsActivity" >
+        <activity android:name=".news.newsdetail.NewsActivity" >
         </activity>
     </application>
 

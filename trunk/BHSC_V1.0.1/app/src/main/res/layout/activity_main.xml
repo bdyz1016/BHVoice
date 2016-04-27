@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <com.bhsc.views.NavigationMenu
+    <com.bhsc.mobile.views.NavigationMenu
         android:id="@+id/activity_main_NavigationMenu"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -91,7 +91,7 @@
                 android:text="@string/tab_user"
                 />
         </LinearLayout>
-    </com.bhsc.views.NavigationMenu>
+    </com.bhsc.mobile.views.NavigationMenu>
 
     <FrameLayout
         android:id="@+id/activty_main_container"

@@ -19,6 +19,7 @@
     <dimen name="news_detail_title_size">17sp</dimen>
     <dimen name="news_detail_time_size">10sp</dimen>
     <dimen name="news_item_height">101dp</dimen>
+    <dimen name="news_tool_height">54dp</dimen>
 
     <!--导航栏-->
     <dimen name="navigation_height">50dp</dimen>

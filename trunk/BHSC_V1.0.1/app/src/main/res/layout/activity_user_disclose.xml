@@ -54,9 +54,8 @@
         android:layout_width="match_parent"
         android:layout_height="5dp"
         android:background="@drawable/bg_shadow"
-        app:layout_behavior="@string/bottom_sheet_behavior"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
         />
-    <!--app:layout_behavior="@string/appbar_scrolling_view_behavior"-->
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab"
