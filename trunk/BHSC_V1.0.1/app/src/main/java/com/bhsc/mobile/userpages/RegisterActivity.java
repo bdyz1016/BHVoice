@@ -271,16 +271,20 @@ public class RegisterActivity extends Activity {
         mRequest = new StringRequest(Request.Method.POST, MyApplication.Address + "/user/register", new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
+                if(TextUtils.isEmpty(response)){
+                    return;
+                }
+                L.i(TAG, response);
                 UserResponse userResponse = mGson.fromJson(response, UserResponse.class);
                 if (userResponse.getCode() == UserResponse.SUCESS_CODE) {
                     UserManager.login(userResponse.getUser());
-                    L.i(TAG,"login success!");
+                    L.i(TAG,"register success!");
                     finish();
                 } else if (userResponse.getCode() == 201) {
                     activity_register_email.setText("");
                     activity_register_password.setText("");
                     activity_register_password_repeat.setText("");
-                    activity_register_warning.setText(getString(R.string.login_error_4));
+                    activity_register_warning.setText(getString(R.string.login_error_3));
                     shake(activity_register_warning);
                     displayLoginFailedDialog();
                 } else if (userResponse.getCode() == 202) {

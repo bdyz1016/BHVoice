@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_alignParentBottom="true"
+    android:orientation="vertical">
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="5dp"
+        android:background="@drawable/bg_bottom_shadow" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/news_tool_height">
+
+        <EditText
+            android:id="@+id/discuss"
+            style="@android:style/TextAppearance.DeviceDefault.Widget.TextView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="5dp"
+            android:layout_toLeftOf="@+id/send"
+            android:gravity="center_vertical"
+            android:hint="@string/write_discuss"
+            android:singleLine="false"
+            android:textColor="@color/default_text_color"
+            android:textColorHint="@color/hint_text_color"
+            android:textSize="14sp" />
+
+        <TextView
+            android:id="@+id/send"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="5dp"
+            android:gravity="center"
+            android:text="@string/send"
+            android:textColor="@android:color/holo_blue_light"
+            android:textSize="16sp" />
+    </RelativeLayout>
+</LinearLayout>

@@ -33,7 +33,7 @@ public class MainActivity extends BaseActivity {
     private final int FRAGMENT_USER = 2;
 
     private Fragment[] mFragments;
-    private int mPosition = 0;
+    private int mPosition = -1;
 
 
     private IWXAPI api;
@@ -129,14 +129,18 @@ public class MainActivity extends BaseActivity {
 //    }
 
     private void switchView(int position) {
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.hide(mFragments[mPosition]);
-        if (!mFragments[position].isAdded()) {
-            fragmentTransaction.add(R.id.activty_main_container, mFragments[position]);
+        if(mPosition == position){
+            return;
         }
         mPosition = position;
-        fragmentTransaction.show(mFragments[position]);
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+//        fragmentTransaction.hide(mFragments[mPosition]);
+//        if (!mFragments[position].isAdded()) {
+//            fragmentTransaction.add(R.id.activty_main_container, mFragments[position]);
+//        }
+//        fragmentTransaction.show(mFragments[position]);
+        fragmentTransaction.replace(R.id.activty_main_container, mFragments[position]);
         fragmentTransaction.commit();
     }
 

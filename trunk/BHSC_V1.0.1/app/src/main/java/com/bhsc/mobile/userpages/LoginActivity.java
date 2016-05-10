@@ -26,6 +26,7 @@ import com.bhsc.mobile.MyApplication;
 import com.bhsc.mobile.R;
 import com.bhsc.mobile.net.MyRetryPolicy;
 import com.bhsc.mobile.net.MySingleton;
+import com.bhsc.mobile.userpages.model.Data_DB_User;
 import com.bhsc.mobile.userpages.model.UserResponse;
 import com.bhsc.mobile.utils.L;
 import com.bhsc.mobile.utils.Method;
@@ -288,7 +289,9 @@ public class LoginActivity extends Activity {
             public void onResponse(String response) {
                 UserResponse userResponse = mGson.fromJson(response, UserResponse.class);
                 if (userResponse.getCode() == UserResponse.SUCESS_CODE) {
-                    UserManager.login(userResponse.getUser());
+                    Data_DB_User user = userResponse.getUser();
+                    user.setPassword(password);
+                    UserManager.login(user);
                     L.i(TAG,"login success!");
                     finish();
                 } else if (userResponse.getCode() == 201) {

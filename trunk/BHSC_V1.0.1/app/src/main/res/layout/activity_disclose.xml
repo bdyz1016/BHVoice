@@ -31,6 +31,7 @@
                     />
 
                 <RelativeLayout
+                    android:visibility="gone"
                     android:id="@+id/fragment_disclose_title_menu"
                     android:layout_width="@dimen/title_btn_width"
                     android:layout_height="match_parent"

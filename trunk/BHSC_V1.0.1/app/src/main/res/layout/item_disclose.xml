@@ -89,7 +89,7 @@
             style="@style/item_disclose_button"
             android:layout_centerVertical="true"
             android:drawableLeft="@mipmap/btn_support_press"
-            android:text="888888" />
+            android:text="点赞" />
         <!--评论-->
         <TextView
             android:id="@+id/discuss"
@@ -98,7 +98,7 @@
             android:layout_marginLeft="15dp"
             android:layout_toRightOf="@+id/support"
             android:drawableLeft="@mipmap/btn_discuss_normal"
-            android:text="888888" />
+            android:text="评论" />
         <!--分享-->
         <TextView
             android:id="@+id/share"
@@ -107,7 +107,7 @@
             android:layout_centerVertical="true"
             android:layout_marginLeft="15dp"
             android:drawableLeft="@mipmap/btn_share_normal"
-            android:text="888888" />
+            android:text="分享" />
     </RelativeLayout>
 
     <View

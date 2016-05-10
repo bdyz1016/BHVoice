@@ -49,7 +49,8 @@
                     android:layout_alignParentBottom="true"
                     android:layout_marginLeft="15dp"
                     android:scaleType="centerCrop"
-                    fresco:placeholderImage="@mipmap/default_photo" />
+                    fresco:placeholderImage="@mipmap/default_photo"
+                    fresco:roundedCornerRadius="5dp"/>
 
                 <TextView
                     android:id="@+id/nick_name"
@@ -59,7 +60,7 @@
                     android:layout_marginLeft="8dp"
                     android:layout_toRightOf="@+id/photo"
                     android:gravity="center_vertical"
-                    android:text="点击登录" />
+                    android:text="@string/login_click" />
             </RelativeLayout>
 
             <!-- 通知-->
@@ -98,7 +99,7 @@
                 <TextView
                     android:layout_centerVertical="true"
                     android:layout_gravity="center_vertical"
-                    android:text="我要爆料"
+                    android:text="我的爆料"
                     style="@style/SettingsLabel"/>
 
                 <View

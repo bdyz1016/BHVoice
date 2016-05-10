@@ -25,6 +25,7 @@
             />
 
         <RelativeLayout
+            android:visibility="gone"
             android:id="@+id/fragment_userinfo_complete"
             android:layout_width="@dimen/title_btn_width"
             android:layout_height="match_parent"
@@ -41,7 +42,7 @@
         </RelativeLayout>
 
         <RelativeLayout
-            android:id="@+id/fragment_userinfo_back"
+            android:id="@+id/back"
             android:layout_width="@dimen/title_btn_width"
             android:layout_height="match_parent"
             android:layout_alignParentLeft="true"

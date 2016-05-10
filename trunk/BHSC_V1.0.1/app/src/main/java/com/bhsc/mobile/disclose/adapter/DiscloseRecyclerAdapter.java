@@ -1,6 +1,7 @@
 package com.bhsc.mobile.disclose.adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -11,9 +12,14 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bhsc.mobile.MyApplication;
+import com.bhsc.mobile.comment.CommentActivity;
+import com.bhsc.mobile.comment.CommentManager;
 import com.bhsc.mobile.disclose.model.Data_DB_Disclose;
 import com.bhsc.mobile.R;
 import com.bhsc.mobile.utils.DateFormat;
+import com.bhsc.mobile.utils.L;
+import com.bhsc.mobile.views.ImageViewer;
 import com.facebook.drawee.generic.RoundingParams;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.jaeger.ninegridimageview.NineGridImageView;
@@ -29,6 +35,7 @@ import java.util.List;
  * Created by zhanglei on 16/4/5.
  */
 public class DiscloseRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+    private final String TAG = DiscloseRecyclerAdapter.class.getSimpleName();
 
     public static final int STATE_LOADING = 0;
     public static final int STATE_LOAD_COMPLETE = 1;
@@ -79,6 +86,7 @@ public class DiscloseRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.V
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        L.i(TAG, "onCreateViewHolder");
         RecyclerView.ViewHolder viewHolder = null;
         switch (viewType) {
             case TYPE_HEADER: {
@@ -103,6 +111,7 @@ public class DiscloseRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.V
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+        L.i(TAG, "onBindViewHolder:" + position);
         switch (getItemViewType(position)) {
             case TYPE_HEADER:
                 HeaderViewHolder healderViewHolder = (HeaderViewHolder) holder;
@@ -200,8 +209,8 @@ public class DiscloseRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.V
     }
 
     private static class ContentViewHolder extends RecyclerView.ViewHolder {
-
-        public TextView Tv_Date, Tv_Time, Tv_Content, Tv_Delete, Tv_Support, Tv_Dicuss, Tv_Share, Tv_Name;
+        private final String TAG = ContentViewHolder.class.getSimpleName();
+        public TextView Tv_Date, Tv_Time, Tv_Content, Tv_Support, Tv_Dicuss, Tv_Share, Tv_Name;
         public NineGridImageView mPictures;
         public SimpleDraweeView mPhoto;
         public View mDivider;
@@ -212,19 +221,22 @@ public class DiscloseRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.V
             @Override
             protected void onDisplayImage(Context context, ImageView imageView, String s) {
                 Picasso.with(context)
-                        .load(s)
-                        .placeholder(R.mipmap.icon_no_image)
+                        .load(s).resize(MyApplication.DISCLOSE_IMAGE_RESIZE,MyApplication.DISCLOSE_IMAGE_RESIZE).centerCrop()
+                        .placeholder(R.color.background_color)
                         .into(imageView);
             }
 
             @Override
             protected ImageView generateImageView(Context context) {
-                return super.generateImageView(context);
+                return new ImageView(context);
             }
 
             @Override
             protected void onItemImageClick(Context context, int index, List<String> list) {
-                Toast.makeText(context, "image position is " + index, Toast.LENGTH_SHORT).show();
+//                Toast.makeText(context, "image position is " + index, Toast.LENGTH_SHORT).show();
+                ImageViewer imageViewer = new ImageViewer(context);
+                imageViewer.setImageSource(list, index);
+                imageViewer.show();
             }
         };
 
@@ -234,7 +246,6 @@ public class DiscloseRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.V
             Tv_Date = (TextView) itemView.findViewById(R.id.date);
             Tv_Time = (TextView) itemView.findViewById(R.id.time);
             Tv_Content = (TextView) itemView.findViewById(R.id.content);
-            Tv_Delete = (TextView) itemView.findViewById(R.id.delete);
             Tv_Support = (TextView) itemView.findViewById(R.id.support);
             Tv_Dicuss = (TextView) itemView.findViewById(R.id.discuss);
             Tv_Share = (TextView) itemView.findViewById(R.id.share);
@@ -245,7 +256,8 @@ public class DiscloseRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.V
             mDateFormat = new DateFormat();
         }
 
-        public void bind(Data_DB_Disclose disclose) {
+        public void bind(final Data_DB_Disclose disclose) {
+            L.i(TAG, "bind");
             mPictures.setImagesData(Arrays.asList(disclose.getImgs().split(",")));
             Tv_Content.setText(disclose.getContent());
             String[] date = mDateFormat.format(disclose.getCreateTime());
@@ -253,6 +265,15 @@ public class DiscloseRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.V
             Tv_Time.setText(date[1]);
             mPhoto.setImageURI(Uri.parse(disclose.getHeadurl()));
             Tv_Name.setText(disclose.getUsername());
+            Tv_Dicuss.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(v.getContext(), CommentActivity.class);
+                    intent.putExtra(CommentActivity.INTENT_FATHER_ID, disclose.getId());
+                    intent.putExtra(CommentActivity.INTENT_COMMENT_TYPE, CommentManager.TYPE_DISCLOSE);
+                    v.getContext().startActivity(intent);
+                }
+            });
         }
     }
 }

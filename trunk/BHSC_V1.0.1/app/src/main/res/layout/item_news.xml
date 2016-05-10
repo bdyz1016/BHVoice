@@ -15,7 +15,7 @@
         android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
         fresco:actualImageScaleType="focusCrop"
-        fresco:placeholderImage="@mipmap/temp"/>
+        fresco:placeholderImage="@mipmap/icon_no_image"/>
 
     <RelativeLayout
         android:layout_width="match_parent"

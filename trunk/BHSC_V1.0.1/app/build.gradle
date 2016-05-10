@@ -5,7 +5,7 @@ android {
     buildToolsVersion "23.0.2"
 
     defaultConfig {
-        applicationId "com.bhsc"
+        applicationId "com.bhsc.mobile"
         minSdkVersion 15
         targetSdkVersion 23
         versionCode 1
@@ -13,16 +13,14 @@ android {
     }
     buildTypes {
         release {
-            minifyEnabled false
+            minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
 }
 
 dependencies {
-    compile files('libs/libammsdk.jar')
-    compile files('libs/mta-sdk-1.6.2.jar')
-    compile files('libs/open_sdk_r5276.jar')
+    compile 'co.lujun:tpsharelogin:1.0.3'
     compile 'com.android.support:design:23.2.1'
     compile 'com.android.support:recyclerview-v7:23.2.1'
     compile 'com.mcxiaoke.volley:library:1.0.19'
@@ -31,8 +29,6 @@ dependencies {
     compile 'com.facebook.fresco:fresco:0.9.0+'
     compile 'com.github.satyan:sugar:1.4'
     compile 'com.joanzapata.android:base-adapter-helper:1.1.11'
-    compile 'com.android.support:appcompat-v7:23.2.1'
-    compile 'com.android.support:support-v4:23.2.1'
     compile 'com.github.clans:fab:1.6.3'
-    compile project(':multi-image-selector')
+    compile project(':mediapicker')
 }

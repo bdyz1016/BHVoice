@@ -1,18 +1,24 @@
 package com.bhsc.mobile.news.newsdetail;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
+import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.widget.EditText;
 import android.widget.TextView;
 
 import com.bhsc.mobile.R;
+import com.bhsc.mobile.ThirdParty.ShareMenu;
+import com.bhsc.mobile.comment.CommentActivity;
 import com.bhsc.mobile.comment.CommentManager;
 import com.bhsc.mobile.news.model.Data_DB_News;
+import com.bhsc.mobile.userpages.LoginAndRegisterActivity;
+import com.bhsc.mobile.userpages.UserManager;
 import com.orm.SugarRecord;
 
 public class NewsActivity extends AppCompatActivity implements View.OnClickListener{
@@ -20,13 +26,16 @@ public class NewsActivity extends AppCompatActivity implements View.OnClickListe
     public static final String INTENT_KEY_NEWSID = "newsId";
     public static final long DEFAULT_NEWSID = -1;
     private final String mimeType = "text/html";
-    private final String encoding = "utf-8";
+    private final String encoding = "UTF-8";
     private WebView mWebVew;
     private EditText Edit_Discuss;
     private TextView Tv_DiscussCount;
+    private View mContainer;
     private View mShare, mSend, mNormal;
     private Data_DB_News mNews;
     private CommentManager mManager;
+
+    private Context mContext;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,13 +64,26 @@ public class NewsActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public void onClick(View v) {
         switch (v.getId()){
+            case R.id.share:
+                ShareMenu shareMenu = new ShareMenu(mContext);
+                shareMenu.show(mContainer);
+                break;
             case R.id.back:
                 finish();
                 break;
             case R.id.send:
-                mManager.addComment(mNews.getId(), Edit_Discuss.getText().toString(), CommentManager.TYPE_NEWS);
+                if(UserManager.isLogin()) {
+                    mManager.addComment(UserManager.getUser().getId(), mNews.getId(),
+                            Edit_Discuss.getText().toString(), CommentManager.TYPE_NEWS, null);
+                } else {
+                    startActivity(new Intent(mContext, LoginAndRegisterActivity.class));
+                }
                 break;
             case R.id.discuss_count:
+                Intent intent = new Intent(this, CommentActivity.class);
+                intent.putExtra(CommentActivity.INTENT_FATHER_ID, mNews.getId());
+                intent.putExtra(CommentActivity.INTENT_COMMENT_TYPE, CommentManager.TYPE_NEWS);
+                startActivity(intent);
                 break;
             default:
                 break;
@@ -72,14 +94,25 @@ public class NewsActivity extends AppCompatActivity implements View.OnClickListe
         mWebVew = (WebView) findViewById(R.id.webview);
         Edit_Discuss = (EditText) findViewById(R.id.discuss);
         Tv_DiscussCount = (TextView) findViewById(R.id.discuss_count);
+        mContainer = findViewById(R.id.container);
         mShare = findViewById(R.id.share);
         mSend = findViewById(R.id.send);
         mNormal = findViewById(R.id.normal);
         findViewById(R.id.back).setOnClickListener(this);
         Edit_Discuss.setOnFocusChangeListener(mFocusChangeListener);
+        mSend.setOnClickListener(this);
+        mShare.setOnClickListener(this);
+        Tv_DiscussCount.setOnClickListener(this);
+
+        WebSettings webSettings = mWebVew.getSettings();
+        webSettings.setJavaScriptEnabled(true);
+        webSettings.setBuiltInZoomControls(false);
+        webSettings.setDisplayZoomControls(false);
+        webSettings.setSupportZoom(false);
     }
 
     private void initData(){
+        mContext = this;
         long id = getIntent().getLongExtra(INTENT_KEY_NEWSID, DEFAULT_NEWSID);
         if(id > 0){
             mNews = SugarRecord.findById(Data_DB_News.class, id);
@@ -89,7 +122,9 @@ public class NewsActivity extends AppCompatActivity implements View.OnClickListe
 
     private void initView(){
         if(mNews != null){
-            mWebVew.loadData(mNews.getContent(), mimeType, encoding);
+            String content = mNews.getContent();
+            content = content.replace("<img", "<img width=\"320\"");
+            mWebVew.loadData(content, mimeType, null);
             Tv_DiscussCount.setText(mNews.getCommentCount() + "");
         }
     }

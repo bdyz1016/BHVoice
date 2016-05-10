@@ -35,7 +35,9 @@ import com.bhsc.mobile.R;
 import com.bhsc.mobile.net.UploadFile;
 import com.bhsc.mobile.userpages.UserManager;
 import com.bhsc.mobile.userpages.dialog.DefaultDialog;
+import com.bhsc.mobile.utils.FileUtil;
 import com.bhsc.mobile.utils.L;
+import com.bhsc.mobile.views.ImageViewer;
 import com.facebook.drawee.drawable.ScalingUtils;
 import com.facebook.drawee.generic.GenericDraweeHierarchy;
 import com.facebook.drawee.view.SimpleDraweeView;
@@ -44,13 +46,17 @@ import com.google.gson.reflect.TypeToken;
 import com.jaeger.ninegridimageview.NineGridImageView;
 import com.jaeger.ninegridimageview.NineGridImageViewAdapter;
 import com.orm.dsl.NotNull;
+import com.squareup.picasso.Picasso;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import me.nereo.multi_image_selector.MultiImageSelectorActivity;
+import vn.tungdx.mediapicker.MediaItem;
+import vn.tungdx.mediapicker.MediaOptions;
+import vn.tungdx.mediapicker.activities.MediaPickerActivity;
+import vn.tungdx.mediapicker.utils.Utils;
 
 
 /**
@@ -85,6 +91,8 @@ public class DiscloseActivity extends Activity {
     private int mPictureCount;
 
     private String mUserId;
+    private Context mContext;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -102,6 +110,12 @@ public class DiscloseActivity extends Activity {
         super.onPostCreate(savedInstanceState);
         initWidget();
         initData();
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        outState.putStringArrayList(IMAGES, mPictures);
+        super.onSaveInstanceState(outState);
     }
 
     @Override
@@ -151,12 +165,13 @@ public class DiscloseActivity extends Activity {
     private void initData() {
         mNineGridImageView.setAdapter(mAdapter);
         mNineGridImageView.setImagesData(new ArrayList<>(mPictures));
-        if(UserManager.isLogin()){
+        if (UserManager.isLogin()) {
             mUserId = String.valueOf(UserManager.getUser().getId());
         } else {
             Toast.makeText(this, "请登录", Toast.LENGTH_SHORT).show();
             finish();
         }
+        mContext = this;
     }
 
     private void menu() {
@@ -180,15 +195,15 @@ public class DiscloseActivity extends Activity {
     private void picturesItemClicked() {
     }
 
-    private void displayProgressDialog(@NotNull String message){
+    private void displayProgressDialog(@NotNull String message) {
         dismissPrigressDialog();
         mProgressDialog = new ProgressDialog(this);
         mProgressDialog.setMessage(message);
         mProgressDialog.show();
     }
 
-    private void dismissPrigressDialog(){
-        if(mProgressDialog != null && mProgressDialog.isShowing()){
+    private void dismissPrigressDialog() {
+        if (mProgressDialog != null && mProgressDialog.isShowing()) {
             mProgressDialog.dismiss();
         }
     }
@@ -350,14 +365,15 @@ public class DiscloseActivity extends Activity {
                 if (resultCode != RESULT_OK) {
                     Toast.makeText(this, "照片选择失败", Toast.LENGTH_SHORT).show();
                 } else {
-                    List<String> path = data.getStringArrayListExtra(MultiImageSelectorActivity.EXTRA_RESULT);
-                    if (path != null && !path.isEmpty()) {
-                        if (path.size() < MAX_IMG) {
-                            path.add(ADD_IMAGE);
+                    List<MediaItem> mediaSelectedList = MediaPickerActivity
+                            .getMediaItemSelected(data);
+                    for (MediaItem mediaItem : mediaSelectedList) {
+                        String filePath = mediaItem.getPathCropped(mContext);
+                        L.i(TAG, "select file path:" + filePath);
+                        if (mediaItem.isPhoto()) {
+                            mPictures.add(mPictures.size() - 1, filePath);
+                            mNineGridImageView.setImagesData(new ArrayList<>(mPictures));
                         }
-                        mPictures.remove(ADD_IMAGE);
-                        mPictures.addAll(path);
-                        mNineGridImageView.setImagesData(new ArrayList<>(mPictures));
                     }
                 }
                 break;
@@ -368,38 +384,77 @@ public class DiscloseActivity extends Activity {
         @Override
         protected void onDisplayImage(Context context, ImageView imageView, String s) {
             L.i(TAG, "image path:" + s);
-            if (!TextUtils.isEmpty(s) && imageView != null && imageView instanceof SimpleDraweeView) {
-                SimpleDraweeView simpleDraweeView = (SimpleDraweeView) imageView;
-                if (ADD_IMAGE.equals(s)) {
-                    simpleDraweeView.setImageURI(Uri.parse("res://com.bhsc.mobile/" + R.mipmap.btn_add_image));
-                } else {
-                    simpleDraweeView.setImageURI(Uri.parse("file://" + s));
-                }
+//            if (!TextUtils.isEmpty(s) && imageView != null && imageView instanceof SimpleDraweeView) {
+//                SimpleDraweeView simpleDraweeView = (SimpleDraweeView) imageView;
+//                if (ADD_IMAGE.equals(s)) {
+//                    simpleDraweeView.setImageURI(Uri.parse("res://com.bhsc.mobile/" + R.mipmap.btn_add_image));
+//                } else {
+//                    simpleDraweeView.setImageURI(Uri.parse("file://" + s));
+//                }
+//            }
+            if (ADD_IMAGE.equals(s)) {
+                Picasso.with(context)
+                        .load(R.mipmap.btn_add_image).resize(MyApplication.DISCLOSE_IMAGE_RESIZE, MyApplication.DISCLOSE_IMAGE_RESIZE).centerCrop()
+                        .into(imageView);
+            } else {
+                Uri uri = Uri.parse("file://" + s);
+                Picasso.with(context)
+                        .load(uri).resize(MyApplication.DISCLOSE_IMAGE_RESIZE, MyApplication.DISCLOSE_IMAGE_RESIZE)
+                        .centerCrop()
+                        .placeholder(R.color.background_color)
+                        .into(imageView);
             }
         }
 
         @Override
         protected ImageView generateImageView(Context context) {
-            SimpleDraweeView simpleDraweeView = new SimpleDraweeView(context);
-            GenericDraweeHierarchy hierarchy = simpleDraweeView.getHierarchy();
-            hierarchy.setActualImageScaleType(ScalingUtils.ScaleType.CENTER_CROP);
-            return simpleDraweeView;
+//            SimpleDraweeView simpleDraweeView = new SimpleDraweeView(context);
+//            GenericDraweeHierarchy hierarchy = simpleDraweeView.getHierarchy();
+//            hierarchy.setActualImageScaleType(ScalingUtils.ScaleType.CENTER_CROP);
+//            return simpleDraweeView;
+            return new ImageView(context);
         }
 
+
         @Override
-        protected void onItemImageClick(Context context, int index, List<String> list) {
-            Toast.makeText(context, "image position is " + index, Toast.LENGTH_SHORT).show();
+        protected void onItemImageClick(Context context, final int index, List<String> list) {
             String str = list.get(index);
             if (!ADD_IMAGE.equals(str)) {
-                showDialag();
+                final DefaultDialog defaultDialog = new DefaultDialog(mContext);
+                defaultDialog.setMessage("移除图片？");
+                defaultDialog.setOnNegativeClickListener(new DefaultDialog.OnButtonClickListener() {
+                    @Override
+                    public void onClick() {
+                        defaultDialog.dismiss();
+                    }
+                });
+                defaultDialog.setOnPositiveClickListener(new DefaultDialog.OnButtonClickListener() {
+                    @Override
+                    public void onClick() {
+                        mPictures.remove(index);
+                        mNineGridImageView.setImagesData(new ArrayList<>(mPictures));
+                        defaultDialog.dismiss();
+                    }
+                });
+                defaultDialog.show();
             } else {
-                int imageNumber = MAX_IMG - mPictures.size() + 1;
-                Intent intent = new Intent(DiscloseActivity.this, MultiImageSelectorActivity.class);
-                intent.putExtra(MultiImageSelectorActivity.EXTRA_SHOW_CAMERA, true);
-                intent.putExtra(MultiImageSelectorActivity.EXTRA_SELECT_COUNT, imageNumber);
-                intent.putExtra(MultiImageSelectorActivity.EXTRA_SELECT_MODE, MultiImageSelectorActivity.MODE_MULTI);
-                intent.putStringArrayListExtra(MultiImageSelectorActivity.EXTRA_DEFAULT_SELECTED_LIST, new ArrayList<String>());
-                startActivityForResult(intent, REQUEST_IMAGE);
+                File filePath;
+                if (!Utils.hasExternalStorage() || (filePath = mContext.getExternalCacheDir()) == null) {
+                    return;
+                }
+                try {
+                    File file = FileUtil.createFile(filePath.getAbsolutePath(), String.valueOf(System.currentTimeMillis()) + ".jpg");
+                    MediaOptions.Builder builder = new MediaOptions.Builder();
+                    MediaOptions options = builder
+                            .canSelectMultiPhoto(false)
+                            .setIsCropped(true)
+                            .setFixAspectRatio(false)
+                            .setCroppedFile(file)
+                            .build();
+                    MediaPickerActivity.open(DiscloseActivity.this, REQUEST_IMAGE, options);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
         }
     };
@@ -407,7 +462,8 @@ public class DiscloseActivity extends Activity {
     private class SubmitAsync extends AsyncTask<String, Void, Integer> {
 
         private Gson mGson;
-        public SubmitAsync(){
+
+        public SubmitAsync() {
             mGson = new Gson();
         }
 
@@ -426,15 +482,16 @@ public class DiscloseActivity extends Activity {
             String userId = params[2];
             String response = null;
             try {
-                String url = MyApplication.Address + "/mood/addMood?title="+ title +"&content="+ content +"&userId=" + userId;
+                String url = MyApplication.Address + "/mood/addMood?title=" + title + "&content=" + content + "&userId=" + userId;
                 L.i(TAG, "add mood url:" + url);
                 response = UploadFile.uploadMultiFileSync(url, null, files, null);
                 L.i(TAG, "add mood:" + response);
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            if(!TextUtils.isEmpty(response)){
-                DiscloseResponse discloseResponse = mGson.fromJson(response, new TypeToken<DiscloseResponse>(){}.getType());
+            if (!TextUtils.isEmpty(response)) {
+                DiscloseResponse discloseResponse = mGson.fromJson(response, new TypeToken<DiscloseResponse>() {
+                }.getType());
                 return discloseResponse.getCode();
             }
             return 0;
@@ -443,7 +500,7 @@ public class DiscloseActivity extends Activity {
         @Override
         protected void onPostExecute(Integer integer) {
             dismissPrigressDialog();
-            if(integer != null && integer == DiscloseResponse.SUCESS_CODE){
+            if (integer != null && integer == DiscloseResponse.SUCESS_CODE) {
                 finish();
             } else {
                 Toast.makeText(DiscloseActivity.this, "上传失败", Toast.LENGTH_SHORT).show();

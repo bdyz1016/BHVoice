@@ -1,85 +1,86 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:layout_width="match_parent"
-              android:layout_height="wrap_content"
-              android:background="@color/white"
-              android:orientation="horizontal"
-              android:paddingTop="10dp">
-
-    <ImageView
-        android:id="@+id/item_discuss_photo"
-        android:layout_width="38dp"
-        android:layout_height="38dp"
-        android:scaleType="centerCrop"
-        android:src="@mipmap/photo"
-        />
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:fresco="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/white"
+    android:orientation="vertical"
+    android:paddingTop="10dp"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin">
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="10dp"
-        android:orientation="vertical">
+        android:layout_height="@dimen/comment_title_height"
+        android:orientation="horizontal">
 
-        <TextView
-            android:id="@+id/item_discuss_nickname"
+        <com.facebook.drawee.view.SimpleDraweeView
+            android:id="@+id/photo"
+            android:layout_width="@dimen/comment_photo_size"
+            android:layout_height="@dimen/comment_photo_size"
+            android:layout_gravity="center_vertical"
+            fresco:actualImageScaleType="focusCrop"
+            fresco:placeholderImage="@color/background_color"
+            fresco:placeholderImageScaleType="fitCenter"
+            fresco:roundAsCircle="true"
+            fresco:roundWithOverlayColor="@color/white"
+            fresco:roundingBorderWidth="1dp" />
+
+        <LinearLayout
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/nickname"/>
-
-        <TextView
-            android:id="@+id/item_discuss_content"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="评论内容"/>
-
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="25dp">
+            android:layout_height="match_parent"
+            android:layout_marginLeft="5dp"
+            android:orientation="vertical">
 
             <TextView
-                android:id="@+id/item_discuss_time"
+                android:id="@+id/name"
+                android:text="@string/app_name"
+                android:textColor="@color/default_text_color"
+                android:textSize="12sp"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:text="@string/hello_world"/>
-            <LinearLayout
-                android:id="@+id/item_discuss_discuss"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:singleLine="true"/>
+
+            <TextView
+                android:textColor="@color/default_text_color"
+                android:textSize="12sp"
+                android:id="@+id/time"
+                android:text="12343"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:layout_centerVertical="true"
-                android:orientation="horizontal">
-                <ImageView
-                    android:layout_width="10dp"
-                    android:layout_height="10dp"
-                    android:background="@mipmap/icon_discuss_discuss"/>
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="5dp"
-                    android:text="0"
-                    android:textSize="10sp"/>
-            </LinearLayout>
-            <LinearLayout
-                android:id="@+id/item_discuss_support"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:layout_marginRight="10dp"
-                android:layout_toLeftOf="@+id/item_discuss_discuss"
-                android:orientation="horizontal">
-                <ImageView
-                    android:layout_width="10dp"
-                    android:layout_height="10dp"
-                    android:background="@mipmap/icon_support_discuss"/>
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="5dp"
-                    android:text="0"
-                    android:textSize="10sp"/>
-            </LinearLayout>
-        </RelativeLayout>
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:singleLine="true"/>
+        </LinearLayout>
     </LinearLayout>
 
+    <TextView
+        android:id="@+id/content"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/comment_content_margin_left"
+        android:text="@string/app_name"
+        android:textColor="@color/default_text_color"
+        android:textSize="16sp"/>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="20dp">
+        <ImageView
+            android:id="@+id/support"
+            android:layout_marginRight="15dp"
+            android:layout_toLeftOf="@+id/add_comment"
+            android:layout_width="10dp"
+            android:layout_height="10dp"
+            android:layout_centerVertical="true"
+            android:background="@mipmap/icon_support_discuss" />
+        <ImageView
+            android:id="@+id/add_comment"
+            android:layout_width="10dp"
+            android:layout_height="10dp"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:background="@mipmap/icon_discuss_discuss" />
+    </RelativeLayout>
 </LinearLayout>

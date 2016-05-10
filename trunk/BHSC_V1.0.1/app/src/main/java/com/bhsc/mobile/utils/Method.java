@@ -14,6 +14,10 @@ import android.os.Environment;
 import android.text.TextUtils;
 import android.util.Base64;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -478,6 +482,7 @@ public class Method {
 
         return result;
     }
+
     /**
      * 检测当的网络（WLAN、3G/2G）状态
      * @param context Context
@@ -499,5 +504,23 @@ public class Method {
             }
         }
         return false;
+    }
+
+    public static boolean isJSONValid(String test) {
+        if(TextUtils.isEmpty(test)){
+            return false;
+        }
+        try {
+            new JSONObject(test);
+        } catch (JSONException ex) {
+            // edited, to include @Arthur's comment
+            // e.g. in case JSONArray is valid as well...
+            try {
+                new JSONArray(test);
+            } catch (JSONException ex1) {
+                return false;
+            }
+        }
+        return true;
     }
 }

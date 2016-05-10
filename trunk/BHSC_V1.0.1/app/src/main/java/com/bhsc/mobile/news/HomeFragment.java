@@ -55,6 +55,12 @@ public class HomeFragment extends Fragment {
         tablayout = (TabLayout) mContentView.findViewById(R.id.tablayout);
         fragment_home_viewpager = (ViewPager) mContentView.findViewById(R.id.fragment_home_viewpager);
         fragment_home_search = mContentView.findViewById(R.id.fragment_home_search);
+        fragment_home_search.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(mContext, SearchActivity.class));
+            }
+        });
     }
 
     private void initView() {

@@ -114,7 +114,7 @@ public class DetailActivity extends Activity {
 //        L.i(TAG, "discuss event");
 //        if (event.getAction() == DiscussEvent.ACTION_GET_ALL_DISCUSS) {
 //            L.i(TAG, "get all discuss");
-//            List<Data_DB_Discuss> discusses = (List<Data_DB_Discuss>) event.getExtra();
+//            List<Data_DB_Comment> discusses = (List<Data_DB_Comment>) event.getExtra();
 //            if (discusses.size() > 0) {
 //                mDiscusses.clear();
 //                mDiscusses.addAll(discusses);
@@ -127,7 +127,7 @@ public class DetailActivity extends Activity {
 //    }
 //
 //    private void onEventMainThread(HotDiscussEvent event) {
-//        List<Data_DB_Discuss> discusses = event.getDiscusses();
+//        List<Data_DB_Comment> discusses = event.getDiscusses();
 //        L.i(TAG, "初始化评论列表:" + discusses.size());
 //        if (discusses.size() > 0) {
 //            mViews.activity_newsdetail_hot_discuss.setVisibility(View.VISIBLE);
@@ -186,7 +186,7 @@ public class DetailActivity extends Activity {
 //                if (TextUtils.isEmpty(discussContent)) {
 //                    return;
 //                }
-//                Data_DB_Discuss discuss = new Data_DB_Discuss();
+//                Data_DB_Comment discuss = new Data_DB_Comment();
 //                discuss.setContent(discussContent);
 //                discuss.setType(mNews.getType());
 //                discuss.setCreateTime(Method.getTS());

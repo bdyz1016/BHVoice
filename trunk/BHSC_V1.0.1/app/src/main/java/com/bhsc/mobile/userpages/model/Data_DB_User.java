@@ -19,10 +19,16 @@ public class Data_DB_User extends SugarRecord{
      */
     public static final int GENDER_UNCERTAIN = 0;
 
+    /**
+     * 昵称
+     */
     private String username;
     private String Password;
     private String email;
     private String Status;
+    /**
+     * @deprecated
+     */
     private String NickName;
     private String headurl;
     private long LastChangeTime;

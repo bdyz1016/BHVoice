@@ -1,115 +1,116 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-    android:background="#55000000">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#88000000">
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="185dp"
         android:layout_alignParentBottom="true"
         android:background="@color/white">
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="25dp"
             android:orientation="horizontal">
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:orientation="vertical"
-                >
+                android:orientation="vertical">
+
                 <Button
-                    android:id="@+id/activity_share_wechat"
+                    android:id="@+id/share_wechat"
                     android:layout_width="54dp"
                     android:layout_height="54dp"
                     android:layout_gravity="center_horizontal"
-                    android:background="@mipmap/btn_share_weixin"
-                    />
+                    android:background="@mipmap/btn_share_weixin" />
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="10dp"
                     android:text="@string/share_wechat"
-                    android:layout_gravity="center_horizontal"
-                    android:layout_marginTop="10dp"
                     android:textColor="@color/default_text_color"
-                    android:textSize="12sp"
-                    />
+                    android:textSize="12sp" />
             </LinearLayout>
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:orientation="vertical"
-                >
+                android:orientation="vertical">
+
                 <Button
-                    android:id="@+id/activity_share_moments"
+                    android:id="@+id/share_moments"
                     android:layout_width="54dp"
                     android:layout_height="54dp"
                     android:layout_gravity="center_horizontal"
-                    android:background="@mipmap/btn_share_moments"
-                    />
+                    android:background="@mipmap/btn_share_moments" />
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="10dp"
                     android:text="@string/share_moments"
-                    android:layout_gravity="center_horizontal"
-                    android:layout_marginTop="10dp"
                     android:textColor="@color/default_text_color"
-                    android:textSize="12sp"
-                    />
+                    android:textSize="12sp" />
             </LinearLayout>
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:orientation="vertical"
-                >
+                android:orientation="vertical">
+
                 <Button
-                    android:id="@+id/activity_share_qq"
+                    android:id="@+id/share_qq"
                     android:layout_width="54dp"
                     android:layout_height="54dp"
                     android:layout_gravity="center_horizontal"
-                    android:background="@mipmap/btn_share_qq"
-                    />
+                    android:background="@mipmap/btn_share_qq" />
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="10dp"
                     android:text="@string/share_qq"
-                    android:layout_gravity="center_horizontal"
-                    android:layout_marginTop="10dp"
                     android:textColor="@color/default_text_color"
-                    android:textSize="12sp"
-                    />
+                    android:textSize="12sp" />
             </LinearLayout>
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:orientation="vertical"
-                >
+                android:orientation="vertical">
+
                 <Button
-                    android:id="@+id/activity_share_blog"
+                    android:id="@+id/share_blog"
                     android:layout_width="54dp"
                     android:layout_height="54dp"
                     android:layout_gravity="center_horizontal"
-                    android:background="@mipmap/btn_share_blog"
-                    />
+                    android:background="@mipmap/btn_share_blog" />
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/share_blog"
                     android:layout_gravity="center_horizontal"
                     android:layout_marginTop="10dp"
+                    android:text="@string/share_blog"
                     android:textColor="@color/default_text_color"
-                    android:textSize="12sp"
-                    />
+                    android:textSize="12sp" />
             </LinearLayout>
         </LinearLayout>
 
         <Button
-            android:id="@+id/activity_share_cancel"
+            android:id="@+id/share_cancel"
             android:layout_width="230dp"
             android:layout_height="35dp"
             android:layout_alignParentBottom="true"
@@ -119,7 +120,6 @@
             android:gravity="center"
             android:text="@string/share_cancel"
             android:textColor="@color/default_text_color"
-            android:textSize="18sp"
-            />
+            android:textSize="18sp" />
     </RelativeLayout>
 </RelativeLayout>

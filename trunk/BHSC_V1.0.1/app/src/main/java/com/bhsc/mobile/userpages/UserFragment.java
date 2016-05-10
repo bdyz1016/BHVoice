@@ -14,6 +14,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bhsc.mobile.R;
+import com.bhsc.mobile.disclose.UserDiscloseActivity;
 import com.bhsc.mobile.userpages.model.Data_DB_User;
 import com.facebook.drawee.view.SimpleDraweeView;
 
@@ -61,6 +62,7 @@ public class UserFragment extends Fragment implements View.OnClickListener{
         Tv_Username = (TextView) mContentView.findViewById(R.id.nick_name);
         mDiscuss = mContentView.findViewById(R.id.discuss);
         mDisclose = mContentView.findViewById(R.id.disclose);
+        mDisclose.setOnClickListener(this);
         mAbout = mContentView.findViewById(R.id.about);
         mFeedback = mContentView.findViewById(R.id.feedback);
         mPhoto.setOnClickListener(this);
@@ -76,6 +78,9 @@ public class UserFragment extends Fragment implements View.OnClickListener{
             } else if(!TextUtils.isEmpty(mUserInfo.getEmail())){
                 Tv_Username.setText(mUserInfo.getEmail());
             }
+        } else {
+            Tv_Username.setText(R.string.login_click);
+            mPhoto.setImageURI(null);
         }
     }
 
@@ -89,9 +94,9 @@ public class UserFragment extends Fragment implements View.OnClickListener{
 
     private void disclose(){
         if(UserManager.isLogin()){
-//            Intent intent = new Intent();
-//            intent.setClass(mContext, DiscloseActivity.class);
-//            startActivity(intent);
+            Intent intent = new Intent();
+            intent.setClass(mContext, UserDiscloseActivity.class);
+            startActivity(intent);
         } else {
             Toast.makeText(mContext, "请先登录!", Toast.LENGTH_SHORT).show();
         }

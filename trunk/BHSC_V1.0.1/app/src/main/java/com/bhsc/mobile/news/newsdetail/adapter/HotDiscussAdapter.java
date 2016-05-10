@@ -6,9 +6,9 @@ package com.bhsc.mobile.news.newsdetail.adapter;
 //public class HotDiscussAdapter extends BaseAdapter {
 
 //    private LayoutInflater mInflater;
-//    private List<Data_DB_Discuss> mDiscusses;
+//    private List<Data_DB_Comment> mDiscusses;
 //
-//    public HotDiscussAdapter(Context context, List<Data_DB_Discuss> discusses){
+//    public HotDiscussAdapter(Context context, List<Data_DB_Comment> discusses){
 //        mInflater = LayoutInflater.from(context);
 //        mDiscusses = discusses;
 //    }
@@ -38,7 +38,7 @@ package com.bhsc.mobile.news.newsdetail.adapter;
 //        } else {
 //            holder = (ViewHolder) convertView.getTag();
 //        }
-//        Data_DB_Discuss discuss = mDiscusses.get(position);
+//        Data_DB_Comment discuss = mDiscusses.get(position);
 //        holder.Tv_Content.setText(discuss.getContent());
 //        holder.Tv_Time.setText(Method.getTime(discuss.getCreateTime()));
 //        return convertView;

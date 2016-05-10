@@ -11,7 +11,7 @@ import com.android.volley.toolbox.StringRequest;
 import com.bhsc.mobile.MyApplication;
 import com.bhsc.mobile.net.MyRetryPolicy;
 import com.bhsc.mobile.net.MySingleton;
-import com.bhsc.mobile.net.ObjectResponse;
+import com.bhsc.mobile.net.MyStringRequest;
 import com.bhsc.mobile.news.model.Data_DB_News;
 import com.bhsc.mobile.news.model.NewsResponse;
 import com.bhsc.mobile.utils.L;
@@ -47,6 +47,11 @@ public class NewsManager {
         void refreshed(List<Data_DB_News> list);
     }
 
+    public interface OnSearchListener{
+        void result(List<Data_DB_News> list);
+        void error();
+    }
+
     private OnNewsListener mListener = new OnNewsListener() {
         @Override
         public void loaded(List<Data_DB_News> list) {
@@ -61,7 +66,7 @@ public class NewsManager {
 
     private int mCurrentPage = START_PAGE;
     private Context mContext;
-    private StringRequest mStringRequest;
+    private MyStringRequest mStringRequest;
     private Gson mGson;
 
     public NewsManager(Context context) {
@@ -95,22 +100,18 @@ public class NewsManager {
             int offset = mCurrentPage * PAGE_SIZE;
             if (SugarRecord.count(Data_DB_News.class, "type = ?", new String[]{type + ""}, null, null, PAGE_SIZE + "," + offset) > 0) {
                 mCurrentPage++;
-                List<Data_DB_News> list = Select.from(Data_DB_News.class).where("type = ?", new String[]{type + ""}).orderBy("createTime desc").limit(PAGE_SIZE + "," + offset).list();
+                List<Data_DB_News> list = Select.from(Data_DB_News.class).where("type = ?", new String[]{type + ""})
+                        .orderBy("createTime desc").limit(PAGE_SIZE + "," + offset).list();
                 mListener.loaded(list);
             }
             return;
         }
         cancel();
-        mStringRequest = new StringRequest(Request.Method.GET, URL + "?type=" + type + "&page=" + mCurrentPage, new Response.Listener<String>() {
+        mStringRequest = new MyStringRequest(Request.Method.GET, URL + "?type=" + type + "&page=" + mCurrentPage, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
                 if (!TextUtils.isEmpty(response)) {
-                    L.d("zhanglei", response);
-                    try {
-                        response = URLDecoder.decode(response, "UTF-8");
-                    } catch (UnsupportedEncodingException e) {
-                        e.printStackTrace();
-                    }
+                    L.d("load news", response);
                     NewsResponse newsResponse = mGson.fromJson(response, new TypeToken<NewsResponse>() {
                     }.getType());
                     if (newsResponse.getCode() == NewsResponse.SUCESS_CODE) {
@@ -142,7 +143,7 @@ public class NewsManager {
             Toast.makeText(mContext, "网络不可用", Toast.LENGTH_SHORT).show();
             return;
         }
-        mStringRequest = new StringRequest(Request.Method.GET, URL + "?type=" + type + "&page=" + mCurrentPage, new Response.Listener<String>() {
+        mStringRequest = new MyStringRequest(Request.Method.GET, URL + "?type=" + type + "&page=" + mCurrentPage, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
                 if (!TextUtils.isEmpty(response)) {
@@ -166,6 +167,33 @@ public class NewsManager {
         });
         mStringRequest.setRetryPolicy(new MyRetryPolicy());
         MySingleton.getInstance(mContext).getRequestQueue().add(mStringRequest);
+    }
+
+    public synchronized void search(String keyword, final OnSearchListener listener){
+        MyStringRequest request = new MyStringRequest(Request.Method.GET, MyApplication.Address + "/news/search?keyword=" + keyword, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                if (!TextUtils.isEmpty(response)) {
+                    L.d("search", response);
+                    NewsResponse newsResponse = mGson.fromJson(response, new TypeToken<NewsResponse>() {
+                    }.getType());
+                    if (newsResponse.getCode() == NewsResponse.SUCESS_CODE) {
+                        listener.result(newsResponse.getList());
+                    } else {
+                        listener.error();
+                    }
+                } else {
+                    listener.error();
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                listener.error();
+            }
+        });
+        request.setRetryPolicy(new MyRetryPolicy());
+        MySingleton.getInstance(mContext).getRequestQueue().add(request);
     }
 
     public synchronized void cancel() {

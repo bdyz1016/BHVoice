@@ -53,6 +53,13 @@
         <item name="android:windowBackground">@android:color/transparent</item>
     </style>
 
+    <style name="FullScreenDialog">
+        <item name="android:windowFullscreen">false</item>
+        <item name="android:windowFrame">@null</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowBackground">@android:color/black</item>
+    </style>
+
     <style name="TabLayoutStyle" parent="Widget.Design.TabLayout">
         <item name="tabIndicatorColor">#a1a1a1</item>
         <item name="tabIndicatorHeight">0dp</item>

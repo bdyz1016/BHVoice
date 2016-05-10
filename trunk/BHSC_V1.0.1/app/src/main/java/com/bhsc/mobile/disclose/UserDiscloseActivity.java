@@ -54,6 +54,12 @@ public class UserDiscloseActivity extends AppCompatActivity implements DiscloseM
     private void initWidget(){
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(mToolbar);
+        mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
         mCollapsingToolbarLayout = (CollapsingToolbarLayout) findViewById(R.id.toolbar_layout);
         Fab_CreateDisclose = (FloatingActionButton) findViewById(R.id.fab);
         Fab_CreateDisclose.setOnClickListener(mOnCreateDiscloseListener);

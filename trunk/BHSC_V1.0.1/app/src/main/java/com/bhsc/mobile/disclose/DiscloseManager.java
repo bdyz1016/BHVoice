@@ -5,12 +5,12 @@ import android.content.Context;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.android.volley.toolbox.StringRequest;
 import com.bhsc.mobile.MyApplication;
 import com.bhsc.mobile.disclose.model.Data_DB_Disclose;
 import com.bhsc.mobile.disclose.model.DiscloseResponse;
 import com.bhsc.mobile.net.MyRetryPolicy;
 import com.bhsc.mobile.net.MySingleton;
+import com.bhsc.mobile.net.MyStringRequest;
 import com.bhsc.mobile.utils.L;
 import com.bhsc.mobile.utils.Method;
 import com.bhsc.mobile.utils.WeakHandler;
@@ -42,7 +42,7 @@ public class DiscloseManager {
     private Context mContext;
     private OnDiscloseListener mListener;
     private WeakHandler mHandler;
-    private StringRequest mRequest;
+    private MyStringRequest mRequest;
     private Gson mGson;
 
     public DiscloseManager(Context context, @NotNull OnDiscloseListener listener){
@@ -54,7 +54,7 @@ public class DiscloseManager {
 
     public void loadData(){
         if(Method.isNetworkAvailable(mContext)){
-            mRequest = new StringRequest(Request.Method.GET, MyApplication.Address + "/mood/getMoods?page=" + mPageNumber,
+            mRequest = new MyStringRequest(Request.Method.GET, MyApplication.Address + "/mood/getMoods?page=" + mPageNumber,
                     new Response.Listener<String>() {
                         @Override
                         public void onResponse(String response) {
@@ -94,7 +94,7 @@ public class DiscloseManager {
         List<Data_DB_Disclose> list = SugarRecord.find(Data_DB_Disclose.class, "user_id = ?", new String[]{userId + ""}, null, "create_time desc", null);
         mListener.onLoaded(list);
 //        if(Method.isNetworkAvailable(mContext)){
-//            mRequest = new StringRequest(Request.Method.GET, MyApplication.Address + "/mood/getMoods?page=" + mPageNumber + "&userId=" + userId,
+//            mRequest = new MyStringRequest(Request.Method.GET, MyApplication.Address + "/mood/getMoods?page=" + mPageNumber + "&userId=" + userId,
 //                    new Response.Listener<String>() {
 //                        @Override
 //                        public void onResponse(String response) {
@@ -133,7 +133,7 @@ public class DiscloseManager {
     public void refresh(){
         mPageNumber = FIRST_PAGE;
         if(Method.isNetworkAvailable(mContext)){
-            mRequest = new StringRequest(Request.Method.GET, MyApplication.Address + "/mood/getMoods?page=" + mPageNumber,
+            mRequest = new MyStringRequest(Request.Method.GET, MyApplication.Address + "/mood/getMoods?page=" + mPageNumber,
                     new Response.Listener<String>() {
                         @Override
                         public void onResponse(String response) {
