@@ -20,6 +20,7 @@ android {
 }
 
 dependencies {
+    compile files('libs/MiStats_SDK_Client_1_7_0.jar')
     compile 'co.lujun:tpsharelogin:1.0.3'
     compile 'com.android.support:design:23.2.1'
     compile 'com.android.support:recyclerview-v7:23.2.1'

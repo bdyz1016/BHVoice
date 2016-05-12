@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -57,6 +58,24 @@ public class UploadFile {
         connection.setRequestProperty("Content-Type", "multipart/form-data;boundary=" + boundary);
 
         outputStream = new DataOutputStream(connection.getOutputStream());
+
+        if (params != null) {
+            StringBuffer strBuf = new StringBuffer();
+            Iterator<Map.Entry<String, String>> iter = params.entrySet().iterator();
+            while (iter.hasNext()) {
+                Map.Entry<String, String> entry = iter.next();
+                String inputName = entry.getKey();
+                String inputValue = entry.getValue();
+                if (inputValue == null) {
+                    continue;
+                }
+                strBuf.append("\r\n").append("--").append(boundary).append("\r\n");
+                strBuf.append("Content-Disposition: form-data; name=\"" + inputName + "\"\r\n\r\n");
+                strBuf.append(inputValue);
+            }
+            strBuf.append(lineEnd);
+            outputStream.write(strBuf.toString().getBytes());
+        }
 
         for(int i = 0;i < fileList.size();i++) {
             FileInputStream fileInputStream = new FileInputStream(fileList.get(i));

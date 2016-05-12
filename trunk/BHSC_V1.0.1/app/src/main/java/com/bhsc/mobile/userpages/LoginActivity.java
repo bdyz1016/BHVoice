@@ -26,6 +26,7 @@ import com.bhsc.mobile.MyApplication;
 import com.bhsc.mobile.R;
 import com.bhsc.mobile.net.MyRetryPolicy;
 import com.bhsc.mobile.net.MySingleton;
+import com.bhsc.mobile.net.MyStringRequest;
 import com.bhsc.mobile.userpages.model.Data_DB_User;
 import com.bhsc.mobile.userpages.model.UserResponse;
 import com.bhsc.mobile.utils.L;
@@ -57,7 +58,7 @@ public class LoginActivity extends Activity {
 
     private LayoutInflater mInflater;
 
-    private StringRequest mRequest;
+    private MyStringRequest mRequest;
 
     private Gson mGson;
 
@@ -147,7 +148,7 @@ public class LoginActivity extends Activity {
     }
 
     private void forgetPassword() {
-        startActivity(new Intent(this, ResetPasswordActivity.class));
+        startActivity(new Intent(this, FindPasswordActivity.class));
     }
 
     private void register() {
@@ -284,7 +285,7 @@ public class LoginActivity extends Activity {
             return;
         }
         loginCancel();
-        mRequest = new StringRequest(Request.Method.POST, MyApplication.Address + "/user/login", new Response.Listener<String>() {
+        mRequest = new MyStringRequest(Request.Method.POST, MyApplication.Address + "/user/login", new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
                 UserResponse userResponse = mGson.fromJson(response, UserResponse.class);

@@ -310,7 +310,7 @@ public class RegisterActivity extends Activity {
             @Override
             protected Map<String, String> getParams() throws AuthFailureError {
                 Map<String,String> params = new HashMap<>();
-                params.put("loginId", username);
+                params.put("username", username);
                 params.put("email", username);
                 params.put("password", password);
                 return params;

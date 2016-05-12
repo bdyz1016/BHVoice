@@ -20,12 +20,15 @@ import com.bhsc.mobile.news.adapter.NewsAdapter;
 import com.bhsc.mobile.news.model.Data_DB_News;
 import com.bhsc.mobile.news.newsdetail.NewsActivity;
 import com.bhsc.mobile.utils.L;
+
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 /**
  * Created by lynn on 15-9-17.
  */
-public class NewsFragment extends Fragment implements NewsManager.OnNewsListener{
+public class NewsFragment extends Fragment implements NewsManager.OnNewsListener {
     private final String TAG = NewsFragment.class.getSimpleName();
 
     private static final String ARG_POSITION = "position";
@@ -53,8 +56,6 @@ public class NewsFragment extends Fragment implements NewsManager.OnNewsListener
      * 新闻类型，只加载符合类型的新闻
      */
     private int mNewsType;
-
-    private LayoutInflater mInflater;
 
     private NewsManager mManager;
 
@@ -84,6 +85,7 @@ public class NewsFragment extends Fragment implements NewsManager.OnNewsListener
     public void onResume() {
         L.i(TAG, "onResume");
         super.onResume();
+        fragment_news_refresh.setRefreshing(true);
         mManager.refreshed(mNewsType);
     }
 
@@ -98,32 +100,36 @@ public class NewsFragment extends Fragment implements NewsManager.OnNewsListener
         super.onDestroy();
     }
 
-    private void initWidget(){
+    private void initWidget() {
         fragment_news_list = (ListView) mContentView.findViewById(R.id.fragment_news_list);
         fragment_news_default = (TextView) mContentView.findViewById(R.id.fragment_news_default);
+
         fragment_news_refresh = (SwipeRefreshLayout) mContentView.findViewById(R.id.fragment_news_refresh);
+        fragment_news_refresh.setOnRefreshListener(mRefreshListener);
+        fragment_news_refresh.setColorSchemeResources(R.color.category_tab_highlight_bg);
+
         fragment_news_list.setEmptyView(fragment_news_default);
         fragment_news_list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Intent intent = new Intent();
-                intent.putExtra(NewsActivity.INTENT_KEY_NEWSID, ((Data_DB_News)mAdapter.getItem(position)).getId());
+                intent.putExtra(NewsActivity.INTENT_KEY_NEWSID, ((Data_DB_News) mAdapter.getItem(position)).getId());
                 intent.setClass(mContext, NewsActivity.class);
                 startActivity(intent);
             }
         });
+
+        mListFooter = LayoutInflater.from(mContext).inflate(R.layout.footer_news_list, fragment_news_list, false);
+        fragment_news_list.addFooterView(mListFooter);
+        Tv_FooterText = (TextView) mListFooter.findViewById(R.id.newslist_footer_text);
+        Pb_FooterProgress = (ProgressBar) mListFooter.findViewById(R.id.newslist_footer_progressbar);
     }
 
-    private void initData(){
+    private void initData() {
         mManager = new NewsManager(mContext);
         mManager.setNewsListener(this);
-        mInflater = LayoutInflater.from(mContext);
         mAdapter = new NewsAdapter(mContext);
-    }
 
-    private void initView(){
-        mListFooter = mInflater.inflate(R.layout.footer_news_list, fragment_news_list, false);
-        fragment_news_list.addFooterView(mListFooter);
         fragment_news_list.setAdapter(mAdapter);
         fragment_news_list.setOnScrollListener(new AbsListView.OnScrollListener() {
             @Override
@@ -133,7 +139,7 @@ public class NewsFragment extends Fragment implements NewsManager.OnNewsListener
                     // 判断是否滚动到底部
                     if (view.getLastVisiblePosition() == view.getCount() - 1) {
                         //加载更多功能
-                        mManager.load(mNewsType);
+                        mManager.loadFromCloud(mNewsType);
                     }
                 }
             }
@@ -143,12 +149,10 @@ public class NewsFragment extends Fragment implements NewsManager.OnNewsListener
 
             }
         });
+    }
 
-        Tv_FooterText = (TextView) mListFooter.findViewById(R.id.newslist_footer_text);
-        Pb_FooterProgress = (ProgressBar) mListFooter.findViewById(R.id.newslist_footer_progressbar);
-
-        fragment_news_refresh.setOnRefreshListener(mRefreshListener);
-        fragment_news_refresh.setColorSchemeResources(R.color.category_tab_highlight_bg);
+    private void initView() {
+        mManager.loadFromLocal(mNewsType);
     }
 
 //    public void onEventMainThread(NewsEvent event) {
@@ -171,7 +175,7 @@ public class NewsFragment extends Fragment implements NewsManager.OnNewsListener
 //        }
 //    }
 
-    public void setNewsType(int type){
+    public void setNewsType(int type) {
         L.i(TAG, "news type:" + type);
         mNewsType = type;
     }
@@ -186,18 +190,25 @@ public class NewsFragment extends Fragment implements NewsManager.OnNewsListener
 
     @Override
     public void loaded(List<Data_DB_News> list) {
-        if(list == null || list.size() == 0){
-            Tv_FooterText.setText(getString(R.string.no_more));
-            Pb_FooterProgress.setVisibility(View.GONE);
-        } else {
-            mAdapter.addAll(list);
-        }
+//        Collections.sort(list);
+        mAdapter.addAll(list);
     }
 
     @Override
     public void refreshed(List<Data_DB_News> list) {
         fragment_news_refresh.setRefreshing(false);
         mAdapter.clear();
+//        Collections.sort(list);
         mAdapter.addAll(list);
+    }
+
+    @Override
+    public void error(int error) {
+        if (error == NewsManager.ERROR_LOAD_NO_MORE) {
+            Tv_FooterText.setText(getString(R.string.no_more));
+            Pb_FooterProgress.setVisibility(View.GONE);
+        } else if (error == NewsManager.ERROR_REFRESH_NO_NEWS) {
+            fragment_news_refresh.setRefreshing(false);
+        }
     }
 }

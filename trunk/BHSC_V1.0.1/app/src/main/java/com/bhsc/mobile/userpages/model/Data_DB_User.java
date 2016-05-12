@@ -25,7 +25,7 @@ public class Data_DB_User extends SugarRecord{
     private String username;
     private String Password;
     private String email;
-    private String Status;
+    private String sign;
     /**
      * @deprecated
      */
@@ -44,7 +44,7 @@ public class Data_DB_User extends SugarRecord{
         super();
         this.username = "";
         this.Password = "";
-        this.Status = "";
+        this.sign = "";
         this.NickName = "";
         this.email = "";
         this.headurl = "";
@@ -59,11 +59,11 @@ public class Data_DB_User extends SugarRecord{
     }
 
     public String getStatus() {
-        return Status;
+        return sign;
     }
 
     public void setStatus(String status) {
-        Status = status;
+        sign = status;
     }
 
     public String getNickName() {

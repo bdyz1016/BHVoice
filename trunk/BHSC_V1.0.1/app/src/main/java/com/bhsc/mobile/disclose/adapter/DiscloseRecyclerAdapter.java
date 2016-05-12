@@ -3,10 +3,13 @@ package com.bhsc.mobile.disclose.adapter;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -52,7 +55,26 @@ public class DiscloseRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.V
 
     private int mCurrentState = STATE_LOADING;
 
-    public DiscloseRecyclerAdapter() {
+    private OnRequestToLoadMoreListener mListener = new OnRequestToLoadMoreListener() {
+        @Override
+        public void loadMoreRequested() {
+
+        }
+    };
+
+    private OnItemLongClickListener mItemLongClickListener = new OnItemLongClickListener() {
+        @Override
+        public void onItemLongClick(View view, int position, long id) {
+
+        }
+    };
+
+    public DiscloseRecyclerAdapter(OnRequestToLoadMoreListener listener) {
+        mListener = listener;
+    }
+
+    public void setOnItemLongClickListener(@NonNull OnItemLongClickListener listener){
+        mItemLongClickListener = listener;
     }
 
     public void addAll(Collection<Data_DB_Disclose> collection) {
@@ -96,7 +118,7 @@ public class DiscloseRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.V
             }
             case TYPE_CONTENT: {
                 View contentView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_disclose, parent, false);
-                viewHolder = new ContentViewHolder(contentView);
+                viewHolder = new ContentViewHolder(contentView, mItemLongClickListener);
                 break;
             }
             case TYPE_FOOTER: {
@@ -127,6 +149,7 @@ public class DiscloseRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.V
                 switch (mCurrentState){
                     case STATE_LOADING:
                         footerViewHolder.loading();
+                        mListener.loadMoreRequested();
                         break;
                     case STATE_LOAD_COMPLETE:
                         footerViewHolder.complete();
@@ -137,6 +160,7 @@ public class DiscloseRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.V
                     default:
                         break;
                 }
+                mCurrentState = STATE_LOADING;
                 break;
             case TYPE_CONTENT:
                 ContentViewHolder contentViewHolder = (ContentViewHolder) holder;
@@ -208,12 +232,15 @@ public class DiscloseRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.V
         }
     }
 
-    private static class ContentViewHolder extends RecyclerView.ViewHolder {
+    private static class ContentViewHolder extends RecyclerView.ViewHolder implements View.OnLongClickListener{
         private final String TAG = ContentViewHolder.class.getSimpleName();
         public TextView Tv_Date, Tv_Time, Tv_Content, Tv_Support, Tv_Dicuss, Tv_Share, Tv_Name;
         public NineGridImageView mPictures;
         public SimpleDraweeView mPhoto;
         public View mDivider;
+
+        private long mDataId;
+        private OnItemLongClickListener mListener;
 
         private DateFormat mDateFormat;
 
@@ -240,8 +267,9 @@ public class DiscloseRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.V
             }
         };
 
-        public ContentViewHolder(View itemView) {
+        public ContentViewHolder(View itemView, OnItemLongClickListener listener) {
             super(itemView);
+            itemView.setOnLongClickListener(this);
             mDivider = itemView.findViewById(R.id.divider);
             Tv_Date = (TextView) itemView.findViewById(R.id.date);
             Tv_Time = (TextView) itemView.findViewById(R.id.time);
@@ -254,11 +282,16 @@ public class DiscloseRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.V
             mPhoto = (SimpleDraweeView) itemView.findViewById(R.id.photo);
             mPictures.setAdapter(mAdapter);
             mDateFormat = new DateFormat();
+            mListener = listener;
         }
 
         public void bind(final Data_DB_Disclose disclose) {
             L.i(TAG, "bind");
-            mPictures.setImagesData(Arrays.asList(disclose.getImgs().split(",")));
+            if(!TextUtils.isEmpty(disclose.getImgs())) {
+                mPictures.setImagesData(Arrays.asList(disclose.getImgs().split(",")));
+            } else {
+                mPictures.setVisibility(View.GONE);
+            }
             Tv_Content.setText(disclose.getContent());
             String[] date = mDateFormat.format(disclose.getCreateTime());
             Tv_Date.setText(date[0]);
@@ -274,6 +307,25 @@ public class DiscloseRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.V
                     v.getContext().startActivity(intent);
                 }
             });
+            mDataId = disclose.getId();
         }
+
+        @Override
+        public boolean onLongClick(View v) {
+            mListener.onItemLongClick(v, getAdapterPosition(), mDataId);
+            return true;
+        }
+    }
+
+    public interface OnRequestToLoadMoreListener {
+        /**
+         * The adapter requests to load more data.
+         * load after
+         */
+        void loadMoreRequested();
+    }
+
+    public interface OnItemLongClickListener{
+        void onItemLongClick(View view, int position, long id);
     }
 }

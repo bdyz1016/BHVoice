@@ -16,33 +16,6 @@
 #   public *;
 #}
 
--keepattributes *Annotation*
--keep class * extends java.lang.annotation.Annotation { *; }
-
--keep class com.tencent.mm.sdk.** {*;}
--keep class com.sina.**{*;}
--keep class * extends android.app.Dialog
--keep class retrofit.** { *; }
--keepattributes Signature
--keepattributes Exceptions
-
--keep class com.google.**{*;}
-
-# # -------------------------------------------
-# #  ############### volley混淆  ###############
-# # -------------------------------------------
--dontwarn org.apache.http.**
--dontwarn android.net.http.AndroidHttpClient
--dontwarn com.google.android.gms.**
--dontwarn com.android.volley.toolbox.**
--keep class com.android.volley.** {*;}
--keep class com.android.volley.toolbox.** {*;}
--keep class com.android.volley.Response$* { *; }
--keep class com.android.volley.Request$* { *; }
--keep class com.android.volley.RequestQueue$* { *; }
--keep class com.android.volley.toolbox.HurlStack$* { *; }
--keep class com.android.volley.toolbox.ImageLoader$* { *; }
-
 
 ##---------------Begin: proguard configuration for Gson  ----------
 # Gson uses generic type information stored in a class file when working with fields. Proguard
@@ -70,5 +43,127 @@
 }
 
 -keep public class * implements java.io.Serializable {*;}
+-keep class com.bhsc.mobile.comment.model.**{*;}
+-keep class com.bhsc.mobile.disclose.model.**{*;}
+-keep class com.bhsc.mobile.news.model.**{*;}
+-keep class com.bhsc.mobile.userpages.model.**{*;}
+-keep class com.bhsc.mobile.ThirdParty.model.**{*;}
+-keep class com.bhsc.mobile.net.**{*;}
 
 ##---------------End: proguard configuration for Gson  ----------
+
+
+##--------------Begin: proguard configuration for Volley---------
+-keep class org.apache.commons.logging.**
+-keep class android.support.v4.app.** { *; }
+-keep interface android.support.v4.app.** { *; }
+-keep class com.actionbarsherlock.** { *; }
+-keep interface com.actionbarsherlock.** { *; }
+-keep class com.android.volley.** { *; }
+-keep interface com.android.volley.** { *; }
+
+-keepattributes *Annotation*
+
+-dontwarn org.apache.**
+
+##---------------End: proguard configuration for Volley  --------
+
+##--------------Begin: proguard configuration for fresco---------
+
+# Keep our interfaces so they can be used by other ProGuard rules.
+# See http://sourceforge.net/p/proguard/bugs/466/
+-keep,allowobfuscation @interface com.facebook.common.internal.DoNotStrip
+
+# Do not strip any method/class that is annotated with @DoNotStrip
+-keep @com.facebook.common.internal.DoNotStrip class *
+-keepclassmembers class * {
+    @com.facebook.common.internal.DoNotStrip *;
+}
+
+# Keep native methods
+-keepclassmembers class * {
+    native <methods>;
+}
+
+-dontwarn okio.**
+-dontwarn javax.annotation.**
+-dontwarn com.android.volley.toolbox.**
+
+##---------------End: proguard configuration for fresco  --------
+
+-optimizationpasses 1
+-dontusemixedcaseclassnames
+-dontpreverify
+-verbose
+
+-keepattributes Signature
+-keepattributes Exceptions
+
+-dontwarn com.google.**
+-dontwarn com.squareup.okhttp.**
+-dontwarn com.tencent.**
+-dontwarn org.apache.http.**
+-dontwarn android.net.http.AndroidHttpClient
+-dontwarn retrofit.client.ApacheClient$GenericEntityHttpRequest
+-dontwarn retrofit.client.ApacheClient$GenericHttpRequest
+-dontwarn retrofit.client.ApacheClient$TypedOutputEntity
+-dontwarn rx.internal.util.**
+
+-keep class android.support.v4.** { *; }
+-keep interface android.support.v4.app.* { *; }
+-keep public class * extends android.support.v4.*
+
+-keep class com.android.pc.** { *; }
+-keep interface com.android.pc.** { *; }
+-keep public class * extends com.android.pc.**
+
+-keep class android.annotation.** { *;}
+-keep class gson-2.5.** { *;}
+
+-keepclassmembers class rx.internal.util.unsafe.*ArrayQueue*Field* {
+   long producerIndex;
+   long consumerIndex;
+}
+-keepclassmembers class rx.internal.util.unsafe.BaseLinkedQueueProducerNodeRef {
+   long producerNode;
+   long consumerNode;
+}
+
+-keepclasseswithmembernames class * {
+native <methods>;
+}
+-keepclasseswithmembers class * {
+public <init>(android.content.Context, android.util.AttributeSet);
+}
+-keepclasseswithmembers class * {
+public <init>(android.content.Context, android.util.AttributeSet, int);
+}
+-keepclassmembers class * extends android.app.Activity {
+public void *(android.view.View);
+}
+-keepclassmembers enum * {
+public static **[] values();
+public static ** valueOf(java.lang.String);
+}
+-keep class * implements android.os.Parcelable {
+public static final android.os.Parcelable$Creator *;
+}
+
+-keep public class * extends android.app.Activity
+-keep public class * extends android.app.Application
+-keep public class * extends android.app.Service
+-keep public class * extends android.content.BroadcastReceiver
+-keep public class * extends android.content.ContentProvider
+-keep public class * extends android.app.backup.BackupAgent
+-keep public class * extends android.preference.Preference
+-keep public class * extends android.support.v4.app.Fragment
+-keep public class * extends android.support.v4.app.FragmentActivity
+-keep public class * extends android.app.Fragment
+-keep public class com.android.vending.licensing.ILicensingService
+
+-keep class com.google.**
+
+-keep class com.tencent.** {*;}
+-keep class com.sina.**{*;}
+-keep class * extends android.app.Dialog
+-keep class retrofit.** { *; }

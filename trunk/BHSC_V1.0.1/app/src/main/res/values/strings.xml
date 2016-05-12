@@ -105,7 +105,7 @@
     <string name="status">签名</string>
     <string name="change_password">修改密码</string>
     <string name="logout">退出登录</string>
-
+    <string name="send_verify_code">发送验证码</string>
     <string name="image_from_camera">拍照</string>
     <string name="image_from_gallery">从手机相册选择</string>
     <string name="user_userinfo_nosdcard">无SD卡</string>
@@ -121,6 +121,8 @@
     <string name="search_channel">频道</string>
     <string name="search_number">头条号</string>
     <string name="search_video">视频</string>
+    <!-- 新闻列表-->
+    <string name="news_list_advertise">推广</string>
     <!-- 新闻详细-->
     <string name="news_discuss">我来说两句</string>
     <string name="publish">发表</string>
@@ -145,8 +147,11 @@
     <!-- 用户-->
     <string name="login_title">登录</string>
     <string name="register_title">注册</string>
+    <string name="find_password">找回密码</string>
     <string name="register_username">账号:</string>
     <string name="register_password">密码:</string>
+    <string name="verify_code">验证码:</string>
+    <string name="new_password">新密码:</string>
     <string name="register_password_repeat">确认密码:</string>
     <string name="login_click">点击登录</string>
     <string name="register_email">邮箱:</string>

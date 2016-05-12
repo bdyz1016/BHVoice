@@ -19,13 +19,17 @@ import com.bhsc.mobile.comment.CommentManager;
 import com.bhsc.mobile.news.model.Data_DB_News;
 import com.bhsc.mobile.userpages.LoginAndRegisterActivity;
 import com.bhsc.mobile.userpages.UserManager;
+import com.bhsc.mobile.utils.L;
 import com.orm.SugarRecord;
+
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 
 public class NewsActivity extends AppCompatActivity implements View.OnClickListener{
 
     public static final String INTENT_KEY_NEWSID = "newsId";
     public static final long DEFAULT_NEWSID = -1;
-    private final String mimeType = "text/html";
+    private final String mimeType = "text/html; charset=UTF-8";
     private final String encoding = "UTF-8";
     private WebView mWebVew;
     private EditText Edit_Discuss;
@@ -66,7 +70,8 @@ public class NewsActivity extends AppCompatActivity implements View.OnClickListe
         switch (v.getId()){
             case R.id.share:
                 ShareMenu shareMenu = new ShareMenu(mContext);
-                shareMenu.show(mContainer);
+                ShareMenu.ShareContent shareContent = new ShareMenu.ShareContent(mNews.getTitle(), "分享测试", mNews.getTitleImg(), "https://www.baidu.com/");
+                shareMenu.show(mContainer, shareContent);
                 break;
             case R.id.back:
                 finish();
@@ -109,6 +114,8 @@ public class NewsActivity extends AppCompatActivity implements View.OnClickListe
         webSettings.setBuiltInZoomControls(false);
         webSettings.setDisplayZoomControls(false);
         webSettings.setSupportZoom(false);
+        webSettings.setDefaultTextEncodingName(encoding);
+        webSettings.setLayoutAlgorithm(WebSettings.LayoutAlgorithm.SINGLE_COLUMN);
     }
 
     private void initData(){
@@ -123,7 +130,9 @@ public class NewsActivity extends AppCompatActivity implements View.OnClickListe
     private void initView(){
         if(mNews != null){
             String content = mNews.getContent();
+            L.i("content", content);
             content = content.replace("<img", "<img width=\"320\"");
+            L.i("content", content);
             mWebVew.loadData(content, mimeType, null);
             Tv_DiscussCount.setText(mNews.getCommentCount() + "");
         }

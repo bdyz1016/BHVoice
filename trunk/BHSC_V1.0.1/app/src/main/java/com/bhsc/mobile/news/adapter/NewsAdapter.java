@@ -58,8 +58,8 @@ public class NewsAdapter extends BaseAdapter {
             holder = new ViewHolder();
             holder.Tv_NewsTitle = (TextView) convertView.findViewById(R.id.item_news_title);
             holder.Image = (SimpleDraweeView) convertView.findViewById(R.id.item_news_image);
-            holder.Tv_Discuss = (TextView) convertView.findViewById(R.id.item_news_discuss);
-            holder.Tv_Collect = (TextView) convertView.findViewById(R.id.item_news_collect);
+            holder.Tv_Discuss = (TextView) convertView.findViewById(R.id.discuss);
+            holder.Tv_Advertise = (TextView) convertView.findViewById(R.id.advertise);
             convertView.setTag(holder);
         } else {
             holder = (ViewHolder) convertView.getTag();
@@ -68,10 +68,13 @@ public class NewsAdapter extends BaseAdapter {
         Uri uri = Uri.parse(news.getTitleImg());
         holder.Image.setImageURI(uri);
         if (news.getIsAdv() == Data_DB_News.TYPE_ADVERTISE) {
-
+            holder.Tv_Discuss.setVisibility(View.GONE);
+            holder.Tv_Advertise.setVisibility(View.VISIBLE);
+        } else {
+            holder.Tv_Discuss.setVisibility(View.VISIBLE);
+            holder.Tv_Discuss.setText(news.getCommentCount() + "跟帖");
+            holder.Tv_Advertise.setVisibility(View.GONE);
         }
-        holder.Tv_Discuss.setText(news.getCommentCount() + "");
-        holder.Tv_Collect.setText(news.getPraiseCount() + "");
         return convertView;
     }
 
@@ -102,7 +105,10 @@ public class NewsAdapter extends BaseAdapter {
 //    }
 
     private class ViewHolder {
-        private TextView Tv_NewsTitle, Tv_Discuss, Tv_Collect;
+        private TextView Tv_NewsTitle;
+        private TextView Tv_Discuss;
+        private TextView Tv_Advertise;
+//        private TextView Tv_Collect;
         private SimpleDraweeView Image;
     }
 

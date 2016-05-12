@@ -30,10 +30,34 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:maxLines="2"
+            android:textColor="@color/black"
             android:text="中纪委官员办李春城案“跑风漏气”被严肃处理"
             android:textSize="15sp"/>
 
+        <RelativeLayout
+            android:layout_marginTop="5dp"
+            android:layout_width="match_parent"
+            android:layout_height="20dp"
+            android:orientation="horizontal"
+            android:layout_alignParentBottom="true">
+            <TextView
+                android:id="@+id/discuss"
+                android:textColor="#999999"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:textSize="14sp"/>
+            <TextView
+                android:id="@+id/advertise"
+                android:textColor="@color/category_tab_highlight_text_dark"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:text="@string/news_list_advertise"
+                android:textSize="14sp"/>
+        </RelativeLayout>
         <LinearLayout
+            android:visibility="gone"
             android:layout_marginTop="5dp"
             android:layout_width="match_parent"
             android:layout_height="20dp"

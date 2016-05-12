@@ -37,11 +37,11 @@
         <activity android:name=".userpages.RegisterActivity" />
         <activity android:name=".userpages.UserInfoActivity" />
         <activity android:name=".userpages.ResetPasswordActivity"/>
+        <activity android:name=".userpages.FindPasswordActivity"/>
         <activity android:name=".comment.CommentActivity"
             android:windowSoftInputMode="adjustResize|stateHidden">
-
         </activity>
-
+        <activity android:name=".settings.FeedbackActivity"/>
         <activity
             android:name="vn.tungdx.mediapicker.activities.MediaPickerActivity"
             android:screenOrientation="portrait"

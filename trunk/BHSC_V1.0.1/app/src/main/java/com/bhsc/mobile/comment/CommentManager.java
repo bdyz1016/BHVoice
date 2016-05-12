@@ -26,6 +26,7 @@ import com.google.gson.reflect.TypeToken;
 
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Field;
+import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.List;
@@ -147,6 +148,11 @@ public class CommentManager {
                     return;
                 }
                 L.i(TAG, response);
+                try {
+                    response = URLDecoder.decode(response, "UTF-8");
+                } catch (UnsupportedEncodingException e) {
+                    e.printStackTrace();
+                }
                 CommentResponse commentResponse = mGson.fromJson(response, new TypeToken<CommentResponse>(){}.getType());
                 if(commentResponse.getCode() == ObjectResponse.SUCESS_CODE){
                     listener.onLoaded(commentResponse.getList());

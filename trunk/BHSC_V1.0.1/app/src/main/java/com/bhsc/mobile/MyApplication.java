@@ -4,6 +4,7 @@ import android.app.Application;
 
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.orm.SugarContext;
+import com.xiaomi.mistatistic.sdk.MiStatInterface;
 
 import co.lujun.tpsharelogin.TPManager;
 
@@ -23,6 +24,11 @@ public class MyApplication extends Application {
     public static final String APP_ID_WECHAT = "wx1ede16f1495fe99b";
     public static final String APP_SECRET_WECHAT = "fba6a41be329981365829de421f37710";
 
+    public static final String APP_ID_MI = "2882303761517469279";
+    public static final String APP_KEY_MI = "5851746990279";
+    public static final String APP_SECRET_MI = "f3+0p34uxYipq6DeVslmlA==";
+    public static final String CHANNEL = "test";
+
     public static final String Address = "http://101.200.209.6";
 
     @Override
@@ -35,6 +41,8 @@ public class MyApplication extends Application {
                 "", "", "",
                 APP_ID_QQ, "",
                 APP_ID_WECHAT, APP_SECRET_WECHAT);
+        MiStatInterface.initialize(this, APP_ID_MI, APP_KEY_MI, CHANNEL);
+        MiStatInterface.enableExceptionCatcher(true);
     }
     @Override
     public void onTerminate() {

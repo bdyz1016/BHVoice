@@ -25,7 +25,7 @@
             />
 
         <RelativeLayout
-            android:id="@+id/activity_feedback_back"
+            android:id="@+id/back"
             android:layout_width="@dimen/title_btn_width"
             android:layout_height="match_parent"
             android:layout_alignParentLeft="true"
@@ -61,7 +61,7 @@
             >
 
             <EditText
-                android:id="@+id/activity_feedback_content"
+                android:id="@+id/content"
                 android:layout_width="match_parent"
                 android:layout_height="200dp"
                 android:layout_below="@+id/activity_disclose_edit_title"
@@ -79,13 +79,10 @@
                 />
 
             <Button
-                android:id="@+id/activity_feedback_done"
-                android:layout_width="match_parent"
-                android:layout_height="35dp"
-                android:layout_marginLeft="@dimen/activity_horizontal_margin"
-                android:layout_marginRight="@dimen/activity_horizontal_margin"
+                android:id="@+id/done"
+                style="@style/RedButton"
                 android:layout_marginTop="50dp"
-                android:background="@mipmap/btn_login_login_normal"
+                android:text="发送"
                 />
         </LinearLayout>
     </ScrollView>

@@ -15,6 +15,7 @@ import android.widget.Toast;
 
 import com.bhsc.mobile.R;
 import com.bhsc.mobile.disclose.UserDiscloseActivity;
+import com.bhsc.mobile.settings.FeedbackActivity;
 import com.bhsc.mobile.userpages.model.Data_DB_User;
 import com.facebook.drawee.view.SimpleDraweeView;
 
@@ -66,6 +67,7 @@ public class UserFragment extends Fragment implements View.OnClickListener{
         mAbout = mContentView.findViewById(R.id.about);
         mFeedback = mContentView.findViewById(R.id.feedback);
         mPhoto.setOnClickListener(this);
+        mFeedback.setOnClickListener(this);
     }
 
     private void initView(){
@@ -103,9 +105,9 @@ public class UserFragment extends Fragment implements View.OnClickListener{
     }
 
     private void feedback(){
-//        Intent intent = new Intent();
-//        intent.setClass(mContext, FeedbackActivity.class);
-//        startActivity(intent);
+        Intent intent = new Intent();
+        intent.setClass(mContext, FeedbackActivity.class);
+        startActivity(intent);
     }
 
     @Override

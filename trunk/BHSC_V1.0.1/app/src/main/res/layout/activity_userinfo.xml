@@ -149,7 +149,6 @@
                     android:id="@+id/nickname"
                     android:layout_alignParentRight="true"
                     android:gravity="center_vertical|left"
-                    android:text="@string/nickname"
                     style="@style/SettingsLabel"/>
             </RelativeLayout>
         </RelativeLayout>
@@ -194,7 +193,6 @@
                     android:id="@+id/status"
                     android:layout_alignParentRight="true"
                     android:gravity="center_vertical|left"
-                    android:text="@string/status"
                     style="@style/SettingsLabel"/>
             </RelativeLayout>
         </RelativeLayout>

@@ -51,7 +51,9 @@ import com.squareup.picasso.Picasso;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import vn.tungdx.mediapicker.MediaItem;
 import vn.tungdx.mediapicker.MediaOptions;
@@ -482,9 +484,13 @@ public class DiscloseActivity extends Activity {
             String userId = params[2];
             String response = null;
             try {
-                String url = MyApplication.Address + "/mood/addMood?title=" + title + "&content=" + content + "&userId=" + userId;
+                String url = MyApplication.Address + "/mood/addMood";
                 L.i(TAG, "add mood url:" + url);
-                response = UploadFile.uploadMultiFileSync(url, null, files, null);
+                Map<String, String> requestParams = new HashMap<>();
+                requestParams.put("title", title);
+                requestParams.put("content", content);
+                requestParams.put("userId", userId);
+                response = UploadFile.uploadMultiFileSync(url, null, files, requestParams);
                 L.i(TAG, "add mood:" + response);
             } catch (IOException e) {
                 e.printStackTrace();

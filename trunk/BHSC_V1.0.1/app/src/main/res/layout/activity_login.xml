@@ -114,7 +114,7 @@
                     style="@style/login_label"
                     android:layout_width="50dp"
                     android:layout_height="match_parent"
-                    android:text="@string/register_username"/>
+                    android:text="@string/register_password"/>
                 <EditText
                     android:id="@+id/activity_login_password"
                     style="@style/login_edittext"
@@ -134,9 +134,8 @@
             android:textColor="#d5002f"
             />
         <Button
+            style="@style/RedButton"
             android:id="@+id/activity_login_login"
-            android:layout_width="match_parent"
-            android:layout_height="35dp"
-            android:background="@mipmap/btn_login_login_normal"/>
+            android:text="登录"/>
     </LinearLayout>
 </RelativeLayout>

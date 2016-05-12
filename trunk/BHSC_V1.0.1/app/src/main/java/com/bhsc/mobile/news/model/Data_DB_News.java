@@ -6,7 +6,7 @@ import com.orm.dsl.Column;
 /**
  * Created by lynn on 15-9-17.
  */
-public class Data_DB_News extends SugarRecord {
+public class Data_DB_News extends SugarRecord implements Comparable<Data_DB_News>{
 
     public static final int TYPE_NEWS = 0;
     public static final int TYPE_ADVERTISE = 1;
@@ -146,5 +146,15 @@ public class Data_DB_News extends SugarRecord {
 
     public void setIsShow(int isShow) {
         this.isShow = isShow;
+    }
+
+    @Override
+    public int compareTo(Data_DB_News another) {
+        if(PublishTime > another.PublishTime){
+            return -1;
+        } else if(PublishTime < another.PublishTime){
+            return 1;
+        }
+        return 0;
     }
 }

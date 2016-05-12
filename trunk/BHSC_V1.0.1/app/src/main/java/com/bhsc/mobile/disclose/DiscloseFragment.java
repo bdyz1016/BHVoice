@@ -17,6 +17,7 @@ import com.bhsc.mobile.disclose.model.Data_DB_Disclose;
 import com.bhsc.mobile.R;
 import com.bhsc.mobile.userpages.LoginAndRegisterActivity;
 import com.bhsc.mobile.userpages.UserManager;
+import com.bhsc.mobile.utils.L;
 import com.github.clans.fab.FloatingActionButton;
 import com.github.clans.fab.FloatingActionMenu;
 
@@ -25,8 +26,8 @@ import java.util.List;
 /**
  * Created by zhanglei on 16/4/17.
  */
-public class DiscloseFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener{
-
+public class DiscloseFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener, DiscloseRecyclerAdapter.OnRequestToLoadMoreListener{
+    private final String TAG = DiscloseFragment.class.getSimpleName();
     private final int SCROLL_OFFSET = 4;
 
     private View mContentView;
@@ -52,7 +53,15 @@ public class DiscloseFragment extends Fragment implements SwipeRefreshLayout.OnR
         mContentView = inflater.inflate(R.layout.fragment_disclose, container, false);
         initWidget();
         initData();
+        initView();
         return mContentView;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        mSwipeRefreshLayout.setRefreshing(true);
+        mDiscloseManager.refresh(-1);
     }
 
     private void initWidget(){
@@ -69,7 +78,7 @@ public class DiscloseFragment extends Fragment implements SwipeRefreshLayout.OnR
         mRecyclerView = (RecyclerView) mContentView.findViewById(R.id.disclose_list);
         mLayoutManager = new LinearLayoutManager(mContext);
         mRecyclerView.setLayoutManager(mLayoutManager);
-        mAdapter = new DiscloseRecyclerAdapter();
+        mAdapter = new DiscloseRecyclerAdapter(this);
         mAdapter.hasFooter();
         mRecyclerView.setAdapter(mAdapter);
         mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
@@ -108,11 +117,23 @@ public class DiscloseFragment extends Fragment implements SwipeRefreshLayout.OnR
             }
 
             @Override
-            public void error(int error) {
+            public void deleteSuccess() {
 
             }
+
+            @Override
+            public void error(int error) {
+                if(error > 0 && error < 0x10){
+                    mAdapter.setState(DiscloseRecyclerAdapter.STATE_NO_MORE);
+                } else if(error >= 10 && error < 0x20){
+                    mSwipeRefreshLayout.setRefreshing(false);
+                }
+            }
         });
-        mDiscloseManager.loadData();
+    }
+
+    private void initView(){
+        mDiscloseManager.loadDataFromLocal(-1);
     }
 
     private View.OnClickListener mOnCreateDiscloseListener = new View.OnClickListener() {
@@ -141,6 +162,12 @@ public class DiscloseFragment extends Fragment implements SwipeRefreshLayout.OnR
 
     @Override
     public void onRefresh() {
-        mDiscloseManager.refresh();
+        mDiscloseManager.refresh(-1);
+    }
+
+    @Override
+    public void loadMoreRequested() {
+        L.i(TAG, "loadMoreRequested");
+        mDiscloseManager.loadDataFromCloud(-1);
     }
 }
