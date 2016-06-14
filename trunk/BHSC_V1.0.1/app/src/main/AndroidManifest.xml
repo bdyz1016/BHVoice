@@ -19,29 +19,45 @@
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme" >
-        <activity android:name=".MainActivity" />
-        <activity android:name=".WelcomeActivity" >
+        android:theme="@style/ApplicationTheme" >
+        <activity android:name=".MainActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".WelcomeActivity"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".news.newsdetail.DetailActivity" />
-        <activity android:name=".news.SearchActivity" />
-        <activity android:name=".disclose.DiscloseActivity" />
-        <activity android:name=".disclose.UserDiscloseActivity"/>
-        <activity android:name=".userpages.LoginAndRegisterActivity" />
-        <activity android:name=".userpages.LoginActivity" />
-        <activity android:name=".userpages.RegisterActivity" />
-        <activity android:name=".userpages.UserInfoActivity" />
-        <activity android:name=".userpages.ResetPasswordActivity"/>
-        <activity android:name=".userpages.FindPasswordActivity"/>
+        <activity android:name=".news.newsdetail.DetailActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".news.SearchActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".disclose.DiscloseActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".disclose.UserDiscloseActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".userpages.LoginAndRegisterActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".userpages.LoginActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".userpages.RegisterActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".userpages.UserInfoActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".userpages.ResetPasswordActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".userpages.FindPasswordActivity"
+            android:screenOrientation="portrait"/>
         <activity android:name=".comment.CommentActivity"
+            android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize|stateHidden">
         </activity>
-        <activity android:name=".settings.FeedbackActivity"/>
+        <activity android:name=".settings.FeedbackActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".settings.StatementActivity"
+            android:screenOrientation="portrait"/>
         <activity
             android:name="vn.tungdx.mediapicker.activities.MediaPickerActivity"
             android:screenOrientation="portrait"
@@ -87,8 +103,8 @@
             android:name="DOMAIN_PACKAGE_NAME"
             android:value="com.bhsc" />
 
-        <activity android:name=".news.newsdetail.NewsActivity" >
-        </activity>
+        <activity android:name=".news.newsdetail.NewsActivity"
+            android:screenOrientation="portrait"/>
     </application>
 
 </manifest>

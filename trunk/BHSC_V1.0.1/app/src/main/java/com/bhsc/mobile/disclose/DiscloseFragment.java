@@ -26,7 +26,7 @@ import java.util.List;
 /**
  * Created by zhanglei on 16/4/17.
  */
-public class DiscloseFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener, DiscloseRecyclerAdapter.OnRequestToLoadMoreListener{
+public class DiscloseFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener, DiscloseRecyclerAdapter.OnRequestToLoadMoreListener {
     private final String TAG = DiscloseFragment.class.getSimpleName();
     private final int SCROLL_OFFSET = 4;
 
@@ -64,7 +64,7 @@ public class DiscloseFragment extends Fragment implements SwipeRefreshLayout.OnR
         mDiscloseManager.refresh(-1);
     }
 
-    private void initWidget(){
+    private void initWidget() {
         mSwipeRefreshLayout = (SwipeRefreshLayout) mContentView.findViewById(R.id.refresh_layout);
         mSwipeRefreshLayout.setOnRefreshListener(this);
         mSwipeRefreshLayout.setColorSchemeResources(R.color.category_tab_highlight_bg);
@@ -102,7 +102,7 @@ public class DiscloseFragment extends Fragment implements SwipeRefreshLayout.OnR
         });
     }
 
-    private void initData(){
+    private void initData() {
         mDiscloseManager = new DiscloseManager(mContext, new DiscloseManager.OnDiscloseListener() {
             @Override
             public void onLoaded(List<Data_DB_Disclose> list) {
@@ -123,16 +123,16 @@ public class DiscloseFragment extends Fragment implements SwipeRefreshLayout.OnR
 
             @Override
             public void error(int error) {
-                if(error > 0 && error < 0x10){
+                if (error > 0 && error < 0x10) {
                     mAdapter.setState(DiscloseRecyclerAdapter.STATE_NO_MORE);
-                } else if(error >= 10 && error < 0x20){
+                } else if (error >= 10 && error < 0x20) {
                     mSwipeRefreshLayout.setRefreshing(false);
                 }
             }
         });
     }
 
-    private void initView(){
+    private void initView() {
         mDiscloseManager.loadDataFromLocal(-1);
     }
 
@@ -140,7 +140,7 @@ public class DiscloseFragment extends Fragment implements SwipeRefreshLayout.OnR
         @Override
         public void onClick(View v) {
             mFloatActionMenu.close(true);
-            if(UserManager.isLogin()){
+            if (UserManager.isLogin()) {
                 startActivity(new Intent(mContext, DiscloseActivity.class));
             } else {
                 startActivity(new Intent(mContext, LoginAndRegisterActivity.class));
@@ -152,7 +152,7 @@ public class DiscloseFragment extends Fragment implements SwipeRefreshLayout.OnR
         @Override
         public void onClick(View v) {
             mFloatActionMenu.close(true);
-            if(UserManager.isLogin()){
+            if (UserManager.isLogin()) {
                 startActivity(new Intent(mContext, UserDiscloseActivity.class));
             } else {
                 startActivity(new Intent(mContext, LoginAndRegisterActivity.class));

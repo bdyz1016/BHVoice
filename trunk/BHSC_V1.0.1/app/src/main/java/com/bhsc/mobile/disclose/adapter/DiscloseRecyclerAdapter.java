@@ -2,6 +2,7 @@ package com.bhsc.mobile.disclose.adapter;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
@@ -248,7 +249,9 @@ public class DiscloseRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.V
             @Override
             protected void onDisplayImage(Context context, ImageView imageView, String s) {
                 Picasso.with(context)
-                        .load(s).resize(MyApplication.DISCLOSE_IMAGE_RESIZE,MyApplication.DISCLOSE_IMAGE_RESIZE).centerCrop()
+                        .load(s)
+                        .config(Bitmap.Config.RGB_565)
+                        .resize(MyApplication.DISCLOSE_IMAGE_RESIZE,MyApplication.DISCLOSE_IMAGE_RESIZE).centerCrop()
                         .placeholder(R.color.background_color)
                         .into(imageView);
             }
@@ -293,9 +296,14 @@ public class DiscloseRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.V
                 mPictures.setVisibility(View.GONE);
             }
             Tv_Content.setText(disclose.getContent());
-            String[] date = mDateFormat.format(disclose.getCreateTime());
-            Tv_Date.setText(date[0]);
-            Tv_Time.setText(date[1]);
+            StringBuilder dateStringBuilder = new StringBuilder("");
+            String[] dateArray = mDateFormat.format(disclose.getCreateTime());
+            for(String s:dateArray){
+                if(!TextUtils.isEmpty(s)) {
+                    dateStringBuilder.append(s).append(" ");
+                }
+            }
+            Tv_Date.setText(dateStringBuilder.toString());
             mPhoto.setImageURI(Uri.parse(disclose.getHeadurl()));
             Tv_Name.setText(disclose.getUsername());
             Tv_Dicuss.setOnClickListener(new View.OnClickListener() {

@@ -49,7 +49,7 @@
             android:layout_centerVertical="true"
             android:text="2015-9-30" />
 
-        <TextView
+        <TextView android:visibility="gone"
             android:id="@+id/time"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -88,7 +88,7 @@
             android:id="@+id/support"
             style="@style/item_disclose_button"
             android:layout_centerVertical="true"
-            android:drawableLeft="@mipmap/btn_support_press"
+            android:drawableLeft="@mipmap/btn_support_normal"
             android:text="点赞" />
         <!--评论-->
         <TextView

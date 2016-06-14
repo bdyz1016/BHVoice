@@ -37,7 +37,6 @@ public class CommentActivity extends Activity {
 
     private long mFatherId;
     private int mCommentType;
-
     private Context mContext;
 
     @Override

@@ -31,6 +31,7 @@ import com.bhsc.mobile.MyApplication;
 import com.bhsc.mobile.R;
 import com.bhsc.mobile.net.MyRetryPolicy;
 import com.bhsc.mobile.net.MySingleton;
+import com.bhsc.mobile.settings.StatementActivity;
 import com.bhsc.mobile.userpages.model.UserResponse;
 import com.bhsc.mobile.utils.L;
 import com.bhsc.mobile.utils.Method;
@@ -178,7 +179,7 @@ public class RegisterActivity extends Activity {
         @Override
         public void onClick(View widget) {
             L.i(TAG, "agreement clicked!");
-            startActivity(new Intent(RegisterActivity.this, AgreementActivity.class));
+            startActivity(new Intent(RegisterActivity.this, StatementActivity.class));
         }
 
         @Override

@@ -4,18 +4,23 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bhsc.mobile.R;
 import com.bhsc.mobile.ThirdParty.ShareMenu;
+import com.bhsc.mobile.baseclass.Manager;
 import com.bhsc.mobile.comment.CommentActivity;
 import com.bhsc.mobile.comment.CommentManager;
+import com.bhsc.mobile.news.model.Data_DB_Detail;
 import com.bhsc.mobile.news.model.Data_DB_News;
 import com.bhsc.mobile.userpages.LoginAndRegisterActivity;
 import com.bhsc.mobile.userpages.UserManager;
@@ -25,8 +30,8 @@ import com.orm.SugarRecord;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 
-public class NewsActivity extends AppCompatActivity implements View.OnClickListener{
-
+public class NewsActivity extends AppCompatActivity implements View.OnClickListener, NewsStore.OnNewsListener {
+    private final String TAG = NewsActivity.class.getSimpleName();
     public static final String INTENT_KEY_NEWSID = "newsId";
     public static final long DEFAULT_NEWSID = -1;
     private final String mimeType = "text/html; charset=UTF-8";
@@ -36,10 +41,16 @@ public class NewsActivity extends AppCompatActivity implements View.OnClickListe
     private TextView Tv_DiscussCount;
     private View mContainer;
     private View mShare, mSend, mNormal;
-    private Data_DB_News mNews;
+    private ProgressBar mProgressBar;
+
+    private Data_DB_Detail mNews;
+    private NewsStore mNewsStore;
     private CommentManager mManager;
 
+    private ShareMenu mShareMenu;
+
     private Context mContext;
+    private long mNewsId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,22 +73,35 @@ public class NewsActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     protected void onPostResume() {
         super.onPostResume();
-        initView();
+        loadNewsContent();
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if(keyCode == KeyEvent.KEYCODE_BACK){
+            if(mShareMenu != null && mShareMenu.isShowing()){
+                mShareMenu.dismiss();
+            } else {
+                finish();
+            }
+            return true;
+        }
+        return super.onKeyDown(keyCode, event);
     }
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()){
+        switch (v.getId()) {
             case R.id.share:
-                ShareMenu shareMenu = new ShareMenu(mContext);
-                ShareMenu.ShareContent shareContent = new ShareMenu.ShareContent(mNews.getTitle(), "分享测试", mNews.getTitleImg(), "https://www.baidu.com/");
-                shareMenu.show(mContainer, shareContent);
+                mShareMenu = new ShareMenu(mContext);
+                ShareMenu.ShareContent shareContent = new ShareMenu.ShareContent(mNews.getTitle(), mNews.getTitle(), mNews.getTitleImg(), mNews.getShareurl());
+                mShareMenu.show(mContainer, shareContent);
                 break;
             case R.id.back:
                 finish();
                 break;
             case R.id.send:
-                if(UserManager.isLogin()) {
+                if (UserManager.isLogin()) {
                     mManager.addComment(UserManager.getUser().getId(), mNews.getId(),
                             Edit_Discuss.getText().toString(), CommentManager.TYPE_NEWS, null);
                 } else {
@@ -95,8 +119,9 @@ public class NewsActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
-    private void initWidget(){
+    private void initWidget() {
         mWebVew = (WebView) findViewById(R.id.webview);
+        mProgressBar = (ProgressBar) findViewById(R.id.progress);
         Edit_Discuss = (EditText) findViewById(R.id.discuss);
         Tv_DiscussCount = (TextView) findViewById(R.id.discuss_count);
         mContainer = findViewById(R.id.container);
@@ -118,25 +143,18 @@ public class NewsActivity extends AppCompatActivity implements View.OnClickListe
         webSettings.setLayoutAlgorithm(WebSettings.LayoutAlgorithm.SINGLE_COLUMN);
     }
 
-    private void initData(){
+    private void initData() {
         mContext = this;
-        long id = getIntent().getLongExtra(INTENT_KEY_NEWSID, DEFAULT_NEWSID);
-        if(id > 0){
-            mNews = SugarRecord.findById(Data_DB_News.class, id);
-        }
+        mNewsStore = new NewsStore(mContext, this);
+        mNewsId = getIntent().getLongExtra(INTENT_KEY_NEWSID, DEFAULT_NEWSID);
         mManager = new CommentManager(this);
     }
 
-    private void initView(){
-        if(mNews != null){
-            String content = mNews.getContent();
-            L.i("content", content);
-            content = content.replace("<img", "<img width=\"320\"");
-            L.i("content", content);
-            mWebVew.loadData(content, mimeType, null);
-            Tv_DiscussCount.setText(mNews.getCommentCount() + "");
-        }
+    private void loadNewsContent(){
+        mProgressBar.setVisibility(View.VISIBLE);
+        mNewsStore.getNews(mNewsId);
     }
+
 
     @Override
     public boolean dispatchTouchEvent(MotionEvent ev) {
@@ -159,13 +177,14 @@ public class NewsActivity extends AppCompatActivity implements View.OnClickListe
 
     /**
      * 判断点击位置是否应该隐藏软键盘
+     *
      * @param v
      * @param event
      * @return
      */
-    public  boolean isShouldHideInput(View v, MotionEvent event) {
+    public boolean isShouldHideInput(View v, MotionEvent event) {
         if (v != null && (v instanceof EditText)) {
-            int[] leftTop = { 0, 0 };
+            int[] leftTop = {0, 0};
             //获取输入框当前的location位置
             v.getLocationInWindow(leftTop);
             int left = leftTop[0];
@@ -186,7 +205,7 @@ public class NewsActivity extends AppCompatActivity implements View.OnClickListe
     private View.OnFocusChangeListener mFocusChangeListener = new View.OnFocusChangeListener() {
         @Override
         public void onFocusChange(View v, boolean hasFocus) {
-            if (hasFocus){
+            if (hasFocus) {
                 mNormal.setVisibility(View.GONE);
                 mSend.setVisibility(View.VISIBLE);
             } else {
@@ -195,4 +214,33 @@ public class NewsActivity extends AppCompatActivity implements View.OnClickListe
             }
         }
     };
+
+    @Override
+    public void onLoaded(Data_DB_Detail data) {
+        L.i(TAG, "onLoaded");
+        mProgressBar.setVisibility(View.GONE);
+        mNews = data;
+        String content = data.getContent();
+        content = content.replace("<img", "<img width=\"320\"");
+        mWebVew.loadData(content, mimeType, null);
+        Tv_DiscussCount.setText(data.getCommentCount() + "");
+    }
+
+    @Override
+    public void error(int error) {
+        mProgressBar.setVisibility(View.GONE);
+        switch (error) {
+            case Manager.ERROR_NETWORK_UNREACHABLE:
+                Toast.makeText(mContext, "网络异常", Toast.LENGTH_SHORT).show();
+                break;
+            case Manager.ERROR_SERVER_ISSUES:
+                Toast.makeText(mContext, "服务器错误", Toast.LENGTH_SHORT).show();
+                break;
+            case Manager.ERROR_UNKNOWN:
+                Toast.makeText(mContext, "位置异常", Toast.LENGTH_SHORT).show();
+                break;
+            default:
+                break;
+        }
+    }
 }

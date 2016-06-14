@@ -8,6 +8,8 @@ import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
@@ -36,6 +38,7 @@ import com.bhsc.mobile.net.UploadFile;
 import com.bhsc.mobile.userpages.UserManager;
 import com.bhsc.mobile.userpages.dialog.DefaultDialog;
 import com.bhsc.mobile.utils.FileUtil;
+import com.bhsc.mobile.utils.ImageUtil;
 import com.bhsc.mobile.utils.L;
 import com.bhsc.mobile.views.ImageViewer;
 import com.facebook.drawee.drawable.ScalingUtils;
@@ -49,6 +52,8 @@ import com.orm.dsl.NotNull;
 import com.squareup.picasso.Picasso;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -66,6 +71,9 @@ import vn.tungdx.mediapicker.utils.Utils;
  */
 public class DiscloseActivity extends Activity {
     private final String TAG = DiscloseActivity.class.getSimpleName();
+
+    public final static int PICTURE_MAX_WIDTH = 800;
+    public final static int PICTURE_MAX_HEIGHT = 800;
 
     public static final int REQUEST_IMAGE = 0x1;
     public static final int PHOTO_CHOOSE_WITH_DATA = 0x10;
@@ -374,6 +382,9 @@ public class DiscloseActivity extends Activity {
                         L.i(TAG, "select file path:" + filePath);
                         if (mediaItem.isPhoto()) {
                             mPictures.add(mPictures.size() - 1, filePath);
+                            if(mPictures.size() > MAX_IMG){
+                                mPictures.remove(ADD_IMAGE);
+                            }
                             mNineGridImageView.setImagesData(new ArrayList<>(mPictures));
                         }
                     }
@@ -476,7 +487,17 @@ public class DiscloseActivity extends Activity {
             for (String path : mPictures) {
                 File file = new File(path);
                 if (file.exists()) {
-                    files.add(file);
+                    Bitmap bitmap = ImageUtil.decodeSampledBitmapFromSource(path, PICTURE_MAX_WIDTH, PICTURE_MAX_HEIGHT);
+                    try {
+                        FileOutputStream fileOutputStream = new FileOutputStream(file, false);
+                        bitmap.compress(Bitmap.CompressFormat.PNG, 50, fileOutputStream);
+                        fileOutputStream.flush();
+                        fileOutputStream.close();
+                        files.add(file);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+//                    files.add(file);
                 }
             }
             String title = params[0];
@@ -498,7 +519,13 @@ public class DiscloseActivity extends Activity {
             if (!TextUtils.isEmpty(response)) {
                 DiscloseResponse discloseResponse = mGson.fromJson(response, new TypeToken<DiscloseResponse>() {
                 }.getType());
-                return discloseResponse.getCode();
+                int responseCode = discloseResponse.getCode();
+                if(responseCode == DiscloseResponse.SUCESS_CODE){
+                    for(File file:files){
+                        file.delete();
+                    }
+                }
+                return responseCode;
             }
             return 0;
         }

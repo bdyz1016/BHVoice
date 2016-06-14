@@ -108,6 +108,7 @@
 -dontwarn retrofit.client.ApacheClient$GenericHttpRequest
 -dontwarn retrofit.client.ApacheClient$TypedOutputEntity
 -dontwarn rx.internal.util.**
+-dontwarn android.test.**
 
 -keep class android.support.v4.** { *; }
 -keep interface android.support.v4.app.* { *; }

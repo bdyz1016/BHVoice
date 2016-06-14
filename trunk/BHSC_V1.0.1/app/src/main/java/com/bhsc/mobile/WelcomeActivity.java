@@ -3,7 +3,9 @@ package com.bhsc.mobile;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatDelegate;
 import android.util.DisplayMetrics;
+import android.view.KeyEvent;
 
 
 /**
@@ -60,4 +62,9 @@ public class WelcomeActivity extends Activity {
             finish();
         }
     };
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        return false;
+    }
 }

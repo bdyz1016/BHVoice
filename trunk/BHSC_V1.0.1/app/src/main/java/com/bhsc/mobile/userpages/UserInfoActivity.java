@@ -285,7 +285,7 @@ public class UserInfoActivity extends Activity implements View.OnClickListener {
     private void setUserPhoto(final String filePath){
         L.i(TAG, "image path:" + filePath);
         displayProgressDialog(null);
-        mUserManager.setUserPhoto(new File(filePath), new UserManager.OnEditUserInfoListener() {
+        mUserManager.setUserPhoto(filePath, new UserManager.OnEditUserInfoListener() {
             @Override
             public void success() {
                 Uri uri = Uri.parse("file://" + filePath);

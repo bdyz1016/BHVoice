@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
-    <style name="AppTheme" parent="android:Theme.Material" tools:targetApi="lollipop">
+    <style name="ApplicationTheme" parent="Theme.AppCompat.Light.NoActionBar"
+        tools:targetApi="lollipop">
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>

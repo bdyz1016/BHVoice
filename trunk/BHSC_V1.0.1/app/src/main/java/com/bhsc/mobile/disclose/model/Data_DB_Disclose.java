@@ -13,12 +13,12 @@ public class Data_DB_Disclose extends SugarRecord {
     public static final int IMAGE_MAX_COUNT = 9;
 
     private String imgs;
-    @Column(name="create_time")
+    @Column(name = "create_time")
     private long createTime;
     private String headurl;
     private int state;
     private String title;
-    @Column(name="user_id")
+    @Column(name = "user_id")
     private int userId;
     private String content;
     private String username;

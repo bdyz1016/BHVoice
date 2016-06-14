@@ -1,6 +1,7 @@
 package com.bhsc.mobile.userpages;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.text.TextUtils;
 
@@ -16,6 +17,7 @@ import com.bhsc.mobile.net.RequestError;
 import com.bhsc.mobile.net.UploadFile;
 import com.bhsc.mobile.userpages.model.Data_DB_User;
 import com.bhsc.mobile.userpages.model.UserResponse;
+import com.bhsc.mobile.utils.ImageUtil;
 import com.bhsc.mobile.utils.L;
 import com.bhsc.mobile.utils.Method;
 import com.google.gson.ExclusionStrategy;
@@ -25,6 +27,7 @@ import com.google.gson.GsonBuilder;
 import com.orm.SugarRecord;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.lang.reflect.Field;
@@ -69,6 +72,8 @@ public class UserManager {
         void failed(RequestError error);
     }
 
+    public static final int PHOTO_SIZE = 200;
+
     private Context mContext;
     private MyStringRequest mLoginRequest;
     private UploadPhotoTask mUploadPhotoTask;
@@ -80,12 +85,12 @@ public class UserManager {
         mContext = context;
     }
 
-    public void setUserPhoto(File image, OnEditUserInfoListener listener){
+    public void setUserPhoto(String filePath, OnEditUserInfoListener listener){
         if(mUploadPhotoTask != null && !mUploadPhotoTask.isCancelled()){
             mUploadPhotoTask.cancel(true);
         }
         mUploadPhotoTask = new UploadPhotoTask(mContext, listener);
-        mUploadPhotoTask.execute(image);
+        mUploadPhotoTask.execute(filePath);
     }
 
     public void setUserName(String name, OnEditUserInfoListener listener){
@@ -156,7 +161,7 @@ public class UserManager {
         }
     }
 
-    private static class UploadPhotoTask extends AsyncTask<File, Integer, Integer>{
+    private static class UploadPhotoTask extends AsyncTask<String, Integer, Integer>{
         private final String TAG = UploadPhotoTask.class.getSimpleName();
 
         private Gson mGson;
@@ -185,10 +190,20 @@ public class UserManager {
         }
 
         @Override
-        protected Integer doInBackground(File... params) {
-            File image = params[0];
-            if(image == null || !image.exists()){
+        protected Integer doInBackground(String... params) {
+            String filePath = params[0];
+            File image = new File(filePath);
+            if(!image.exists()){
                 return ERROR_FILE_NOT_EXIST;
+            }
+            Bitmap bitmap = ImageUtil.decodeSampledBitmapFromSource(filePath, PHOTO_SIZE, PHOTO_SIZE);
+            try {
+                FileOutputStream fileOutputStream = new FileOutputStream(image, false);
+                bitmap.compress(Bitmap.CompressFormat.PNG, 50, fileOutputStream);
+                fileOutputStream.flush();
+                fileOutputStream.close();
+            } catch (IOException e) {
+                e.printStackTrace();
             }
             if(!Method.isNetworkAvailable(mContext)){
                 return ERROR_NETWORK_UNREACHABLE;
@@ -204,6 +219,7 @@ public class UserManager {
                 if (userResponse.getCode() == UserResponse.SUCESS_CODE) {
                     UserManager.login(userResponse.getUser());
                     L.i(TAG, "login success!");
+                    image.delete();
                     return 0;
                 }
             } catch (IOException e) {

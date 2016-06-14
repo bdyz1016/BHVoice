@@ -21,18 +21,19 @@ import java.util.List;
 /**
  * Created by zhanglei on 16/5/3.
  */
-public class ImageViewer extends Dialog {
+public class ImageViewer extends Dialog implements View.OnClickListener {
 
+    private View mContainer;
     private List<String> mImageSource;
     private int mPosition = 0;
     private Context mContext;
 
-    public ImageViewer(Context context){
+    public ImageViewer(Context context) {
         super(context, R.style.FullScreenDialog);
         mContext = context;
     }
 
-    public void setImageSource(List<String> list, int position){
+    public void setImageSource(List<String> list, int position) {
         mImageSource = list;
         mPosition = position;
     }
@@ -46,6 +47,8 @@ public class ImageViewer extends Dialog {
         mAdapter.addAll(mImageSource);
         vp_Images.setAdapter(mAdapter);
         vp_Images.setCurrentItem(mPosition, false);
+        mContainer = findViewById(R.id.container);
+        mContainer.setOnClickListener(this);
     }
 
     @Override
@@ -53,25 +56,35 @@ public class ImageViewer extends Dialog {
         super.show();
     }
 
-    private static class ViewPagerAdapter extends PagerAdapter{
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.container:
+                dismiss();
+                break;
+        }
+    }
+
+    private static class ViewPagerAdapter extends PagerAdapter {
 
         private List<View> mViewList;
         private List<String> mImageList;
         private Context mContext;
-        public ViewPagerAdapter(Context context){
+
+        public ViewPagerAdapter(Context context) {
             mContext = context;
             mViewList = new ArrayList<>();
         }
 
-        public void addAll(List<String> list){
+        public void addAll(List<String> list) {
             mImageList = list;
-            for(int i = 0;i < list.size();i++){
+            for (int i = 0; i < list.size(); i++) {
                 mViewList.add(LayoutInflater.from(mContext).inflate(R.layout.item_imageview, null));
             }
             notifyDataSetChanged();
         }
 
-        public void clear(){
+        public void clear() {
             mViewList.clear();
             notifyDataSetChanged();
         }

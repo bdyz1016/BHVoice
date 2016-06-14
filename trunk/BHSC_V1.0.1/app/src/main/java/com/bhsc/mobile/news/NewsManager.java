@@ -8,6 +8,7 @@ import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.bhsc.mobile.MyApplication;
+import com.bhsc.mobile.baseclass.Manager;
 import com.bhsc.mobile.net.MyRetryPolicy;
 import com.bhsc.mobile.net.MySingleton;
 import com.bhsc.mobile.net.MyStringRequest;
@@ -30,21 +31,20 @@ import java.util.List;
 /**
  * Created by zhanglei on 16/3/30.
  */
-public class NewsManager {
+public class NewsManager extends Manager{
     private final String TAG = NewsManager.class.getSimpleName();
 
     public static final int PAGE_SIZE = 20;
     public static final int START_PAGE = 1;
     private final String URL = MyApplication.Address + "/news/getNews/";
 
-    public static final int ERROR_LOAD_UNKNOWN = 1;
-    public static final int ERROR_LOAD_NETWORK_UNREACHABLE = 2;
-    public static final int ERROR_LOAD_NO_MORE = 3;
+    public static final int ERROR_LOAD_UNKNOWN = 0x01;
+    public static final int ERROR_LOAD_NETWORK_UNREACHABLE = 0x02;
+    public static final int ERROR_LOAD_NO_MORE = 0x03;
 
-    public static final int ERROR_REFRESH_UNKNOWN = 4;
-    public static final int ERROR_REFRESH_NETWORK_UNREACHABLE = 5;
-    public static final int ERROR_REFRESH_NO_NEWS = 6;
-
+    public static final int ERROR_REFRESH_UNKNOWN = 0x10;
+    public static final int ERROR_REFRESH_NETWORK_UNREACHABLE = 0x11;
+    public static final int ERROR_REFRESH_NO_NEWS = 0x12;
 
     public interface OnNewsListener {
         void loaded(List<Data_DB_News> list);
@@ -120,13 +120,11 @@ public class NewsManager {
      * @param type 新闻类型
      */
     public synchronized void loadFromLocal(int type) {
+        L.i(TAG, "loadFromLocal type :" + type + ",page:" + mLocalPage);
         int offset = (mLocalPage - 1) * PAGE_SIZE;
         List<Data_DB_News> list = Select.from(Data_DB_News.class).where("type = ?", new String[]{type + ""})
                 .orderBy("createTime desc").limit(offset + "," + PAGE_SIZE).list();
-//        List<Data_DB_News> list = Select.from(Data_DB_News.class)
-//                .where("type = ?", new String[]{type + ""})
-//                .orderBy("createTime desc")
-//                .list();
+        L.i(TAG, "新闻数量:" + list.size());
         if (list.size() > 0) {
             mLocalPage++;
             mListener.loaded(list);
@@ -190,11 +188,11 @@ public class NewsManager {
      *
      * @param type 新闻类型
      */
-    public synchronized void refreshed(int type) {
+    public synchronized void refreshed(final int type) {
         cancel();
         mCurrentPage = START_PAGE;
         if (!Method.isNetworkAvailable(mContext)) {
-            Toast.makeText(mContext, "网络不可用", Toast.LENGTH_SHORT).show();
+            mListener.error(ERROR_REFRESH_NETWORK_UNREACHABLE);
             return;
         }
         mStringRequest = new MyStringRequest(Request.Method.GET, URL + "?type=" + type + "&page=" + mCurrentPage, new Response.Listener<String>() {
@@ -207,7 +205,7 @@ public class NewsManager {
                     if (newsResponse.getCode() == NewsResponse.SUCESS_CODE) {
                         if (newsResponse.getList() != null && newsResponse.getList().size() > 0) {
                             mCurrentPage = START_PAGE + 1;
-                            SugarRecord.deleteAll(Data_DB_News.class);
+                            SugarRecord.deleteAll(Data_DB_News.class, "type = ?", type + "");
                             SugarRecord.saveInTx(newsResponse.getList());
                             mListener.refreshed(newsResponse.getList());
                         } else {

@@ -14,6 +14,7 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bhsc.mobile.R;
 import com.bhsc.mobile.news.adapter.NewsAdapter;
@@ -57,6 +58,8 @@ public class NewsFragment extends Fragment implements NewsManager.OnNewsListener
      */
     private int mNewsType;
 
+    private boolean mIsInitialize = false;
+
     private NewsManager mManager;
 
     @Override
@@ -85,8 +88,14 @@ public class NewsFragment extends Fragment implements NewsManager.OnNewsListener
     public void onResume() {
         L.i(TAG, "onResume");
         super.onResume();
-        fragment_news_refresh.setRefreshing(true);
-        mManager.refreshed(mNewsType);
+        if (!mIsInitialize) {
+            L.i(TAG, "刷新");
+            fragment_news_refresh.setRefreshing(true);
+            mManager.refreshed(mNewsType);
+            mIsInitialize = true;
+        } else {
+            L.i(TAG, "不刷新");
+        }
     }
 
     @Override
@@ -96,8 +105,16 @@ public class NewsFragment extends Fragment implements NewsManager.OnNewsListener
     }
 
     @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        L.i(TAG, "onDestroyView");
+    }
+
+    @Override
     public void onDestroy() {
         super.onDestroy();
+        L.i(TAG, "onDestroy");
+        mManager.cancel();
     }
 
     private void initWidget() {
@@ -204,11 +221,12 @@ public class NewsFragment extends Fragment implements NewsManager.OnNewsListener
 
     @Override
     public void error(int error) {
+        fragment_news_refresh.setRefreshing(false);
         if (error == NewsManager.ERROR_LOAD_NO_MORE) {
             Tv_FooterText.setText(getString(R.string.no_more));
             Pb_FooterProgress.setVisibility(View.GONE);
-        } else if (error == NewsManager.ERROR_REFRESH_NO_NEWS) {
-            fragment_news_refresh.setRefreshing(false);
+        } else if(error == NewsManager.ERROR_REFRESH_NETWORK_UNREACHABLE){
+            Toast.makeText(mContext, "网络不可用", Toast.LENGTH_SHORT).show();
         }
     }
 }

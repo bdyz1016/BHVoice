@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import com.bhsc.mobile.R;
 import com.bhsc.mobile.news.model.Data_DB_News;
+import com.bhsc.mobile.utils.DateFormat;
 import com.bhsc.mobile.utils.SyncArrayList;
 import com.facebook.drawee.view.SimpleDraweeView;
 
@@ -26,12 +27,14 @@ public class NewsAdapter extends BaseAdapter {
 
     private final int ITEM_TYPE_COUNT = 2;
 
+    private DateFormat mDateFormat;
     private SyncArrayList<Data_DB_News> mNewsList;
     private LayoutInflater mInflater;
 
     public NewsAdapter(Context context) {
         this.mInflater = LayoutInflater.from(context);
         this.mNewsList = new SyncArrayList<>(new LinkedList<Data_DB_News>());
+        this.mDateFormat = new DateFormat();
     }
 
     @Override
@@ -58,7 +61,7 @@ public class NewsAdapter extends BaseAdapter {
             holder = new ViewHolder();
             holder.Tv_NewsTitle = (TextView) convertView.findViewById(R.id.item_news_title);
             holder.Image = (SimpleDraweeView) convertView.findViewById(R.id.item_news_image);
-            holder.Tv_Discuss = (TextView) convertView.findViewById(R.id.discuss);
+            holder.Tv_PublishTime = (TextView) convertView.findViewById(R.id.time);
             holder.Tv_Advertise = (TextView) convertView.findViewById(R.id.advertise);
             convertView.setTag(holder);
         } else {
@@ -68,11 +71,16 @@ public class NewsAdapter extends BaseAdapter {
         Uri uri = Uri.parse(news.getTitleImg());
         holder.Image.setImageURI(uri);
         if (news.getIsAdv() == Data_DB_News.TYPE_ADVERTISE) {
-            holder.Tv_Discuss.setVisibility(View.GONE);
+            holder.Tv_PublishTime.setVisibility(View.GONE);
             holder.Tv_Advertise.setVisibility(View.VISIBLE);
         } else {
-            holder.Tv_Discuss.setVisibility(View.VISIBLE);
-            holder.Tv_Discuss.setText(news.getCommentCount() + "跟帖");
+            holder.Tv_PublishTime.setVisibility(View.VISIBLE);
+            String[] timeArray = mDateFormat.format(news.getCreateTime());
+            StringBuilder publishTime = new StringBuilder("");
+            for(String s:timeArray){
+                publishTime.append(s + " ");
+            }
+            holder.Tv_PublishTime.setText(publishTime.toString());
             holder.Tv_Advertise.setVisibility(View.GONE);
         }
         return convertView;
@@ -106,7 +114,8 @@ public class NewsAdapter extends BaseAdapter {
 
     private class ViewHolder {
         private TextView Tv_NewsTitle;
-        private TextView Tv_Discuss;
+//        private TextView Tv_Discuss;
+        private TextView Tv_PublishTime;
         private TextView Tv_Advertise;
 //        private TextView Tv_Collect;
         private SimpleDraweeView Image;

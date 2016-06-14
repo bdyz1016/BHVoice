@@ -2,7 +2,8 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:background="@color/background_color">
 
     <RelativeLayout
         android:id="@+id/title"
@@ -16,7 +17,7 @@
             android:layout_marginLeft="15dp"
             android:layout_marginRight="5dp"
             android:layout_marginTop="5dp"
-            android:layout_toLeftOf="@+id/activity_search_cancel"
+            android:layout_toLeftOf="@+id/cancel"
             android:background="@drawable/search_frame"
             android:orientation="horizontal">
 

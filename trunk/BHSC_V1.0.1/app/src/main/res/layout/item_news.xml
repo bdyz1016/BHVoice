@@ -5,7 +5,8 @@
     xmlns:fresco="http://schemas.android.com/apk/res-auto"
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:background="@color/white">
 
     <com.facebook.drawee.view.SimpleDraweeView
         android:id="@+id/item_news_image"
@@ -31,23 +32,23 @@
             android:layout_height="wrap_content"
             android:maxLines="2"
             android:textColor="@color/black"
-            android:text="中纪委官员办李春城案“跑风漏气”被严肃处理"
+            android:text="中纪委官员办李春城案“跑风漏气”被严开始打卡"
             android:textSize="15sp"/>
 
         <RelativeLayout
             android:layout_marginTop="5dp"
             android:layout_width="match_parent"
             android:layout_height="20dp"
-            android:orientation="horizontal"
             android:layout_alignParentBottom="true">
             <TextView
-                android:id="@+id/discuss"
+                android:id="@+id/time"
                 android:textColor="#999999"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
                 android:textSize="14sp"/>
             <TextView
+                android:layout_alignParentRight="true"
                 android:id="@+id/advertise"
                 android:textColor="@color/category_tab_highlight_text_dark"
                 android:layout_width="wrap_content"
