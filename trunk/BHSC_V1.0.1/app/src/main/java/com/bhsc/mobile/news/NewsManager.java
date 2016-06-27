@@ -4,6 +4,7 @@ import android.content.Context;
 import android.text.TextUtils;
 import android.widget.Toast;
 
+import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
@@ -26,7 +27,9 @@ import com.orm.dsl.NotNull;
 import com.orm.query.Select;
 
 import java.lang.reflect.Field;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by zhanglei on 16/3/30.
@@ -125,9 +128,13 @@ public class NewsManager extends Manager{
         List<Data_DB_News> list = Select.from(Data_DB_News.class).where("type = ?", new String[]{type + ""})
                 .orderBy("createTime desc").limit(offset + "," + PAGE_SIZE).list();
         L.i(TAG, "新闻数量:" + list.size());
-        if (list.size() > 0) {
+        int size = list.size();
+        if (size > 0) {
             mLocalPage++;
             mListener.loaded(list);
+            if(size < PAGE_SIZE){
+                mListener.error(ERROR_LOAD_NO_MORE);
+            }
         }
     }
 
@@ -143,9 +150,13 @@ public class NewsManager extends Manager{
             int offset = (mLocalPage - 1) * PAGE_SIZE;
             List<Data_DB_News> list = Select.from(Data_DB_News.class).where("type = ?", new String[]{type + ""})
                     .orderBy("createTime desc").limit(offset + "," + PAGE_SIZE).list();
-            if (list.size() > 0) {
+            int size = list.size();
+            if (size > 0) {
                 mLocalPage++;
                 mListener.loaded(list);
+                if(size < PAGE_SIZE){
+                    mListener.error(ERROR_LOAD_NO_MORE);
+                }
             }
             return;
         }
@@ -159,7 +170,11 @@ public class NewsManager extends Manager{
                     }.getType());
                     if (newsResponse.getCode() == NewsResponse.SUCESS_CODE) {
                         if (newsResponse.getList() != null && newsResponse.getList().size() > 0) {
+                            int size = newsResponse.getList().size();
                             mListener.loaded(newsResponse.getList());
+                            if(size < PAGE_SIZE){
+                                mListener.error(ERROR_LOAD_NO_MORE);
+                            }
                             if (mCurrentPage == START_PAGE) {
                                 SugarRecord.deleteAll(Data_DB_News.class);
                             }
@@ -208,6 +223,10 @@ public class NewsManager extends Manager{
                             SugarRecord.deleteAll(Data_DB_News.class, "type = ?", type + "");
                             SugarRecord.saveInTx(newsResponse.getList());
                             mListener.refreshed(newsResponse.getList());
+                            int size = newsResponse.getList().size();
+                            if(size < PAGE_SIZE){
+                                mListener.error(ERROR_LOAD_NO_MORE);
+                            }
                         } else {
                             mListener.error(ERROR_REFRESH_NO_NEWS);
                         }
@@ -226,8 +245,8 @@ public class NewsManager extends Manager{
         MySingleton.getInstance(mContext).getRequestQueue().add(mStringRequest);
     }
 
-    public synchronized void search(String keyword, final OnSearchListener listener) {
-        MyStringRequest request = new MyStringRequest(Request.Method.GET, MyApplication.Address + "/news/search?keyword=" + keyword, new Response.Listener<String>() {
+    public synchronized void search(final String keyword, final OnSearchListener listener) {
+        MyStringRequest request = new MyStringRequest(Request.Method.GET, MyApplication.Address + "/news/search", new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
                 if (!TextUtils.isEmpty(response)) {
@@ -240,6 +259,7 @@ public class NewsManager extends Manager{
                         listener.error();
                     }
                 } else {
+                    L.i(TAG, "search news response null");
                     listener.error();
                 }
             }
@@ -248,7 +268,14 @@ public class NewsManager extends Manager{
             public void onErrorResponse(VolleyError error) {
                 listener.error();
             }
-        });
+        }){
+            @Override
+            protected Map<String, String> getParams() throws AuthFailureError {
+                Map<String,String> params = new HashMap<>();
+                params.put("keyword", keyword);
+                return params;
+            }
+        };
         request.setRetryPolicy(new MyRetryPolicy());
         MySingleton.getInstance(mContext).getRequestQueue().add(request);
     }

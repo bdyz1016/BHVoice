@@ -13,6 +13,8 @@ import co.lujun.tpsharelogin.TPManager;
  */
 public class MyApplication extends Application {
 
+    public static final String TAG = "com.bhsc.mobile";
+
     public static int screenWidth;
     public static int screenHeight;
 
@@ -24,9 +26,9 @@ public class MyApplication extends Application {
     public static final String APP_ID_WECHAT = "wx1ede16f1495fe99b";
     public static final String APP_SECRET_WECHAT = "fba6a41be329981365829de421f37710";
 
-    public static final String APP_ID_MI = "2882303761517469279";
-    public static final String APP_KEY_MI = "5851746990279";
-    public static final String APP_SECRET_MI = "f3+0p34uxYipq6DeVslmlA==";
+    public static final String APP_ID_MI = "2882303761517479944";
+    public static final String APP_KEY_MI = "5671747999944";
+    public static final String APP_SECRET_MI = "0CA+1hQZUnoiC+PJ6frcCA==";
     public static final String CHANNEL = "test";
 
     public static final String Address = "http://101.200.209.6";

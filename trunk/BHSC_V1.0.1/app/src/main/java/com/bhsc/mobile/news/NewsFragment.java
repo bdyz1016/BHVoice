@@ -129,6 +129,9 @@ public class NewsFragment extends Fragment implements NewsManager.OnNewsListener
         fragment_news_list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                if(position == mAdapter.getCount()){
+                    return;
+                }
                 Intent intent = new Intent();
                 intent.putExtra(NewsActivity.INTENT_KEY_NEWSID, ((Data_DB_News) mAdapter.getItem(position)).getId());
                 intent.setClass(mContext, NewsActivity.class);

@@ -33,4 +33,5 @@ dependencies {
     compile 'com.joanzapata.android:base-adapter-helper:1.1.11'
     compile 'com.github.clans:fab:1.6.3'
     compile project(':mediapicker')
+    compile files('libs/MiPush_SDK_Client_3_0_1.jar')
 }

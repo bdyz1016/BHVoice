@@ -5,40 +5,7 @@
               android:orientation="vertical"
     >
 
-    <RelativeLayout android:id="@+id/activity_discuss_detail"
-                    android:layout_width="match_parent"
-                    android:layout_height="45dp"
-                    android:background="@color/white"
-        >
-
-        <TextView android:layout_width="wrap_content"
-                  android:layout_height="wrap_content"
-                  android:layout_centerInParent="true"
-                  android:text="@string/title_activity"
-                  android:textColor="@color/black"
-                  android:textSize="20sp"
-            />
-
-        <RelativeLayout android:id="@+id/activity_festival_back"
-                        android:layout_width="@dimen/title_btn_width"
-                        android:layout_height="match_parent"
-                        android:layout_alignParentLeft="true"
-                        android:paddingLeft="16dp"
-            >
-
-            <ImageView android:layout_width="wrap_content"
-                       android:layout_height="wrap_content"
-                       android:layout_centerVertical="true"
-                       android:background="@mipmap/btn_goback"
-                />
-        </RelativeLayout>
-        <!-- divider-->
-        <View android:layout_width="match_parent"
-              android:layout_height="1dp"
-              android:layout_alignParentBottom="true"
-              android:background="@color/divider"
-            />
-    </RelativeLayout>
+    <include layout="@layout/title_common"/>
     <com.bhsc.mobile.disclose.views.MyListView
         android:id="@+id/activity_festival_list"
         android:layout_width="match_parent"
