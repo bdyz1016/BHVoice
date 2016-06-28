@@ -97,6 +97,7 @@
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/exploded-aar/com.facebook.fresco/fresco/0.9.0/jars" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/exploded-aar/com.facebook.fresco/imagepipeline-base/0.9.0/jars" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/exploded-aar/com.facebook.fresco/imagepipeline/0.9.0/jars" />
+      <excludeFolder url="file://$MODULE_DIR$/build/intermediates/exploded-aar/com.flyco.tablayout/FlycoTabLayout_Lib/2.0.0/jars" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/exploded-aar/com.github.clans/fab/1.6.3/jars" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/exploded-aar/com.github.satyan/sugar/1.4/jars" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/exploded-aar/com.jaeger.ninegridimageview/library/1.0.1/jars" />
@@ -125,8 +126,8 @@
     <orderEntry type="library" exported="" name="design-23.2.1" level="project" />
     <orderEntry type="library" exported="" name="picasso-2.5.2" level="project" />
     <orderEntry type="library" exported="" name="guava-18.0" level="project" />
-    <orderEntry type="library" exported="" name="rxjava-1.0.14" level="project" />
     <orderEntry type="library" exported="" name="gson-2.6.2" level="project" />
+    <orderEntry type="library" exported="" name="rxjava-1.0.14" level="project" />
     <orderEntry type="library" exported="" name="animated-vector-drawable-23.2.1" level="project" />
     <orderEntry type="library" exported="" name="support-annotations-23.2.1" level="project" />
     <orderEntry type="library" exported="" name="recyclerview-v7-23.2.1" level="project" />
@@ -135,8 +136,8 @@
     <orderEntry type="library" exported="" name="support-vector-drawable-23.2.1" level="project" />
     <orderEntry type="library" exported="" name="imagepipeline-0.9.0" level="project" />
     <orderEntry type="library" exported="" name="appcompat-v7-23.2.1" level="project" />
-    <orderEntry type="library" exported="" name="library-2.4.0" level="project" />
     <orderEntry type="library" exported="" name="base-adapter-helper-1.1.11" level="project" />
+    <orderEntry type="library" exported="" name="library-2.4.0" level="project" />
     <orderEntry type="library" exported="" name="universal-image-loader-1.9.3" level="project" />
     <orderEntry type="library" exported="" name="library-1.0.1" level="project" />
     <orderEntry type="library" exported="" name="MiStats_SDK_Client_1_7_0" level="project" />
@@ -144,6 +145,7 @@
     <orderEntry type="library" exported="" name="imagepipeline-base-0.9.0" level="project" />
     <orderEntry type="library" exported="" name="retrofit-1.9.0" level="project" />
     <orderEntry type="library" exported="" name="drawee-0.9.0" level="project" />
+    <orderEntry type="library" exported="" name="FlycoTabLayout_Lib-2.0.0" level="project" />
     <orderEntry type="library" exported="" name="sugar-1.4" level="project" />
     <orderEntry type="library" exported="" name="bolts-android-1.1.4" level="project" />
     <orderEntry type="library" exported="" name="fab-1.6.3" level="project" />

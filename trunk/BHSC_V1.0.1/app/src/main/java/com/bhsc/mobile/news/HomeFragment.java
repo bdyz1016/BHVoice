@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
@@ -15,6 +14,7 @@ import com.bhsc.mobile.R;
 import com.bhsc.mobile.news.adapter.PagerAdapter;
 import com.bhsc.mobile.news.model.Data_DB_NewsType;
 import com.bhsc.mobile.utils.L;
+import com.flyco.tablayout.SlidingTabLayout;
 
 import java.util.ArrayList;
 
@@ -26,7 +26,7 @@ public class HomeFragment extends Fragment {
 
     private View mContentView;
 
-    private TabLayout tablayout;
+    private SlidingTabLayout mSlidingTabLayout;
     private ViewPager fragment_home_viewpager;
     private View fragment_home_search;
     private Context mContext;
@@ -52,7 +52,6 @@ public class HomeFragment extends Fragment {
     }
 
     private void initWidget(){
-        tablayout = (TabLayout) mContentView.findViewById(R.id.tablayout);
         fragment_home_viewpager = (ViewPager) mContentView.findViewById(R.id.fragment_home_viewpager);
         fragment_home_search = mContentView.findViewById(R.id.fragment_home_search);
         fragment_home_search.setOnClickListener(new View.OnClickListener() {
@@ -61,24 +60,24 @@ public class HomeFragment extends Fragment {
                 startActivity(new Intent(mContext, SearchActivity.class));
             }
         });
+        mSlidingTabLayout = (SlidingTabLayout) mContentView.findViewById(R.id.tab);
     }
 
     private void initView() {
         L.i(TAG, "initView");
-
-        mNewsTypeList = getNewsTypes();
+        String[] defaultTypes = mContext.getResources().getStringArray(R.array.news_category);
+        mNewsTypeList = getNewsTypes(defaultTypes);
         mPagerAdapter = new PagerAdapter(mContext, getChildFragmentManager(), mNewsTypeList);
         fragment_home_viewpager.setAdapter(mPagerAdapter);
-        tablayout.setupWithViewPager(fragment_home_viewpager);
+        mSlidingTabLayout.setViewPager(fragment_home_viewpager, defaultTypes);
     }
 
     private void search() {
         startActivity(new Intent(mContext, SearchActivity.class));
     }
 
-    public ArrayList<Data_DB_NewsType> getNewsTypes() {
+    public ArrayList<Data_DB_NewsType> getNewsTypes(String[] defaultTypes) {
         ArrayList<Data_DB_NewsType> types = new ArrayList<>();
-        String[] defaultTypes = mContext.getResources().getStringArray(R.array.news_category);
         int length = defaultTypes.length;
         for (int i = 0; i < length; i++) {
             Data_DB_NewsType type = new Data_DB_NewsType();

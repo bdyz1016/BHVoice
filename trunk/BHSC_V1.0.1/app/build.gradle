@@ -32,6 +32,8 @@ dependencies {
     compile 'com.github.satyan:sugar:1.4'
     compile 'com.joanzapata.android:base-adapter-helper:1.1.11'
     compile 'com.github.clans:fab:1.6.3'
+    compile 'com.nineoldandroids:library:2.4.0'
+    compile 'com.flyco.tablayout:FlycoTabLayout_Lib:2.0.0@aar'
     compile project(':mediapicker')
     compile files('libs/MiPush_SDK_Client_3_0_1.jar')
 }

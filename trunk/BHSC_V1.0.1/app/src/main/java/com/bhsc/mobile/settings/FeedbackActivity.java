@@ -8,6 +8,7 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bhsc.mobile.R;
@@ -18,6 +19,7 @@ import com.bhsc.mobile.userpages.dialog.DefaultDialog;
  */
 public class FeedbackActivity extends Activity {
 
+    private TextView Tv_Title;
     private Button Btn_Done;
     private EditText Edit_Content;
     private ProgressDialog mProgressDialog;
@@ -64,6 +66,8 @@ public class FeedbackActivity extends Activity {
                 }.execute("");
             }
         });
+        Tv_Title = (TextView) findViewById(R.id.title);
+        Tv_Title.setText(R.string.title_feedback);
         findViewById(R.id.back).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
