@@ -98,7 +98,7 @@ public class NewsFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        L.i(TAG, "onCreateView");
+        L.i(TAG, "onCreateView:" + mNewsType);
         mContentView = inflater.inflate(R.layout.fragment_news, container, false);
         initWidget();
         initData();
@@ -108,7 +108,7 @@ public class NewsFragment extends Fragment {
 
     @Override
     public void onResume() {
-        L.i(TAG, "onResume");
+        L.i(TAG, "onResume:" + mNewsType);
         super.onResume();
     }
 
@@ -120,13 +120,17 @@ public class NewsFragment extends Fragment {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        L.i(TAG, "onDestroyView");
+        L.i(TAG, "onDestroyView:" + mNewsType);
+        mPageNumber = LoadNewsAsyncTask.DEFAULT_PAGE;
+        if(mLoadNewsAsyncTask!= null && mLoadNewsAsyncTask.getStatus() != AsyncTask.Status.FINISHED){
+            mLoadNewsAsyncTask.cancel(true);
+        }
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        L.i(TAG, "onDestroy");
+        L.i(TAG, "onDestroy:" + mNewsType);
     }
 
     private void initWidget() {
@@ -208,7 +212,7 @@ public class NewsFragment extends Fragment {
         }
     };
 
-    class LoadNewsAsyncTask extends AsyncTask<Void, ResultNews, Integer> {
+    private class LoadNewsAsyncTask extends AsyncTask<Void, ResultNews, Integer> {
         private final String TAG = LoadNewsAsyncTask.class.getSimpleName();
         public static final int ERROR_SUCCESS = 0x00;
         public static final int ERROR_NETWORK_UNREACHABLE = 0x01;
@@ -221,7 +225,6 @@ public class NewsFragment extends Fragment {
         private final String URL = MyApplication.Address + "/news/getNews/";
         private final long REQUEST_TIME_OUT = 20 * 1000;
 
-        //        private int mOperate = OPERATE_LOAD_NEWS;
         private int mNewsType;
 
         private Context mContext;
@@ -261,7 +264,7 @@ public class NewsFragment extends Fragment {
 
         @Override
         protected Integer doInBackground(Void... params) {
-            L.i(TAG, "doInBackground");
+            L.i(TAG, "doInBackground:" + mNewsType + ", page number:" + mPageNumber);
             if (!Method.isNetworkAvailable(mContext)) {
                 List<Data_DB_News> list = loadFromLocal();
                 publishProgress(new ResultNews(list));

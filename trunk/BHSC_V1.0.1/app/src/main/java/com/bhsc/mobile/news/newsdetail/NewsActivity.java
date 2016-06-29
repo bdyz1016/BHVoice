@@ -2,8 +2,10 @@ package com.bhsc.mobile.news.newsdetail;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
@@ -15,27 +17,48 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.Request;
+import com.android.volley.toolbox.RequestFuture;
+import com.bhsc.mobile.MyApplication;
 import com.bhsc.mobile.R;
 import com.bhsc.mobile.ThirdParty.ShareMenu;
-import com.bhsc.mobile.baseclass.Manager;
 import com.bhsc.mobile.comment.CommentActivity;
 import com.bhsc.mobile.comment.CommentManager;
+import com.bhsc.mobile.net.MyRetryPolicy;
+import com.bhsc.mobile.net.MySingleton;
+import com.bhsc.mobile.net.MyStringRequest;
+import com.bhsc.mobile.net.RequestError;
 import com.bhsc.mobile.news.model.Data_DB_Detail;
-import com.bhsc.mobile.news.model.Data_DB_News;
+import com.bhsc.mobile.news.model.DetailResponse;
 import com.bhsc.mobile.userpages.LoginAndRegisterActivity;
 import com.bhsc.mobile.userpages.UserManager;
 import com.bhsc.mobile.utils.L;
+import com.bhsc.mobile.utils.Method;
+import com.google.gson.ExclusionStrategy;
+import com.google.gson.FieldAttributes;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
 import com.orm.SugarRecord;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLDecoder;
+import java.lang.reflect.Field;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
-public class NewsActivity extends AppCompatActivity implements View.OnClickListener, NewsStore.OnNewsListener {
+public class NewsActivity extends AppCompatActivity implements View.OnClickListener {
     private final String TAG = NewsActivity.class.getSimpleName();
     public static final String INTENT_KEY_NEWSID = "newsId";
     public static final long DEFAULT_NEWSID = -1;
+
+    private final String STATE_NEWS_ID = "news_id";
+    private final String STATE_NEWS_DETAIL = "news_detail";
+
     private final String mimeType = "text/html; charset=UTF-8";
     private final String encoding = "UTF-8";
+
+    private final String URL = MyApplication.Address + "/news/getNewsById";
+
     private WebView mWebVew;
     private EditText Edit_Discuss;
     private TextView Tv_DiscussCount;
@@ -44,7 +67,6 @@ public class NewsActivity extends AppCompatActivity implements View.OnClickListe
     private ProgressBar mProgressBar;
 
     private Data_DB_Detail mNews;
-    private NewsStore mNewsStore;
     private CommentManager mManager;
 
     private ShareMenu mShareMenu;
@@ -52,6 +74,7 @@ public class NewsActivity extends AppCompatActivity implements View.OnClickListe
     private Context mContext;
     private long mNewsId;
 
+    private LoadNewsDetailTask mLoadNewsDetailTask;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -73,7 +96,28 @@ public class NewsActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     protected void onPostResume() {
         super.onPostResume();
-        loadNewsContent();
+        if(mNews == null) {
+            loadNewsContent();
+        } else {
+            String content = mNews.getContent();
+            content = content.replace("<img", "<img width=\"320\"");
+            mWebVew.loadData(content, mimeType, null);
+            Tv_DiscussCount.setText(mNews.getCommentCount() + "");
+        }
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        outState.putLong(STATE_NEWS_ID, mNewsId);
+        outState.putParcelable(STATE_NEWS_DETAIL, mNews);
+        super.onSaveInstanceState(outState);
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        mNewsId = savedInstanceState.getLong(STATE_NEWS_ID);
+        mNews = savedInstanceState.getParcelable(STATE_NEWS_DETAIL);
     }
 
     @Override
@@ -145,14 +189,15 @@ public class NewsActivity extends AppCompatActivity implements View.OnClickListe
 
     private void initData() {
         mContext = this;
-        mNewsStore = new NewsStore(mContext, this);
         mNewsId = getIntent().getLongExtra(INTENT_KEY_NEWSID, DEFAULT_NEWSID);
         mManager = new CommentManager(this);
+
     }
 
     private void loadNewsContent(){
         mProgressBar.setVisibility(View.VISIBLE);
-        mNewsStore.getNews(mNewsId);
+        mLoadNewsDetailTask = new LoadNewsDetailTask();
+        mLoadNewsDetailTask.execute(mNewsId);
     }
 
 
@@ -215,32 +260,113 @@ public class NewsActivity extends AppCompatActivity implements View.OnClickListe
         }
     };
 
-    @Override
-    public void onLoaded(Data_DB_Detail data) {
-        L.i(TAG, "onLoaded");
-        mProgressBar.setVisibility(View.GONE);
-        mNews = data;
-        String content = data.getContent();
-        content = content.replace("<img", "<img width=\"320\"");
-        mWebVew.loadData(content, mimeType, null);
-        Tv_DiscussCount.setText(data.getCommentCount() + "");
-    }
+    private class LoadNewsDetailTask extends AsyncTask<Long, Data_DB_Detail, Integer>{
 
-    @Override
-    public void error(int error) {
-        mProgressBar.setVisibility(View.GONE);
-        switch (error) {
-            case Manager.ERROR_NETWORK_UNREACHABLE:
-                Toast.makeText(mContext, "网络异常", Toast.LENGTH_SHORT).show();
-                break;
-            case Manager.ERROR_SERVER_ISSUES:
-                Toast.makeText(mContext, "服务器错误", Toast.LENGTH_SHORT).show();
-                break;
-            case Manager.ERROR_UNKNOWN:
-                Toast.makeText(mContext, "位置异常", Toast.LENGTH_SHORT).show();
-                break;
-            default:
-                break;
+        private final long REQUEST_TIME_OUT = 20 * 1000;
+
+        private MyStringRequest mStringRequest;
+        private Gson mGson;
+        public LoadNewsDetailTask(){
+            ExclusionStrategy exclusionStrategy = new ExclusionStrategy() {
+
+                @Override
+                public boolean shouldSkipField(FieldAttributes fieldAttributes) {
+                    return false;
+                }
+
+                @Override
+                public boolean shouldSkipClass(Class<?> clazz) {
+                    return clazz == Field.class || clazz == Request.Method.class;
+                }
+            };
+
+            mGson = new GsonBuilder()
+                    .addSerializationExclusionStrategy(exclusionStrategy)
+                    .addDeserializationExclusionStrategy(exclusionStrategy)
+                    .create();
+        }
+
+        @Override
+        protected Integer doInBackground(Long... params) {
+            long newsId = params[0];
+            if(!Method.isNetworkAvailable(mContext)){
+                Data_DB_Detail detail = SugarRecord.findById(Data_DB_Detail.class, newsId);
+                if(detail != null) {
+                    publishProgress(detail);
+                }
+                return RequestError.ERROR_NETWORK_UNREACHABLE;
+            } else {
+                String url = URL + "?id=" + newsId;
+                RequestFuture<String> requestFuture = RequestFuture.newFuture();
+                mStringRequest = new MyStringRequest(Request.Method.GET, url, requestFuture, requestFuture);
+                mStringRequest.setRetryPolicy(new MyRetryPolicy());
+                MySingleton.getInstance(mContext).getRequestQueue().add(mStringRequest);
+                try {
+                    String response = requestFuture.get(REQUEST_TIME_OUT, TimeUnit.MILLISECONDS);
+                    if(!TextUtils.isEmpty(response)){
+                        L.i(TAG, "response:" + response);
+                        DetailResponse detailResponse = mGson.fromJson(response, new TypeToken<DetailResponse>(){}.getType());
+                        if(detailResponse != null){
+                            if(detailResponse.getCode() == DetailResponse.SUCESS_CODE){
+                                detailResponse.getNews().save();
+                                publishProgress(detailResponse.getNews());
+                            } else {
+                                return RequestError.ERROR_UNKNOWN;
+                            }
+                        } else {
+                            return RequestError.ERROR_SERVER_ISSUES;
+                        }
+                    }
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                } catch (ExecutionException e) {
+                    e.printStackTrace();
+                } catch (TimeoutException e) {
+                    e.printStackTrace();
+                    return RequestError.ERROR_TIME_OUT;
+                }
+            }
+            return RequestError.ERROR_SUCCESS;
+        }
+
+        @Override
+        protected void onProgressUpdate(Data_DB_Detail... values) {
+            super.onProgressUpdate(values);
+            mNews = values[0];
+            String content = mNews.getContent();
+            content = content.replace("<img", "<img width=\"320\"");
+            mWebVew.loadData(content, mimeType, null);
+            Tv_DiscussCount.setText(mNews.getCommentCount() + "");
+        }
+
+        @Override
+        protected void onPostExecute(Integer integer) {
+            super.onPostExecute(integer);
+            mProgressBar.setVisibility(View.GONE);
+            switch (integer) {
+                case RequestError.ERROR_NETWORK_UNREACHABLE:
+                    Toast.makeText(mContext, "网络异常", Toast.LENGTH_SHORT).show();
+                    break;
+                case RequestError.ERROR_SERVER_ISSUES:
+                    Toast.makeText(mContext, "服务器错误", Toast.LENGTH_SHORT).show();
+                    break;
+                case RequestError.ERROR_UNKNOWN:
+                    Toast.makeText(mContext, "位置异常", Toast.LENGTH_SHORT).show();
+                    break;
+                case RequestError.ERROR_TIME_OUT:
+                    Toast.makeText(mContext, "请求超时", Toast.LENGTH_SHORT).show();
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        @Override
+        protected void onCancelled() {
+            super.onCancelled();
+            if(mStringRequest!= null && !mStringRequest.isCanceled()){
+                mStringRequest.cancel();
+            }
         }
     }
 }

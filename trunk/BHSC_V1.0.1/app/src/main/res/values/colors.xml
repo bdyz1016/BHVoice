@@ -9,6 +9,9 @@
 
     <color name="default_text_color">#7e7e7e</color>
 
+    <color name="tab_text_unselect">#7e7e7e</color>
+    <color name="tab_text_select">#d43d3d</color>
+
     <color name="activity_bg_color">#fffafafa</color>
     <color name="top_category_bar_background">#ffeeeeee</color>
     <color name="divider">#ffdddddd</color>

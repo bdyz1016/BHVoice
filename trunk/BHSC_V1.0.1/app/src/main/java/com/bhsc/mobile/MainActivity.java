@@ -1,6 +1,8 @@
 package com.bhsc.mobile;
 
+import android.os.Build;
 import android.os.Bundle;
+import android.os.PersistableBundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -32,6 +34,8 @@ public class MainActivity extends BaseActivity {
     private final int FRAGMENT_DISCLOSE = 1;
     private final int FRAGMENT_USER = 2;
 
+    private int[] mTabTextColorArray;
+
     private Fragment[] mFragments;
     private int mPosition = -1;
 
@@ -43,12 +47,13 @@ public class MainActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         L.i(TAG, "onCreate");
         setContentView(R.layout.activity_main);
-        initWidget();
     }
 
     @Override
     protected void onPostCreate(Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
+        initWidget();
+        initData();
         initView();
     }
 
@@ -77,7 +82,7 @@ public class MainActivity extends BaseActivity {
         super.onDestroy();
     }
 
-    private void initWidget(){
+    private void initWidget() {
         activity_main_NavigationMenu = (NavigationMenu) findViewById(R.id.activity_main_NavigationMenu);
         Navigation_btn_1_icon = (ImageView) findViewById(R.id.Navigation_btn_1_icon);
         Navigation_btn_2_icon = (ImageView) findViewById(R.id.Navigation_btn_2_icon);
@@ -85,6 +90,14 @@ public class MainActivity extends BaseActivity {
         Navigation_btn_1_text = (TextView) findViewById(R.id.Navigation_btn_1_text);
         Navigation_btn_2_text = (TextView) findViewById(R.id.Navigation_btn_2_text);
         Navigation_btn_3_text = (TextView) findViewById(R.id.Navigation_btn_3_text);
+    }
+
+    private void initData() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            mTabTextColorArray = new int[]{getColor(R.color.tab_text_select), getColor(R.color.tab_text_unselect)};
+        } else {
+            mTabTextColorArray = new int[]{getResources().getColor(R.color.tab_text_select), getResources().getColor(R.color.tab_text_unselect)};
+        }
     }
 
     private void initView() {
@@ -129,7 +142,7 @@ public class MainActivity extends BaseActivity {
 //    }
 
     private void switchView(int position) {
-        if(mPosition == position){
+        if (mPosition == position) {
             return;
         }
         mPosition = position;
@@ -152,6 +165,9 @@ public class MainActivity extends BaseActivity {
         Navigation_btn_1_icon.setBackgroundResource(R.mipmap.btn_home_press);
         Navigation_btn_2_icon.setBackgroundResource(R.mipmap.btn_disclose_normal);
         Navigation_btn_3_icon.setBackgroundResource(R.mipmap.btn_profile_nomal);
+        Navigation_btn_1_text.setTextColor(mTabTextColorArray[0]);
+        Navigation_btn_2_text.setTextColor(mTabTextColorArray[1]);
+        Navigation_btn_3_text.setTextColor(mTabTextColorArray[1]);
         switchView(FRAGMENT_HOME);
     }
 
@@ -163,6 +179,9 @@ public class MainActivity extends BaseActivity {
         Navigation_btn_1_icon.setBackgroundResource(R.mipmap.btn_home_normal);
         Navigation_btn_2_icon.setBackgroundResource(R.mipmap.btn_disclose_press);
         Navigation_btn_3_icon.setBackgroundResource(R.mipmap.btn_profile_nomal);
+        Navigation_btn_1_text.setTextColor(mTabTextColorArray[1]);
+        Navigation_btn_2_text.setTextColor(mTabTextColorArray[0]);
+        Navigation_btn_3_text.setTextColor(mTabTextColorArray[1]);
         switchView(FRAGMENT_DISCLOSE);
     }
 
@@ -174,6 +193,9 @@ public class MainActivity extends BaseActivity {
         Navigation_btn_1_icon.setBackgroundResource(R.mipmap.btn_home_normal);
         Navigation_btn_2_icon.setBackgroundResource(R.mipmap.btn_disclose_normal);
         Navigation_btn_3_icon.setBackgroundResource(R.mipmap.btn_profile_press);
+        Navigation_btn_1_text.setTextColor(mTabTextColorArray[1]);
+        Navigation_btn_2_text.setTextColor(mTabTextColorArray[1]);
+        Navigation_btn_3_text.setTextColor(mTabTextColorArray[0]);
         switchView(FRAGMENT_USER);
     }
 

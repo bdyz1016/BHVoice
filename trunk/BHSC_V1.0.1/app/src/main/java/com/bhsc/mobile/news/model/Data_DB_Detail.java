@@ -1,12 +1,15 @@
 package com.bhsc.mobile.news.model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.orm.SugarRecord;
 import com.orm.dsl.Column;
 
 /**
  * Created by zhanglei on 16/5/31.
  */
-public class Data_DB_Detail extends SugarRecord {
+public class Data_DB_Detail extends SugarRecord implements Parcelable{
 
     /**
      * 0:新闻，1:广告
@@ -120,5 +123,54 @@ public class Data_DB_Detail extends SugarRecord {
 
     public void setShareurl(String shareurl) {
         this.shareurl = shareurl;
+    }
+
+
+    public static final Parcelable.Creator<Data_DB_Detail> CREATOR = new Creator<Data_DB_Detail>() {
+        @Override
+        public Data_DB_Detail createFromParcel(Parcel source) {
+            return new Data_DB_Detail(source);
+        }
+
+        @Override
+        public Data_DB_Detail[] newArray(int size) {
+            return new Data_DB_Detail[size];
+        }
+    };
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(commentCount);
+        dest.writeString(content);
+        dest.writeLong(createTime);
+        dest.writeLong(createUserId);
+        dest.writeInt(isAdv);
+        dest.writeString(title);
+        dest.writeLong(PublishTime);
+        dest.writeString(titleImg);
+        dest.writeInt(praiseCount);
+        dest.writeString(source);
+        dest.writeInt(type);
+        dest.writeString(shareurl);
+    }
+
+    private Data_DB_Detail(Parcel source){
+        this.commentCount = source.readInt();
+        this.content = source.readString();
+        this.createTime = source.readLong();
+        this.createUserId = source.readLong();
+        this.isAdv = source.readInt();
+        this.title = source.readString();
+        this.PublishTime = source.readLong();
+        this.titleImg = source.readString();
+        this.praiseCount = source.readInt();
+        this.source = source.readString();
+        this.type = source.readInt();
+        this.shareurl = source.readString();
     }
 }
